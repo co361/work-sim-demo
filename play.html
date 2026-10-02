@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<script>/* 데모 사이트 전용(2026-10-02): 같은 co361.github.io 의 학생용 라이브(work-sim-v2)와 브라우저 저장 공간이 섞이지 않게 키 앞에 ws7demo: 를 붙인다 */(function(){try{var P='ws7demo:',S=Storage.prototype,g=S.getItem,s=S.setItem,r=S.removeItem;S.getItem=function(k){return g.call(this,P+k)};S.setItem=function(k,v){return s.call(this,P+k,v)};S.removeItem=function(k){return r.call(this,P+k)};}catch(e){}})();</script>
+<script>/* 데모 사이트 전용: 로컬 미리보기(8860)와 같은 기본값 — 잡담·키프레임 걷기(주소에 값이 있으면 그대로) */(function(){try{var q=new URLSearchParams(location.search),c=0;if(!q.has('smalltalk')){q.set('smalltalk','1');c=1}if(!q.has('walk')){q.set('walk','blend');if(!q.has('walkp'))q.set('walkp','workfiles/walk_keyed_20261001/walk_params_keyed50.json');c=1}if(c)history.replaceState(history.state,'',location.pathname+'?'+q.toString()+location.hash);}catch(e){}})();</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WORK SIM — 7일차 직무 게임</title>
+<!-- 탭 아이콘 — 사용자 승인 입체 아이콘 24번(2026-09-29). 번호·파일 표는 assets/appicon/icons.json -->
+<link rel="icon" type="image/png" sizes="32x32" href="assets/appicon/favicon-32.png?v=3">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/appicon/favicon-16.png?v=3">
+<link rel="icon" type="image/png" sizes="48x48" href="assets/appicon/favicon-48.png?v=3">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/appicon/favicon-192.png?v=3">
+<style>
+  /* 팔레트 — 대표 확정 「화이트·회색·남색」(38차). 크림·금색은 남기지 않는다.
+     흰 바탕 위 대비: 잉크 15.7 · 보조 5.8 · 강조 8.3 · 진한강조 11.9 · 초록 6.0 · 빨강 6.5 */
+  :root{ --ink:#1b2430; --mute:#5b6675; --line:#dde3ec; --line2:#ccd4e0;
+         --page:#f5f6f8; --panel:rgba(255,255,255,.94); --panel2:#f5f6f8; --soft:#eef0f4;
+         --acc:#1f4e8c; --acc-d:#143766; --acc-soft:#e8eefa; --acc-line:#c5d5ee; --acc-lite:#a8c6ee;
+         --ok:#177245; --ok-soft:#e6f3ec; --ok-line:#bfe0cb;
+         --bad:#b3261e; --bad-soft:#fbeae8; --warn:#9a4a06;
+         --r:14px; }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--page);color:var(--ink);font:14px/1.5 -apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;overflow:hidden;word-break:keep-all}
+  button{font:inherit;color:inherit;cursor:pointer}
+  input,select,textarea{font:inherit;color:inherit}
+  #stage{position:fixed;inset:0;width:100%;height:100%;border:0;background:var(--page);z-index:0}
+  .muted{color:var(--mute);font-size:12px;margin-top:8px} .bad{color:var(--bad)}
+  /* ── 로딩 ── */
+  #loading{position:fixed;inset:0;z-index:50;background:var(--page);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;transition:opacity .5s}
+  #loading.off{opacity:0;pointer-events:none}
+  #loading .t{font-size:20px;font-weight:700}
+  #loading .s{color:var(--mute);font-size:13px;min-height:20px;text-align:center;padding:0 20px}
+  #loading .s:empty{min-height:0;padding:0}
+  #loading .bar{width:220px;height:6px;border-radius:3px;background:#e3e7ee;overflow:hidden}
+  #loading .bar i{display:block;height:100%;width:30%;background:var(--acc);animation:ld 1.2s ease-in-out infinite}
+  @keyframes ld{0%{transform:translateX(-100%)}100%{transform:translateX(340%)}}
+  @media (prefers-reduced-motion:reduce){ #loading .bar i{animation:none;width:100%} }
+  /* 45차: 3D 워밍업(warmupInfo) 진행을 받으면 막대가 실제 진행으로 바뀐다 — day.js warmWait */
+  #loading.det .bar i{animation:none;transform:none;width:var(--pct,0%);transition:width .3s ease-out}
+  #loading .st{color:var(--mute);font-size:12.5px;min-height:18px;font-variant-numeric:tabular-nums}
+  #loading .st:empty{min-height:0}
+  /* ── 첫 진입 조작법 카드 (js/play/intro.js · 44차) ──
+     대표 "로딩하는 동안 로딩중이라고 띄우지 말고 게임 플레이 방법 단축키를 하나씩 설명하는 페이지를 띄워".
+     처음 들어올 때만이다 — 방을 옮길 때 로딩(office.html 안)과 캐릭터 교체 로딩은 그대로 「로딩 중」이다.
+     다 봤는데 아직 덜 받았으면 그때 위의 「로딩 중」 한 줄로 돌아간다. */
+  #loading.tut{gap:0}
+  #loading.tut>.t,#loading.tut>.bar,#loading.tut>.st{display:none}
+  #tut{width:min(620px,92vw);display:flex;flex-direction:column;gap:12px}
+  #tut[hidden]{display:none}
+  .tutHd{display:flex;align-items:center;gap:8px}
+  .tutHd .tag{font-size:12px;font-weight:700;color:var(--acc);background:var(--acc-soft);border:1px solid var(--acc-line);border-radius:999px;padding:3px 10px}
+  .tutHd .no{font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums}
+  .tutHd .btn{margin-left:auto;padding:6px 13px;font-size:12px}
+  .tutCard{background:#fff;border:1px solid var(--line);border-radius:20px;
+    box-shadow:0 1px 2px rgba(20,30,45,.05),0 14px 36px rgba(20,30,45,.10);
+    padding:24px 30px 26px;min-height:212px;display:flex;flex-direction:column;gap:13px}
+  .tutKeys{display:flex;flex-wrap:wrap;align-items:center;gap:7px;min-height:42px}
+  .tutKeys .sep{color:var(--mute);font-size:13px;padding:0 1px}
+  /* 키캡 — 실제 키처럼 아랫변을 두껍게 준다 */
+  kbd.k{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;padding:0 11px;
+    background:#fff;border:1px solid var(--line2);border-bottom-width:3px;border-radius:10px;
+    font-family:inherit;font-weight:700;font-size:15px;line-height:1;color:var(--ink);box-shadow:0 1px 0 rgba(20,30,45,.05)}
+  kbd.k.acc{background:var(--acc);border-color:var(--acc-d);color:#fff}
+  kbd.k.wide{padding:0 15px;font-size:13px}
+  .tutCard h3{margin:0;font-size:21px;line-height:1.35;letter-spacing:-.01em}
+  .tutCard p{margin:0;font-size:15.5px;line-height:1.8;color:var(--mute)}
+  .tutCard p b{color:var(--ink);font-weight:700}
+  .tutIn{animation:tutIn .3s ease-out}
+  @keyframes tutIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .tutFt{display:flex;align-items:center;gap:10px}
+  .tutDots{display:flex;gap:6px;align-items:center}
+  .tutDots i{display:block;width:7px;height:7px;border-radius:999px;background:var(--line2)}
+  .tutDots i.seen{background:var(--acc-lite)}
+  .tutDots i.on{width:26px;background:var(--acc-lite);position:relative;overflow:hidden}
+  .tutDots i.on::after{content:'';position:absolute;inset:0;width:0;background:var(--acc);animation:tutFill var(--tutms,5200ms) linear forwards}
+  .tutDots.noauto i.on::after{animation:none;width:100%}
+  @keyframes tutFill{to{width:100%}}
+  #tutNext{margin-left:auto;min-width:100px;text-align:center}
+  .tutLoad{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:var(--mute);min-height:18px}
+  .tutLoad i{width:12px;height:12px;border-radius:50%;border:2px solid var(--acc-line);border-top-color:var(--acc);animation:tutSpin .8s linear infinite}
+  .tutLoad.ok{color:var(--ok)} .tutLoad.ok i{display:none}
+  /* 45차: 워밍업 진행 막대 — 렉이 다 풀려야 「시작하기」가 뜬다 */
+  .tutBar{display:block;width:120px;height:4px;border-radius:2px;background:var(--line);overflow:hidden;flex:none}
+  .tutBar b{display:block;height:100%;width:0;background:var(--acc);border-radius:2px;transition:width .3s ease-out}
+  .tutLoad.ok .tutBar b{background:var(--ok)}
+  @keyframes tutSpin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){ .tutIn{animation:none} .tutDots i.on::after{animation:none;width:100%} .tutLoad i{animation:none} }
+  @media (max-width:520px){ .tutCard{padding:20px 18px 22px;min-height:196px} .tutCard h3{font-size:19px} .tutCard p{font-size:14.5px;line-height:1.75} }
+  /* ── 홈(개인 코드 입장) ── */
+  #home{position:fixed;inset:0;z-index:60;background:var(--page);overflow:auto;display:none}
+  #home.open{display:block}
+  #home .wrap{max-width:720px;margin:0 auto;padding:48px 20px 60px}
+  #home h1{font-size:26px;margin:0 0 4px} #home .sub{color:var(--mute);margin-bottom:22px}
+  #home .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+  #home input{flex:1;min-width:200px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;font-size:16px;letter-spacing:.06em;text-transform:uppercase}
+  #home select{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff}
+  #homeDays{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin:22px 0 10px}
+  .dayc{border:1px solid var(--line);border-radius:12px;background:#fff;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px;min-height:80px}
+  .dayc b{font-size:13px} .dayc span{font-size:12px;color:var(--mute)} .dayc i{font-style:normal;font-size:11px;color:var(--mute);margin-top:auto}
+  .dayc.done{background:var(--ok-soft);border-color:var(--ok-line)} .dayc.done i{color:var(--ok)}
+  .dayc.cur{background:var(--acc-soft);border-color:var(--acc)} .dayc.cur i{color:var(--acc-d);font-weight:700}
+  .dayc.lock{opacity:.55}
+  #homeMsg{color:var(--bad);min-height:20px;font-size:13px}
+  /* ── 상단 바 ── */
+  #top{position:fixed;left:0;right:0;top:0;height:52px;z-index:16;display:flex;align-items:center;gap:12px;padding:0 14px;background:var(--panel);border-bottom:1px solid var(--line);backdrop-filter:blur(8px)}
+  #top .ttl{font-weight:700;font-size:15px;white-space:nowrap}
+  #top .ttl small{font-weight:500;color:var(--mute);margin-left:8px}
+  #unlocks{display:flex;gap:4px} .chip{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--mute);border:1px solid var(--line);white-space:nowrap} .chip.on{background:var(--ok-soft);color:var(--ok);border-color:var(--ok-line)}
+  #clockBox{margin-left:auto;display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+  #clock{font-variant-numeric:tabular-nums;font-size:22px;font-weight:700;letter-spacing:.02em}
+  #clock.late{color:var(--bad)}
+  /* 남은 시간 — 현재 시각만 있으면 얼마나 남았는지 알 수 없다 */
+  #clockLeft{font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums}
+  #clockLeft.over{color:var(--bad);font-weight:700}
+  /* 45차: 「다음 업무까지 넘기기」 — 지금 할 일이 하나도 없을 때만 뜬다(day.js skipBlock). 남은 시간 옆 작은 알약 */
+  #skipBtn{align-self:center;margin-left:2px;padding:3px 10px;border:1px solid var(--acc-line);border-radius:999px;
+    background:var(--acc-soft);color:var(--acc-d);font-size:12px;font-weight:700;line-height:1.4;white-space:nowrap}
+  #skipBtn:hover,#skipBtn:focus-visible{background:var(--acc);border-color:var(--acc-d);color:#fff}
+  #skipBtn[hidden],#pcSkip[hidden]{display:none}
+  /* 단추가 하나 늘어 1280px 에서 「홈으로」가 화면 밖으로 밀렸다 — 줄어들 수 있는 것(제목·잠금 칩)이 먼저 줄고, 단추는 줄지 않게 */
+  #top .ttl{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  #unlocks{flex:0 1 auto;min-width:0;overflow:hidden}
+  #clockBox,#cnt,#pauseWrap,#homeBtn,#pcBtn,#seatBtn{flex-shrink:0}
+  #saveStat:empty{min-width:0}
+  /* PC 작업표시줄의 같은 단추 — 옆 「사무실로」·「홈으로」와 같은 크기, 색만 강조 */
+  #pc #pcSkip{background:var(--acc-soft);border:1px solid var(--acc-line);color:var(--acc-d);border-radius:12px;
+    padding:6px 12px;font-size:13.5px;font-weight:700;font-family:inherit;white-space:nowrap;cursor:pointer}
+  #pc #pcSkip:hover{background:var(--acc);border-color:var(--acc-d);color:#fff}
+  /* 하루를 일찍 끝내는 길은 눈에 안 띄는 자리에 둔다 — 큰 버튼으로 상시 노출하지 않는다 */
+  #pauseWrap{position:relative}
+  /* [hidden] 은 UA 규칙이라 아래 display:flex 가 이긴다 — 명시로 다시 접는다 */
+  #pauseMenu[hidden]{display:none}
+  #pauseMenu{position:absolute;right:0;top:calc(100% + 6px);z-index:20;background:#fff;border:1px solid var(--line);
+    border-radius:12px;box-shadow:0 8px 24px rgba(20,30,45,.18);padding:6px;display:flex;flex-direction:column;gap:4px;min-width:150px}
+  #pauseMenu .btn{text-align:left;border:0;border-radius:8px;padding:8px 10px;width:100%}
+  #pauseMenu .btn:hover{background:var(--soft)}
+  #pmQuit{color:var(--bad)}
+  #cnt{display:flex;gap:12px;color:var(--mute);font-size:12px;white-space:nowrap}
+  #cnt b{color:var(--ink);font-size:14px}
+  #pause,#homeBtn,#seatBtn{padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;white-space:nowrap}
+  #seatBtn[hidden]{display:none}
+  #pause.on{background:var(--acc);border-color:var(--acc-d);color:#fff;font-weight:700}
+  #saveStat{font-size:11px;color:var(--mute);min-width:60px;text-align:right}
+  /* ── 패널 공통 ── */
+  .panel{position:fixed;z-index:10;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 6px 24px rgba(20,30,45,.10);backdrop-filter:blur(8px)}
+  .panel h3{margin:0;padding:12px 14px 8px;font-size:13px;color:var(--mute);font-weight:700;letter-spacing:.02em}
+  /* ── 메일함 ── */
+  #inbox{left:12px;top:64px;bottom:12px;width:300px;display:flex;flex-direction:column}
+  #inbox h3{display:flex;align-items:center;justify-content:space-between}
+  #list{overflow:auto;flex:1;padding:0 6px 8px}
+  .mail{display:block;width:100%;text-align:left;border:0;border-radius:10px;padding:9px 10px;background:transparent;margin:2px 0}
+  .mail:hover{background:var(--soft)}
+  .mail.cur{background:var(--acc-soft)}
+  .mail.pre{border-left:3px solid var(--bad)}
+  .mail .r1{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--mute)}
+  .mail .u{width:8px;height:8px;border-radius:50%;background:#b6bdc7;flex:none}
+  .mail .u.u2{background:#e08a1e}.mail .u.u3{background:#d1650f}.mail .u.u4{background:var(--bad)}
+  .mail .from{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mail .at{font-variant-numeric:tabular-nums}
+  .mail .sj{margin-top:2px;font-size:13px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .mail.new .sj,.mail.new .from{font-weight:700;color:var(--ink)}
+  .mail.done{opacity:.6}
+  .mail .sc{font-size:11px;color:var(--mute);margin-top:2px}
+  .mail .sc.hi{color:var(--ok)}.mail .sc.lo{color:var(--bad)}
+  .empty-msg{padding:24px 14px;color:var(--mute);font-size:13px;text-align:center}
+  /* ── 카드 창 ── */
+  #card{left:324px;right:284px;top:64px;bottom:12px;max-width:660px;margin:0 auto;display:none;flex-direction:column;overflow:hidden}
+  #card.open{display:flex}
+  #card.min{bottom:auto;height:44px;overflow:hidden}
+  #cScroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column}
+  #card .hd{flex:0 0 auto;display:flex;align-items:flex-start;gap:10px;padding:12px 14px 10px;border-bottom:1px solid var(--line)}
+  #card .hd .meta{flex:1;min-width:0}
+  #card .hd .from{font-size:12px;color:var(--mute)}
+  #card .hd .subj{font-size:16px;font-weight:700;line-height:1.35;margin-top:2px}
+  #card .hd .x{border:0;background:transparent;font-size:18px;line-height:1;padding:2px 6px;color:var(--mute)}
+  #card .bd{flex:0 0 auto;padding:12px 14px;white-space:pre-wrap;line-height:1.6;background:#fff;font-size:14px}
+  #card .bd.phone{background:#f0f4fa}
+  #card .bd.doc{background:var(--soft);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
+  table.sheet{border-collapse:collapse;width:100%;font-size:12px;margin:6px 0;background:#fff;white-space:normal}
+  table.sheet th,table.sheet td{border:1px solid var(--line);padding:4px 6px;text-align:left;vertical-align:top}
+  table.sheet th{background:var(--soft)}
+  table.sheet tr.gap td{background:var(--bad-soft);color:var(--bad)}
+  #card .note{margin:0 14px 10px;padding:10px 12px;border-radius:10px;background:var(--soft);font-size:13px}
+  #card .note b{color:var(--ok)}
+  #card .acts{flex:0 0 auto;display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px 14px;border-top:1px solid var(--line)}
+  #card .acts:empty{display:none;padding:0;border:0}
+  .btn{padding:9px 14px;border:1px solid var(--line2);border-radius:999px;background:#fff;color:var(--ink);font-size:13px;transition:transform .08s}
+  .btn:active{transform:translateY(1px)}
+  .btn.pri{background:var(--acc);border-color:var(--acc-d);color:#fff;font-weight:700}
+  .btn.pri:hover{background:var(--acc-d)}
+  .btn.on{background:var(--ok-soft);border-color:var(--ok-line);color:var(--ok)}
+  .btn.lock{color:var(--mute);background:var(--soft)}
+  .btn.mini{padding:2px 8px;font-size:11px;margin-left:auto}
+  .btn.wide{display:block;width:100%;text-align:left;border-radius:10px;margin:5px 0;padding:10px 12px}
+  .btn.wide:hover{background:var(--acc-soft);border-color:var(--acc)}
+  .work{display:flex;gap:6px;width:100%} .work input{flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  .work.multi{flex-direction:column;align-items:stretch}
+  .work .wcells{display:flex;flex-direction:column;gap:6px;width:100%}
+  .work .wrow{display:flex;align-items:center;gap:8px} .work .wrow label{flex:0 0 42%;font-size:12px;color:var(--mute)} .work .wrow .unit{font-size:12px;color:var(--mute);flex:0 0 auto}
+  /* 작성기 */
+  #composer{padding:12px 14px 14px;border-top:1px solid var(--line);background:var(--panel2)}
+  #composer .row{display:flex;gap:8px;font-size:12px;color:var(--mute);margin-bottom:6px;flex-wrap:wrap}
+  #composer .row b{color:var(--ink);font-weight:500}
+  #composer .row .mode{margin-left:auto;padding:1px 8px;border-radius:999px;background:var(--soft)}
+  #composer .row .mode.ai{background:var(--acc-soft);color:var(--acc-d);font-weight:600}
+  #composeText{width:100%;min-height:170px;resize:vertical;border:1px solid var(--line);border-radius:10px;padding:10px;font:inherit;line-height:1.55;background:#fff}
+  #composeText:focus{outline:2px solid var(--acc);outline-offset:0}
+  #cpWork{display:none;gap:8px;align-items:center;margin-top:8px;font-size:13px} #cpWork input{flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#fff}
+  #composer .foot{display:flex;align-items:center;gap:8px;margin-top:8px}
+  #composer .cnt2{color:var(--mute);font-size:12px;margin-left:auto}
+  /* 결과 */
+  .result{padding:12px 14px;border-top:1px solid var(--line);background:var(--panel2)}
+  .result .score{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;display:flex;align-items:baseline;gap:8px}
+  .result .score small{font-size:13px;color:var(--mute);font-weight:500}
+  .result .src{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--soft);color:var(--mute);margin-left:auto} .result .src.ai{background:var(--acc-soft);color:var(--acc-d)}
+  .result .cm{margin:6px 0 8px;font-size:13px}
+  .result .fb{margin:6px 0 8px;font-size:13px;padding:8px 10px;background:var(--acc-soft);border-radius:10px}
+  .result .els{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .result .el{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--soft);color:var(--mute)}
+  .result .el.on{background:var(--ok-soft);color:var(--ok)}
+  .result .el.bad{background:var(--bad-soft);color:var(--bad)}
+  .result details{margin-top:8px;font-size:13px}
+  .result summary{cursor:pointer;color:var(--acc-d);font-weight:700}
+  .result pre{white-space:pre-wrap;font:inherit;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;margin:6px 0 0}
+  /* ── 오른쪽 패널(탭) ── */
+  #side{right:12px;top:64px;bottom:12px;width:260px;display:flex;flex-direction:column}
+  #tabs{display:flex;gap:2px;padding:8px 8px 0}
+  #tabs button{flex:1;border:0;background:transparent;padding:7px 4px;font-size:12px;color:var(--mute);border-bottom:2px solid transparent}
+  #tabs button.cur{color:var(--ink);font-weight:700;border-bottom-color:var(--acc)}
+  #tabs button.lock{opacity:.5}
+  /* 업무 노트 네 탭의 안쪽 여백은 한 벌이다 — 아래 --np 하나만 고치면 전부 따라온다 */
+  #side{--np:14px}
+  .tabpane{padding:12px var(--np) 16px;font-size:13px;line-height:1.55;overflow:auto;flex:1}
+  #hint .who{font-size:12px;color:var(--mute);margin-bottom:2px}
+  /* 3칸 요약은 탭 바로 아래로 올렸다 — 아래에 두면 창이 짧을 때 본문을 가린다 */
+  #todo{border-bottom:1px solid var(--line);padding:8px var(--np) 10px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;flex:none}
+  #todo div{background:var(--soft);border-radius:9px;padding:6px 4px;text-align:center}
+  #todo small{display:block;color:var(--mute);font-size:11px;line-height:1.3}
+  #todo b{font-size:15px;font-variant-numeric:tabular-nums}
+  #side .stat{border-top:1px solid var(--line);padding:9px var(--np) 12px;font-size:12px;color:var(--mute);min-height:30px;flex:none}
+  /* 진행 탭 맨 아래 「홈으로」 — 글에 붙지 않게 위로 선과 여백을 준다 */
+  .paneFoot{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
+  /* ── 사규집 : 개요식 ──────────────────────────────────────────────
+     조항 본문을 통째로 늘어놓으면 읽히지 않는다. 번호와 한 줄 제목만 먼저 세우고
+     펴면 본문이 문장 단위로 나뉘어 나온다. 숫자·기한은 굵게 남는다. */
+  .rbHead{position:sticky;top:0;z-index:2;background:var(--panel);margin:-12px calc(var(--np) * -1) 8px;padding:12px var(--np) 8px;border-bottom:1px solid var(--line)}
+  #rbBook,#rbSearch{width:100%;padding:7px 9px;border:1px solid var(--line2);border-radius:10px;background:#fff}
+  #rbBook{margin-bottom:6px}
+  #rbSearch:focus,#rbBook:focus{outline:2px solid var(--acc);outline-offset:0}
+  .rbCap{font-size:11.5px;font-weight:700;color:var(--acc-d);letter-spacing:.02em;margin:2px 0 4px}
+  .rbCap.sub{color:var(--mute);margin-top:14px}
+  .art{border-top:1px solid var(--line);padding:0}
+  .art.locked>summary{opacity:.55}
+  .art.locked>summary b::after{content:' 🔒';font-size:10px}
+  .lockmsg{color:var(--muted);font-style:italic;margin:2px 0 8px}
+  .art>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:6px;padding:9px 0;font-size:12.5px;line-height:1.45}
+  .art>summary::-webkit-details-marker{display:none}
+  .art>summary::before{content:'▸';color:var(--mute);flex:none;font-size:11px;line-height:1.5}
+  .art[open]>summary::before{content:'▾'}
+  .art>summary b{color:var(--acc-d);font-variant-numeric:tabular-nums;flex:none}
+  .art>summary .t{flex:1;min-width:0}
+  .art>summary .btn.mini{flex:none;margin-left:0}
+  .art.hit{background:var(--acc-soft);border-radius:8px;margin:0 -8px;padding:0 8px}
+  .abody{font-size:12.5px;color:#3b4553;line-height:1.65;padding:2px 0 10px 15px}
+  .abody p{margin:0 0 5px}
+  .abody p:last-child{margin-bottom:0}
+  .abody em{font-style:normal;font-weight:700;color:var(--ink)}
+  .orgrow{padding:6px 0;border-top:1px solid var(--line);font-size:12px} .orgrow b{display:block} .orgrow.me{background:var(--acc-soft);margin:0 -6px;padding:6px}
+  .progdays .pd{font-size:12px;padding:3px 0;color:var(--mute)} .progdays .pd.done{color:var(--ok)} .progdays .pd.cur{color:var(--ink);font-weight:700}
+  /* ── 알림 ── */
+  /* 45차: 3D 안내 알약(「E · 앉기 · T · 말 걸기」, 사무실 창 바닥에서 54px)과 겹치지 않게 그 위로 올렸다 */
+  #toasts{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:30;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:min(520px,92vw)}
+  .toast{background:var(--ink);color:#f2f5f9;border-radius:12px;padding:9px 14px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.2);animation:tin .25s ease-out}
+  .toast b{color:var(--acc-lite);margin-right:6px} .toast.cust b{color:var(--acc-d)}
+  .toast .btn{background:#fff;color:var(--ink)}
+  .toast.cust{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  @keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  /* 아침 브리핑: 이름·본문·진행을 패널 안에 정렬한 간결한 대사창. */
+  #dialog{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:20;
+    width:min(900px,calc(100vw - 40px));max-height:calc(35vh - 20px);background:#fff;border:1px solid var(--line2);border-radius:4px;
+    box-shadow:0 4px 16px rgba(20,30,45,.10);padding:20px 24px 14px;display:none}
+  #dialog.open{display:flex;flex-direction:column}
+  #dialog .who{flex:none;margin:0 0 10px;color:var(--mute);font-size:13px;font-weight:600;line-height:1.5;
+    white-space:normal;overflow-wrap:anywhere}
+  #dialog .who:empty{display:none}
+  #dialog .tx{flex:0 1 auto;min-height:0;overflow-y:auto;font-size:17px;line-height:1.65;margin:0 0 14px;white-space:pre-wrap}
+  #dialog .ft{flex:none;display:flex;gap:16px;justify-content:flex-end;align-items:center;border-top:1px solid var(--line);padding-top:10px}
+  #dialog .ft .btn{min-height:40px;border-radius:3px;padding:8px 18px;font-size:13px;box-shadow:none}
+  #dialog #dSkip{border-color:transparent;background:transparent;color:var(--mute);padding-inline:4px}
+  #dialog #dSkip:hover{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
+  #dialog #dNext{background:var(--ink);border-color:var(--ink);color:#fff;min-width:76px}
+  #dialog #dNext:hover{background:var(--acc-d);border-color:var(--acc-d)}
+  #dialog .btn:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+  /* ── 대화 모드 ──────────────────────────────────────────────────────
+     대표 "말을 걸었으면 말을 할 수 있게 해줘, 이야기를." / "화면 커지면서 채팅할 수 있게".
+     45차 대표 "T를 누르면 상대 캐릭터 얼굴이 보이는 게 아니라 그냥 대화창만 보여" —
+     동물의 숲처럼 **화면 아래 35% 안**에만 창을 둔다. 위 65% 는 3D 가 상대 얼굴을 잡는 자리라
+     딤을 깔지 않는다(창 바로 뒤의 옅은 띠만). 왼쪽은 이름표 + 대사, 오른쪽은 선택지.
+     대사만 있을 때는 오른쪽 아래 ▼ — 누르거나 Enter·Space 로 넘긴다. 선택지는 숫자키로도 고른다.
+     전화·방문 응대의 선택지도 전부 이 창을 쓴다(같은 부품, 같은 모양). */
+  /* 2026-10-02 사용자 「대화할 때 대화창도 좀 동물의 숲처럼 말풍선 느낌이면 좋겠어 … 대화창만 너무 딱딱해」 —
+     크림색 둥근 말풍선(살짝 납작한 타원) · 왼쪽 위에 걸친 이름 알약(살짝 기울임, 직급·관계별 색) ·
+     한 글자씩 찍히는 대사(누르거나 Enter·Space 면 바로 전부) · 다 나오면 오른쪽 아래 통통 튀는 ▼ ·
+     선택지는 말풍선 오른쪽 위 알약 목록(대사가 다 찍힌 뒤 뜬다, 시간 제한이 있으면 곧바로).
+     **모양만** 바꿨다 — 키(Enter·Space·숫자·Esc)·흐름·id 는 그대로. 타자 효과는 talk.js typeStart.
+     글자 대비(크림 #fff9ea 위): 대사 10.3 · 내 대사 6.3 / 이름 알약 흰 글자 5.0~6.3 / 강조 단추 4.9 */
+  #talk{position:fixed;left:0;right:0;bottom:0;z-index:28;display:none;pointer-events:none;
+    padding:30px 24px max(22px,env(safe-area-inset-bottom));
+    --tk-bg:#fff9ea; --tk-ink:#4b3a26; --tk-mute:#6e5a40; --tk-edge:#ecd9ae; --tk-chip:#f2e3c0;
+    --tk-acc:#c4600f; --tk-acc-d:#b3560c; --tk-tag:#5c6290; --tk-tag-d:#40456c;
+    --tk-fs:clamp(16px,calc(.55vw + 11px),19.5px)}
+  #talk.open{display:block}
+  /* 말하는 사람 — 알약 색(흰 글자 대비 4.5 이상) */
+  #talk[data-tk="lead"]{--tk-tag:#b44a28;--tk-tag-d:#86331a}
+  #talk[data-tk="senior"]{--tk-tag:#136d6d;--tk-tag-d:#0b4c4c}
+  #talk[data-tk="peer"]{--tk-tag:#965200;--tk-tag-d:#6c3b00}
+  #talk[data-tk="help"]{--tk-tag:#3e5fb0;--tk-tag-d:#2b4483}
+  #talk[data-tk="guest"]{--tk-tag:#8b4492;--tk-tag-d:#66306b}
+  #talk[data-tk="me"]{--tk-tag:#2e7d4f;--tk-tag-d:#1e5937}
+  .tkBox{pointer-events:auto;position:relative;width:min(clamp(720px,58vw,1060px),100%);margin:0 auto;outline:none;
+    display:flex;flex-direction:column;min-height:118px;max-height:calc(35vh - 30px);
+    background:var(--tk-bg);color:var(--tk-ink);
+    border-radius:58px 64px 56px 62px / 52px 48px 56px 50px;
+    box-shadow:inset 0 -7px 0 rgba(226,203,155,.5),inset 0 3px 0 rgba(255,255,255,.9),
+      0 4px 0 rgba(176,138,76,.24),0 16px 34px rgba(74,52,22,.22);
+    padding:38px 70px 30px 58px;transform-origin:50% 100%}
+  #talk.open .tkBox{animation:tkPop .3s cubic-bezier(.34,1.5,.6,1) both}
+  #talk.closing .tkBox{animation:tkOut .16s ease-in both;pointer-events:none}
+  @keyframes tkPop{from{opacity:0;transform:translateY(16px) scale(.94,.88)}to{opacity:1;transform:none}}
+  @keyframes tkOut{to{opacity:0;transform:translateY(10px) scale(.97,.9)}}
+  #talk:not(.choosing) .tkBox{cursor:pointer}
+  #talk.anon .tkBox{padding-top:28px}
+  #talk.anon .tkWho{display:none}
+  /* 이름 알약 — 말풍선 왼쪽 위에 걸치고 살짝 기울인다. 얼굴 사진(카메라가 못 잡은 사람)은 알약 왼쪽 동그라미 */
+  .tkWho{position:absolute;left:34px;top:-21px;z-index:1;display:flex;align-items:center;max-width:calc(100% - 110px);
+    transform:rotate(-3.5deg);transform-origin:0 100%;pointer-events:none}
+  .tkWho.swap{animation:tkTag .32s cubic-bezier(.34,1.6,.6,1)}
+  @keyframes tkTag{from{transform:rotate(-3.5deg) scale(.82)}to{transform:rotate(-3.5deg) scale(1)}}
+  .tkWho>span:last-child{display:flex;align-items:baseline;gap:9px;min-width:0;
+    background:var(--tk-tag);color:#fff;border-radius:999px;padding:7px 20px 8px;
+    box-shadow:0 3px 0 var(--tk-tag-d),0 8px 16px rgba(60,40,20,.18)}
+  .tkFace{flex:none;width:40px;height:40px;border-radius:50%;overflow:hidden;background:var(--tk-chip);
+    border:3px solid #fff;margin-right:-12px;position:relative;z-index:1;
+    box-shadow:0 2px 0 rgba(176,138,76,.35);display:grid;place-items:center;font-size:19px}
+  .tkFace img{width:100%;height:100%;object-fit:cover;display:block}
+  #talk.cam .tkFace{display:none}
+  .tkFace~span{padding-left:22px}
+  #talk.cam .tkFace~span{padding-left:20px}
+  .tkWho b{font-size:calc(var(--tk-fs) * .88);font-weight:800;line-height:1.35;letter-spacing:-.01em;white-space:nowrap}
+  .tkWho small{font-size:calc(var(--tk-fs) * .7);font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tkWho small:empty{display:none}
+  /* 대사 — 다 찍히지 않은 뒤쪽 글자는 자리만 잡아 둔다(줄이 찍히는 도중에 어절이 다음 줄로 튀지 않게) */
+  .tkTx{flex:1 1 auto;min-height:0;overflow-y:auto;margin:0;padding:0 4px 0 0;
+    font-size:var(--tk-fs);line-height:1.72;font-weight:500;white-space:pre-wrap;color:var(--tk-ink)}
+  .tkTx .tkRest{color:transparent}
+  #talk.me .tkTx{color:var(--tk-mute)}
+  .tkSr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+  /* 다 나오면 오른쪽 아래 ▼ — 누르거나 Enter·Space 로 넘긴다 */
+  .tkBox::after{content:'';position:absolute;right:40px;bottom:17px;width:18px;height:14px;background:var(--tk-acc);
+    clip-path:polygon(0 0,100% 0,50% 100%);opacity:0;transition:opacity .15s;pointer-events:none}
+  #talk.next .tkBox::after{opacity:1;animation:tkBob .9s ease-in-out infinite}
+  @keyframes tkBob{0%,100%{transform:translateY(-3px)}50%{transform:translateY(3px)}}
+  /* 선택지 — 말풍선 오른쪽 위에 둥근 알약 목록. 위로 쌓이며 넘치면 목록 안에서 굴린다(높이는 talk.js fitOpts) */
+  .tkOpts{position:absolute;right:34px;bottom:calc(100% + 12px);width:max-content;max-width:min(470px,calc(100% - 68px));
+    max-height:50vh;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;align-items:stretch;
+    gap:8px;padding:6px 6px 8px 14px}
+  .tkOpts:empty{display:none}
+  .tkOpts.wait{visibility:hidden}
+  .tkOpts .btn{position:relative;flex:none;text-align:left;width:100%;border-radius:999px;padding:10px 24px 10px 50px;
+    font-size:calc(var(--tk-fs) * .84);line-height:1.4;font-weight:600;background:var(--tk-bg);color:var(--tk-ink);border:2px solid var(--tk-edge);
+    box-shadow:0 3px 0 rgba(176,138,76,.3),0 8px 18px rgba(74,52,22,.16);
+    transition:transform .16s cubic-bezier(.34,1.5,.6,1),border-color .14s,background-color .14s}
+  .tkOpts .btn::before{content:attr(data-n);position:absolute;left:12px;top:50%;transform:translateY(-50%);
+    width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--tk-chip);color:var(--tk-ink);
+    font-size:13px;font-weight:800;line-height:1}
+  .tkOpts .btn.pri{background:var(--tk-acc-d);border-color:var(--tk-acc-d);color:#fff;box-shadow:0 3px 0 #86400a,0 8px 18px rgba(74,52,22,.2)}
+  .tkOpts .btn.pri::before{background:#fff;color:var(--tk-acc-d)}
+  .tkOpts .btn:not(:disabled):hover,.tkOpts .btn:focus-visible{transform:translateX(-6px);border-color:var(--tk-acc)}
+  .tkOpts .btn:not(.pri):not(:disabled):hover,.tkOpts .btn:not(.pri):focus-visible{background:#fff}
+  .tkOpts .btn:not(:disabled):active{transform:translateX(-6px) scale(.98)}
+  .tkOpts .btn:focus-visible{outline:3px solid var(--tk-acc-d);outline-offset:2px}
+  .tkOpts .btn:disabled{opacity:.55;cursor:default}
+  .tkOpts.show>*{animation:tkOpt .26s cubic-bezier(.34,1.45,.6,1) backwards;animation-delay:calc(var(--i,0) * 40ms)}
+  @keyframes tkOpt{from{opacity:0;transform:translateX(16px) scale(.96)}}
+  .tkBar{height:8px;border-radius:999px;background:var(--tk-chip);margin:4px 10px 0;overflow:hidden;flex:none;box-shadow:inset 0 1px 2px rgba(74,52,22,.18)}
+  .tkBar i{display:block;height:100%;width:100%;background:var(--bad);border-radius:999px}
+  /* 직접 묻기 입력 칸(plan-interaction-design §3-A) — 선택지 자리에 한 줄 입력 + 「묻기」 */
+  .tkIn{display:flex;gap:8px;width:100%;min-width:min(380px,calc(100vw - 110px))}
+  .tkIn input{flex:1 1 auto;min-width:0;padding:10px 18px;border:2px solid var(--tk-edge);border-radius:999px;font:inherit;font-size:15px;line-height:1.4;
+    background:#fff;color:var(--tk-ink);box-shadow:0 3px 0 rgba(176,138,76,.3)}
+  .tkIn input::placeholder{color:#76624a}
+  .tkIn input:focus{outline:3px solid var(--tk-acc-d);outline-offset:1px;border-color:var(--tk-acc)}
+  .tkIn input:disabled{opacity:.55}
+  .tkOpts .tkIn .btn{width:auto;padding:10px 20px}
+  .tkOpts .tkIn .btn::before{content:none}
+  @media (prefers-reduced-motion:reduce){
+    #talk.open .tkBox,#talk.closing .tkBox,.tkWho.swap,.tkOpts.show>*{animation:none}
+    #talk.next .tkBox::after{animation:none;transform:none}
+    .tkOpts .btn{transition:none}
+  }
+  /* 대화 중에는 조작 안내·알림을 걷는다 — 읽을 것이 둘이면 둘 다 안 읽힌다 */
+  body.talk-on #pcHint,body.talk-on #toasts,body.talk-on #phoneBar{display:none}
+  /* ── 전화 벨 ──────────────────────────────────────────────────────
+     전화는 메일함에도 메신저에도 넣지 않는다. 울리면 이 띠가 뜨고, 받으면 대화 모드로
+     그 자리에서 받는다. 안 받으면 「전화 메모」 앱에 남는다. */
+  #phoneBar{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:27;display:none;
+    align-items:center;gap:12px;background:var(--ink);color:#f2f5f9;border-radius:14px;padding:11px 16px;
+    box-shadow:0 10px 30px rgba(20,30,45,.32);font-size:14px;max-width:92vw}
+  #phoneBar.open{display:flex}
+  /* 벨과 알림이 같은 자리라 겹쳤다 — 벨이 울리는 동안 알림을 위로 올린다 */
+  body.phone-on #toasts{bottom:92px}
+  body.phone-on.pc-on #toasts{bottom:144px}
+  #phoneBar b{color:#fff;font-weight:700}
+  #phoneBar .ring{font-size:18px;animation:ring 1s ease-in-out infinite}
+  @keyframes ring{0%,100%{transform:rotate(-12deg)}50%{transform:rotate(12deg)}}
+  @media (prefers-reduced-motion:reduce){ #phoneBar .ring{animation:none} }
+  #phoneTake{background:var(--ok);border-color:var(--ok);color:#fff;font-weight:700}
+  #phoneLater{background:transparent;border-color:#5b6675;color:#e6eaf0}
+  /* ── 09:30 배너 ── */
+  #endbar{position:fixed;left:50%;top:64px;transform:translateX(-50%);z-index:25;background:var(--ink);color:#f2f5f9;border-radius:12px;padding:10px 14px;display:none;gap:12px;align-items:center;font-size:13px}
+  #endbar .btn{background:#fff;color:var(--ink)} #endbar .btn.pri{background:var(--acc);border-color:var(--acc-d);color:#fff}
+  #endbar.open{display:flex}
+  /* ── 퇴근 안내(한 번만 잠깐) ── */
+  #endNotice{position:fixed;inset:0;z-index:38;display:none;align-items:center;justify-content:center;
+    background:rgba(245,246,248,.72);backdrop-filter:blur(2px)}
+  #endNotice.open{display:flex}
+  #endNotice .card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px 28px;text-align:center;
+    box-shadow:0 18px 48px rgba(20,30,45,.22);animation:tin .3s ease-out}
+  #endNotice b{display:block;font-size:18px;margin-bottom:6px}
+  #endNotice span{color:var(--mute);font-size:13px}
+  /* ── 분류(triage) ── */
+  #triage{position:fixed;inset:0;z-index:35;background:rgba(245,246,248,.97);display:none;overflow:auto}
+  #triage.open{display:block}
+  #triage .wrap{max-width:760px;margin:0 auto;padding:40px 20px}
+  .trow{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .trow .tsj{flex:1;min-width:240px;font-size:13px} .tbtns{display:flex;gap:6px}
+  /* ── 나는 어떤 사람인가요(캐릭터 고르기) ── */
+  #avatar{position:fixed;inset:0;z-index:45;background:var(--page);display:none;overflow:auto}
+  #avatar.open{display:block}
+  #avatar .wrap{max-width:620px;margin:0 auto;padding:64px 20px 60px;text-align:center}
+  #avatar h1{font-size:24px;margin:0 0 6px;letter-spacing:-.02em}
+  .avPick{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px}
+  .avCard{display:flex;flex-direction:column;align-items:center;gap:4px;padding:22px 14px 18px;
+    background:#fff;border:1px solid var(--line2);border-radius:16px;transition:border-color .14s,box-shadow .14s}
+  .avCard:hover{border-color:var(--acc);box-shadow:0 6px 20px rgba(20,30,45,.10)}
+  .avCard b{font-size:16px} .avCard span:not(.pic){font-size:12.5px;color:var(--mute)}
+  .avCard .pic{width:104px;height:104px;border-radius:50%;overflow:hidden;background:var(--soft);
+    display:grid;place-items:center;font-size:44px;margin-bottom:8px}
+  .avCard .pic img{width:100%;height:100%;object-fit:cover;display:block}
+  @media (max-width:560px){ .avPick{grid-template-columns:1fr} }
+  /* ── 디브리프 · 7일차 ──────────────────────────────────────────────
+     대표가 가독성을 다섯 번 지적했다. 확정 스펙(2026-09-07):
+       ① NCS 직업공통능력 7영역에 영역마다 고유색(js/ncs.js) — 장식이 아니라 정보다. 막대·점·띠·칩에만 쓴다(57차 E1 — 옛 10축).
+       ② 섹션마다 4px 색 머리 + 제목을 14px/800/잉크로(제일 안 보이던 것이 제목이었다).
+       ③ 처리 상태를 칩으로 — 회색 「미처리」는 안 읽힌다.
+       ④ 대사를 화자별로 — 팀장·사수·동기가 전부 흰 상자라 벽으로 읽혔다.
+       ⑤ 본문 15px/1.65, 배경을 완전 불투명으로(3D 가 비쳐 글자 뒤가 얼룩졌다).
+     금지: 그라데이션 · 네온 · 카드마다 다른 반경. 반경은 --r 하나다. */
+  #debrief,#ep7{position:fixed;inset:0;z-index:40;background:#eef1f6;overflow:auto;display:none;
+    font-size:15px;line-height:1.65}
+  #debrief.open,#ep7.open{display:block}
+  #debrief .wrap,#ep7 .wrap{max-width:860px;margin:0 auto;padding:36px 20px 60px}
+  #debrief h1,#ep7 h1{font-size:28px;margin:0 0 6px;letter-spacing:-.02em;line-height:1.3}
+  #ep7 h2{font-size:22px;margin:12px 0 6px} #ep7 h3{font-size:15px;margin:18px 0 6px}
+  .sub{color:var(--mute);margin-bottom:22px} .sub.next{margin-top:18px}
+  #debrief .grid{display:grid;grid-template-columns:1.08fr .92fr;gap:20px;align-items:start}
+  .box{position:relative;background:#fff;border:1px solid var(--line2);border-radius:var(--r);
+    padding:18px 20px;margin-top:12px;overflow:hidden;
+    box-shadow:0 1px 2px rgba(20,30,45,.05),0 8px 24px rgba(20,30,45,.05)}
+  /* 43차: 왼쪽 세로 줄을 걷었다(대표 「촌스러워」). 상자 구분은 테두리와 그림자로 충분하다.
+     제목 앞 점만 남겨 상자마다 무엇인지 색으로 구분한다. */
+  .box h3{margin:0 0 12px;font-size:14px;font-weight:800;color:var(--ink);letter-spacing:.03em;
+    display:flex;align-items:center;gap:8px}
+  .box h3::before{content:'';width:6px;height:6px;border-radius:2px;background:var(--bc,var(--acc));flex:none}
+  /* 숫자 묶음 — 라벨을 숫자 위로 올리고 낱낱을 작은 판으로 떼어 놓는다.
+     앞서는 「13/13 2 1」이 라벨 없이 붙어 있어 무엇을 센 것인지 읽히지 않았다. */
+  .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:8px;margin:0 0 4px}
+  .kpi div{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+  .kpi small{display:block;color:var(--mute);font-size:11.5px;font-weight:700;line-height:1.35;margin-bottom:3px}
+  .kpi b{display:block;font-size:21px;line-height:1.1;font-variant-numeric:tabular-nums}
+  /* 오늘 요약 목록 — 제목 · 상태 칩 · 점수 세 열 */
+  .ctbl{margin-top:14px;display:grid;grid-template-columns:minmax(0,1fr) auto 2.6em;gap:0 12px;
+    align-items:baseline;font-size:15px}
+  .ctbl>span{padding:12px 0;border-top:1px solid var(--line);line-height:1.5}
+  .ctbl>span:nth-child(-n+3){border-top:0;padding-top:0}
+  .ctbl .a{justify-self:start;font-size:13px;font-weight:700;border-radius:999px;padding:2px 9px;white-space:nowrap}
+  .ctbl .a.plain{background:transparent;color:var(--mute);padding:2px 0}
+  .ctbl .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;white-space:nowrap;color:var(--ink)}
+  .ctbl .v.hi{color:var(--ok)} .ctbl .v.mid{color:var(--ink)}
+  .ctbl .v.lo{color:#8c4008} .ctbl .v.zero{color:var(--bad)}
+  /* 처리 상태 칩 — 배경은 그 계열 12%, 글자는 같은 계열의 진한 색 */
+  .a.k-done{background:#1b7a3e1f;color:#15612f}
+  .a.k-pass{background:#5b667522;color:#4a5462}
+  .a.k-ask{background:#0d6b8f1f;color:#0b5a78}
+  .a.k-none{background:#b3261e1f;color:#9c2019}
+  .a.k-late{background:#b4530a1f;color:#8c4008}
+  /* NCS 막대 — 축 이름 · 막대 · 점수 세 열. 축마다 고유색, 0점 행은 옅은 붉은 바탕 */
+  .ncs{display:flex;flex-direction:column;gap:2px;margin-top:2px}
+  .ncsRow{display:grid;grid-template-columns:minmax(104px,auto) 1fr 2.6em;gap:12px;align-items:center;
+    font-size:14.5px;padding:5px 8px;border-radius:8px}
+  .ncsRow.zero{background:var(--bad-soft)}
+  .ncsRow .ax{display:flex;align-items:center;gap:7px;white-space:nowrap}
+  .ncsRow .ax i{width:8px;height:8px;border-radius:50%;flex:none}
+  .ncsRow .b{position:relative;height:16px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .ncsRow .b::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+    background:var(--c,var(--acc));border-radius:2px;z-index:1}
+  .ncsRow .b i{display:block;height:100%;width:0;border-radius:8px;background:var(--c,var(--acc));
+    transition:width .4s ease-out}
+  @media (prefers-reduced-motion:reduce){ .ncsRow .b i{transition:none} }
+  .ncsRow .v{text-align:right;font-variant-numeric:tabular-nums;color:var(--ink);font-weight:700}
+  /* 57차 E1 — 역량 화면(NCS 직업공통능력 2025.12). 부품은 위 막대 그대로, 빈 영역·7일 수준·포괄도 칸만 더한다 */
+  .box h3 small{font-size:12px;font-weight:600;color:var(--mute);letter-spacing:0}
+  .ncsRow .nt{font-size:13px;color:var(--mute);line-height:16px}
+  .ncsRow.wk{grid-template-columns:minmax(112px,auto) 1fr 2.4em 3.4em 2.4em}
+  .ncsRow .lv{justify-self:start;font-size:12.5px;font-weight:800;color:var(--ink);border-radius:999px;padding:1px 8px;white-space:nowrap}
+  .ncsRow .lv.none{visibility:hidden}
+  .ncsRow .cov{font-size:12.5px;color:var(--mute);text-align:right;font-variant-numeric:tabular-nums}
+  .box details.ncsSub{background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:10px 0 0;margin:12px 0 0}
+  .box details.ncsSub summary{cursor:pointer;font-weight:700;font-size:13.5px;color:var(--acc)}
+  .box details.ncsSub ul{margin:8px 0 0;padding-left:18px;font-size:13.5px;color:var(--ink)}
+  .ncsTblWrap{overflow-x:auto;margin-top:8px}
+  table.ncsTbl{font-size:12.5px;min-width:620px}
+  table.ncsTbl td.v,table.ncsTbl td.dc{text-align:center;font-variant-numeric:tabular-nums}
+  table.ncsTbl td.nm,table.ncsTbl td.lvc{white-space:nowrap} table.ncsTbl td.ref{min-width:150px}
+  table.ncsTbl tr.grp td{background:var(--panel2);font-weight:800;border-left:3px solid var(--c,var(--acc))}
+  table.ncsTbl tr.off td{color:var(--mute)}
+  table.ncsTbl .tag{display:inline-block;margin-left:6px;font-size:11px;font-weight:700;color:var(--mute);border:1px solid var(--line2);border-radius:999px;padding:0 6px}
+  .muted.gray{font-size:13px;margin-top:8px}
+  .muted.stmt{font-size:12px;margin-top:14px;line-height:1.55}
+  /* 막대 아래 딸림 줄(신뢰 · 오늘 모은 단서)은 본문과 선으로 끊는다 */
+  .bnote{margin-top:12px;padding-top:11px;border-top:1px solid var(--line);font-size:13.5px;
+    color:var(--mute);line-height:1.6}
+  .bnote+.bnote{margin-top:8px;padding-top:8px}
+  .bnote b{display:inline-block;min-width:5.4em;padding-right:10px;color:var(--ink);font-weight:800}
+  .bnote.bad b{color:var(--bad)}
+  /* 대사 — 누가 한 말인지 아바타와 왼쪽 테두리 색으로 가른다 */
+  .say{display:flex;gap:12px;margin:12px 0}
+  .say .who{flex:none;width:104px;display:flex;align-items:center;gap:7px;padding-top:3px;
+    font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.3}
+  .say .who .av{width:28px;height:28px;border-radius:50%;flex:none;display:grid;place-items:center;
+    color:#fff;font-size:13px;font-weight:800;background:var(--rc,#5b6675)}
+  .say .who span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .say .tx{background:#fff;border:1px solid var(--line);border-left:2px solid var(--rc,#5b6675);
+    border-radius:var(--r);padding:12px 14px;line-height:1.65;white-space:pre-wrap;flex:1}
+  .say .tx.msg{background:#0f7b6c10}
+  .stage{color:var(--mute);font-size:13.5px;margin:6px 0 6px 116px}
+  #debrief ul,#ep7 ul{margin:6px 0 0;padding-left:18px;line-height:1.6}
+  .foot{display:flex;gap:8px;margin-top:22px;flex-wrap:wrap;align-items:center}
+  /* 7일차 */
+  .steps{display:flex;gap:4px;margin:16px 0 8px;flex-wrap:wrap} .stepb{padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:13px} .stepb.cur{background:var(--acc);border-color:var(--acc-d);color:#fff;font-weight:700}
+  .stepbody textarea{width:100%;min-height:96px;border:1px solid var(--line);border-radius:10px;padding:10px;background:#fff;resize:vertical}
+  .precard .from{font-size:12px;color:var(--mute)} .precard .subj{font-weight:700;margin:2px 0 6px} .precard .body,#ep7 pre.body{white-space:pre-wrap;font:inherit;background:var(--soft);border-radius:10px;padding:10px;margin:0 0 8px} .precard .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px} .precard .res{color:var(--ok);font-size:13px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+  .irow{display:flex;align-items:center;gap:6px;margin:4px 0;font-size:13px} .irow.wide input{flex:2;width:auto;min-width:0} .irow label{flex:1;min-width:120px} .irow input{width:120px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff} .irow .unit{color:var(--mute);font-size:12px;width:40px} .irow .mark{width:20px}
+  .lbl{display:block;font-weight:700;margin:10px 0 2px}
+  .rfield{margin:10px 0}
+  .qbox{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0} .qbox .q{font-weight:700;margin-bottom:4px} .qbox .opt{display:block;padding:4px 0;font-size:13px}
+  #ep7 details{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 12px;margin:6px 0} #ep7 summary{font-weight:700;cursor:pointer}
+  table.week td,table.week th{text-align:center}
+  /* ── 60차 결과 화면(하루 마무리 #debrief · 7일 결과 #ep7.rsPage) ──
+     사용자 「내용도 내용인데 가독성도 너무 안좋고 디자인도 너무 이상해」(2026-09-28). 규칙:
+       · 한 단 읽기 — 본문 17px/1.6(KRDS 16~17 · 1.5~1.6) · 한 줄 한글 40~45자(본문 폭 44em 안팎) · 제목은 h1·h2·h3 세 단계
+       · 상자·테두리 대신 간격(4·8·12·16·24·32·48)과 굵기·크기·색으로 위계 — 선은 표 줄 구분과 접기 위아래에만
+       · 막대는 회색 하나 + 강조색(--acc) 하나 · 범례 없이 막대 끝에 점수·수준을 바로 적는다 · 격자 없음(0 기준선만)
+       · 회색 글자 #5b6675(흰 바탕 5.8:1) 아래로는 쓰지 않는다 · 모서리는 단추(알약)만 둥글다 */
+  #debrief,#ep7.rsPage{background:#fff}
+  :is(#debrief,#ep7) .wrap.rs{--rs-ink:#1b2430;--rs-ink2:#333d4b;--rs-mute:#4d5766;--rs-line:#e3e7ee;--rs-bar:#77818f;
+    max-width:760px;padding:56px 24px 80px;color:var(--rs-ink);font-size:17px;line-height:1.6;
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    word-break:keep-all;overflow-wrap:break-word;-webkit-font-smoothing:antialiased}
+  :is(#debrief,#ep7) .rs h1{font-size:30px;line-height:1.3;font-weight:700;letter-spacing:-.02em;margin:0}
+  :is(#debrief,#ep7) .rs h2{font-size:21px;line-height:1.4;font-weight:700;letter-spacing:-.01em;margin:0 0 16px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  :is(#debrief,#ep7) .rs h2 small{font-size:15px;font-weight:500;color:var(--rs-mute);letter-spacing:0}
+  :is(#debrief,#ep7) .rs h3{font-size:18px;line-height:1.45;font-weight:700;margin:0}
+  .rs p{margin:0}
+  .rs .rsHead{margin-bottom:32px}
+  .rs .rsMeta{margin-top:8px;font-size:15px;line-height:1.5;color:var(--rs-mute)}
+  .rs .rsSec{margin-top:48px}
+  .rs .rsNote{margin-top:12px;font-size:15px;line-height:1.55;color:var(--rs-mute)}
+  /* 숫자 줄 — 라벨(작게·회색) 위, 값(크게·굵게) 아래. 판·테두리 없이 간격으로만 */
+  .rs .rsStats{display:flex;flex-wrap:wrap;gap:16px 40px;margin:0 0 8px}
+  .rs .rsStats>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .rs .rsStats span{font-size:14px;line-height:1.4;color:var(--rs-mute)}
+  .rs .rsStats b{font-size:24px;line-height:1.25;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .rs .rsStats b small{font-size:17px;font-weight:600;margin-left:6px}
+  /* 막대 — 영역 이름 · (막대 + 끝 라벨). 막대 최대 폭은 라벨 자리(8.5em)를 뺀 만큼 */
+  .rs .rsBars{display:flex;flex-direction:column;gap:0;margin:4px 0 0}
+  .rs .rsBars .ncsRow{display:grid;grid-template-columns:8.2em minmax(0,1fr) 2.4em 2.6em 3.6em;align-items:center;gap:0 10px;min-height:38px;padding:0;border-radius:0;background:none;font-size:16px}
+  .rs .rsBars.nolv .ncsRow{grid-template-columns:8.2em minmax(0,1fr) 2.4em 4.2em}
+  .rs .rsBars .sc{text-align:right;font-size:17px;font-weight:700;color:var(--rs-ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .rs .rsBars .lvl{font-size:15px;color:var(--rs-ink2);white-space:nowrap}
+  .rs .rsBars .mk{font-size:15px;font-weight:700;color:var(--acc);white-space:nowrap}
+  .rs .rsBars .nm{color:var(--rs-ink);white-space:nowrap}
+  .rs .rsBars .bw{display:flex;align-items:center;min-width:0;min-height:38px;border-left:1px solid var(--rs-ink2);padding-left:0}
+  .rs .rsBars .bar{display:block;height:18px;width:calc(var(--s,0) * 1%);min-width:2px;background:var(--rs-bar);
+    transform-origin:left center;animation:rsGrow .45s ease-out both}
+  .rs .rsBars .hi .bar{background:var(--acc)}
+  .rs .rsBars .lab{white-space:nowrap;font-size:15px;color:var(--rs-mute);font-variant-numeric:tabular-nums}
+  .rs .rsBars .lab b{font-size:17px;font-weight:700;color:var(--rs-ink);margin-right:4px}
+  .rs .rsBars .lab .mk{margin-left:8px;font-weight:700;color:var(--acc)}
+  .rs .rsBars .nob .nm{color:var(--rs-mute)}
+  .rs .rsBars .nt{padding-left:12px;font-size:15px;color:var(--rs-mute)}
+  @keyframes rsGrow{from{transform:scaleX(0)}to{transform:none}}
+  @media (prefers-reduced-motion:reduce){ .rs .rsBars .bar{animation:none} }
+  /* 이름표 줄(잘한 점 · 다음엔 · 신뢰 …) — 왼쪽 이름표, 오른쪽 내용 */
+  .rs .rsDl{margin:24px 0 0;display:grid;grid-template-columns:6.2em minmax(0,1fr);gap:14px 16px}
+  .rs .rsDl dt{font-size:15px;font-weight:700;line-height:1.75;color:var(--rs-ink2)}
+  .rs .rsDl dd{margin:0}
+  .rs .rsDl dd b{font-weight:700}
+  .rs .rsDl .src{display:block;margin-top:2px;font-size:15px;line-height:1.5;color:var(--rs-mute)}
+  .rs .rsDl .bad{color:var(--bad)}
+  /* 강점 · 보완점 한 건 — 하위능력(굵게) + 영역(회색) · 오른쪽에 점수·수준 · 아래 근거 업무 한 줄 */
+  .rs .rsItem+.rsItem{margin-top:36px}
+  .rs .rsItem .say{margin-top:8px;color:var(--rs-ink)}
+  .rs .rsItem .see{margin-top:6px;font-size:15px;line-height:1.55;color:var(--rs-mute)}
+  .rs .rsItem .see .k{font-weight:700;color:var(--rs-ink2);margin-right:8px}
+  .rs .rsEv{margin-top:12px;display:flex;flex-direction:column;font-size:15px;line-height:1.5;color:var(--rs-ink2)}
+  .rs .rsEv .r{display:grid;grid-template-columns:3.4em minmax(0,1fr) auto 4.6em;gap:0 12px;padding:7px 0;border-top:1px solid var(--rs-line)}
+  .rs .rsEv .r:last-child{border-bottom:1px solid var(--rs-line)}
+  .rs .rsEv .d{color:var(--rs-mute);white-space:nowrap} .rs .rsEv .a{white-space:nowrap;color:var(--rs-mute)}
+  .rs .rsEv .v{text-align:right;font-weight:700;color:var(--rs-ink);font-variant-numeric:tabular-nums}
+  .rs .rsKick{margin-top:28px;margin-bottom:8px;font-size:15px;font-weight:700;color:var(--acc)}
+  .rs .rsTwo{display:grid;grid-template-columns:1fr 1fr;gap:0 32px;margin-top:8px}
+  .rs .rsItem .hd{display:flex;align-items:baseline;justify-content:space-between;gap:16px}
+  .rs .rsItem h3 small{margin-left:10px;font-size:15px;font-weight:500;color:var(--rs-mute)}
+  .rs .rsItem .sc{white-space:nowrap;font-size:15px;color:var(--rs-mute);font-variant-numeric:tabular-nums}
+  .rs .rsItem .sc b{font-size:18px;color:var(--rs-ink);margin-right:4px}
+  .rs .rsItem .fact{margin-top:6px;color:var(--rs-ink2)}
+  /* 표 — 머리줄 아래 선 하나, 줄 사이 옅은 선. 세로선·바탕색 없음 */
+  .rs .rsTbl{width:100%;border-collapse:collapse;font-size:16px;line-height:1.5;margin-top:8px}
+  .rs .rsTbl th{font-size:14px;font-weight:600;color:var(--rs-mute);text-align:left;padding:8px 12px 8px 0;border-bottom:1px solid var(--rs-ink2);white-space:nowrap}
+  .rs .rsTbl td{padding:9px 12px 9px 0;border-top:1px solid var(--rs-line);vertical-align:top;background:none}
+  .rs .rsTbl tr:first-child td{border-top:0}
+  .rs .rsTbl .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .rs .rsTbl td:last-child,.rs .rsTbl th:last-child{padding-right:0}
+  .rs .rsTbl th.num{text-align:right}
+  .rs .rsTbl .st{color:var(--rs-ink2);font-size:15px}
+  .rs .rsTbl.fixed{table-layout:fixed}
+  .rs .rsTbl .st.bad,.rs .rsTbl .num.bad{color:var(--bad)}
+  .rs .rsTbl .st.warn,.rs .rsTbl .num.warn{color:var(--warn)}
+  .rs .rsTbl td.num b{font-weight:700}
+  .rs .rsTbl tr.grp td{padding-top:24px;border-top:0;font-weight:700;color:var(--rs-ink)}
+  .rs .rsTbl tr.grp td small{margin-left:10px;font-size:15px;font-weight:500;color:var(--rs-mute)}
+  .rs .rsTbl tr.lead td{border-top:0;padding-top:0;font-size:15px;color:var(--rs-mute)}
+  .rs .rsTbl tr.off td{color:var(--rs-mute)}
+  .rs .rsTblWrap{overflow-x:auto}
+  /* 접기 — 글자 단추처럼. 위아래 선 한 줄씩 */
+  :is(#debrief,#ep7) .rs details.rsFold{background:none;border:0;border-radius:0;border-top:1px solid var(--rs-line);padding:0;margin:0}
+  :is(#debrief,#ep7) .rs details.rsFold:last-of-type{border-bottom:1px solid var(--rs-line)}
+  :is(#debrief,#ep7) .rs .rsSec details.rsFold{margin-top:20px}
+  :is(#debrief,#ep7) .rs details.rsFold>summary{list-style:none;cursor:pointer;padding:16px 0;font-size:17px;font-weight:700;color:var(--acc);display:flex;align-items:center;gap:10px}
+  .rs details.rsFold>summary::-webkit-details-marker{display:none}
+  .rs details.rsFold>summary::before{content:'';width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform .15s;flex:none;margin-left:2px}
+  .rs details.rsFold[open]>summary::before{transform:rotate(45deg)}
+  .rs details.rsFold>summary small{font-size:15px;font-weight:500;color:var(--rs-mute)}
+  .rs details.rsFold>summary:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+  .rs details.rsFold>.in{padding:0 0 24px}
+  .rs .rsFolds{margin-top:48px}
+  /* 대사 — 말한 사람(회색 굵게) · 말(본문). 말풍선·아바타 없음 */
+  .rs .rsTalk{display:flex;flex-direction:column;gap:12px}
+  .rs .rsSay{display:grid;grid-template-columns:6.2em minmax(0,1fr);gap:0 16px}
+  .rs .rsSay .who{font-size:15px;font-weight:700;line-height:1.75;color:var(--rs-ink2)}
+  .rs .rsSay .who small{display:block;font-weight:500;color:var(--rs-mute);line-height:1.4}
+  .rs .rsSay .tx{white-space:pre-wrap}
+  .rs .rsHead+.rsTalk{margin-top:-8px}
+  :is(#debrief,#ep7) .rs ul.rsList{margin:0;padding-left:1.2em;line-height:1.6} .rs ul.rsList li+li{margin-top:6px}
+  .rs .rsLeadIn{font-weight:700;margin-bottom:8px}
+  /* 60차 3차 — 7일 결과 목차(넓은 화면) · 요약 · 날 소제목 · 긴 글 */
+  :is(#debrief,#ep7) .rs .rsNav{display:none}
+  @media (min-width:1200px){
+    :is(#debrief,#ep7) .wrap.rs.rsWide{max-width:1100px;display:grid;grid-template-columns:190px minmax(0,760px);gap:0 64px;justify-content:center}
+    :is(#debrief,#ep7) .rs .rsNav{display:block;position:sticky;top:56px;align-self:start;padding-top:6px}
+  }
+  .rs .rsNav ul{list-style:none;margin:0;padding:0;border-left:1px solid var(--rs-line)}
+  .rs .rsNav button{display:block;width:100%;text-align:left;background:none;border:0;border-left:2px solid transparent;margin-left:-1px;padding:7px 0 7px 14px;font-size:15px;line-height:1.4;color:var(--rs-mute);cursor:pointer}
+  .rs .rsNav button:hover{color:var(--rs-ink)}
+  .rs .rsNav button.on{color:var(--rs-ink);font-weight:700;border-left-color:var(--acc)}
+  .rs .rsNav button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+  .rs .rsSumDl{margin-top:20px}
+  .rs .rsSumDl .ln{display:block} .rs .rsSumDl .ln b{margin-right:6px}
+  :is(#debrief,#ep7) .rs h3.rsDay{margin:32px 0 6px;font-size:17px}
+  .rs h3.rsDay small{margin-left:8px;font-size:15px;font-weight:500;color:var(--rs-mute)}
+  .rs h3.rsDay+.rsNote{margin-top:0;margin-bottom:4px}
+  .rs .rsText{margin-top:18px}
+  .rs .rsText b{display:block;font-size:15px;color:var(--rs-ink2)}
+  .rs .rsText p{margin-top:4px;padding-left:12px;border-left:2px solid var(--rs-line);white-space:pre-wrap;font-size:16px;line-height:1.65}
+  .rs .rsEv .r.hdr{border-top:0;padding:0 0 4px;font-size:13px;font-weight:600;color:var(--rs-mute)}
+  .rs .rsEv .r.hdr span:last-child{text-align:right}
+  .rs .rsTbl tr.none td{font-size:15px}
+  /* 단추 — 게임 단추(알약) 그대로, 크기만 본문에 맞춘다 */
+  :is(#debrief,#ep7) .rs .foot{margin-top:48px;gap:12px}
+  :is(#debrief,#ep7) .rs .btn{font-size:16px;padding:11px 20px;min-height:44px}
+  :is(#debrief,#ep7) .rs .btn:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+  .rs .rsRestart{margin-top:24px;display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+  .rs .rsRestart select{font-size:16px;min-height:44px;padding:0 12px;border:1px solid var(--line2);border-radius:999px;background:#fff;color:var(--rs-ink)}
+  .rs .rsRestart .rsNote{flex-basis:100%;margin-top:0}
+  .rs .rsFine{margin-top:40px;font-size:14px;line-height:1.55;color:var(--rs-mute)}
+  .rs .rsFine p+p{margin-top:4px}
+  @media (max-width:760px){
+    :is(#debrief,#ep7) .wrap.rs{padding:32px 16px 56px}
+    :is(#debrief,#ep7) .rs h1{font-size:25px}
+    .rs .rsBars .ncsRow{grid-template-columns:6.4em minmax(0,1fr);gap:0 10px;font-size:15px}
+    .rs .rsDl,.rs .rsSay{grid-template-columns:1fr;gap:2px 0}
+    .rs .rsDl dd{margin-bottom:10px}
+    .rs .rsStats{gap:12px 28px}
+    .rs .rsTbl{font-size:15px}
+    .rs .rsBars .ncsRow{grid-template-columns:6.4em minmax(0,1fr) 2.2em 2.4em 3.2em;gap:0 8px}
+    .rs .rsBars.nolv .ncsRow{grid-template-columns:6.4em minmax(0,1fr) 2.2em 3.8em}
+    .rs .rsTwo{grid-template-columns:1fr}
+    .rs .rsEv .r{grid-template-columns:3em minmax(0,1fr) 4.2em}
+    .rs .rsEv .a{grid-column:2;grid-row:2}
+    .rs .rsEv .r.hdr span:nth-child(3){display:none}
+  }
+  /* ── 모바일 ── */
+  @media (max-width:760px){
+    /* 좁은 화면에서 상단 바가 밀려 「홈으로」가 잘렸다 — 제목을 줄이고 단추를 좁힌다 */
+    #top{height:48px;gap:6px;padding:0 8px} #top .ttl small{display:none} #clock{font-size:18px} #cnt,#unlocks,#saveStat,#lunch{display:none}
+    #top .ttl{font-size:13px;flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
+    #clockBox{gap:5px} #clockLeft{font-size:11px}
+    #pause,#homeBtn,#pcBtn,#seatBtn{padding:5px 9px;font-size:12px}
+    #side{display:none}
+    #card{left:8px;right:8px;top:56px;bottom:52px;max-width:none}
+    #inbox{left:0;right:0;bottom:0;top:auto;width:auto;height:52vh;border-radius:var(--r) var(--r) 0 0;transform:translateY(calc(100% - 44px));transition:transform .25s}
+    #inbox.up{transform:none}
+    #inbox h3{cursor:pointer}
+    #debrief .grid,.grid2{grid-template-columns:1fr;gap:14px}
+    #debrief .wrap,#ep7 .wrap{padding:24px 14px 56px}
+    .kpi{grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:7px}
+    .kpi b{font-size:19px}
+    .ctbl{grid-template-columns:minmax(0,1fr) auto 2.4em;font-size:14.5px;gap:0 9px}
+    .ncsRow{grid-template-columns:minmax(88px,auto) 1fr 2.3em;gap:9px;font-size:13.5px;padding:5px 6px}
+    .ncsRow.wk{grid-template-columns:minmax(84px,auto) 1fr 2.2em 3.2em 2.2em;gap:6px}
+    #debrief h1,#ep7 h1{font-size:24px}
+    .say .who{width:auto;flex-direction:column;align-items:flex-start;gap:3px;font-size:12px}
+    .say{gap:9px}
+    .stage{margin-left:44px}
+    #homeDays{grid-template-columns:repeat(4,1fr)}
+    #dialog,#phoneBar{bottom:56px}
+    #toasts{bottom:56px}
+    /* 좁은 화면 — 말풍선은 덜 둥글게·여백 좁게, 선택지 알약은 이름표와 겹치지 않게 조금 더 위로(높이는 조금 더 쓴다) */
+    .tkBox{padding:32px 30px 28px 26px;max-height:46vh;border-radius:36px 40px 34px 38px / 32px 30px 36px 32px}
+    .tkWho{left:18px;top:-19px;max-width:calc(100% - 36px)}
+    .tkBox::after{right:24px;bottom:12px}
+    .tkOpts{right:6px;max-width:calc(100% - 12px);bottom:calc(100% + 34px);padding-left:12px}
+    .tkOpts .btn{font-size:14.5px;padding:11px 18px 11px 48px}
+    .tkIn{min-width:0}
+    #talk{padding:30px 10px max(10px,env(safe-area-inset-bottom))}
+    #dialog{width:calc(100vw - 24px);max-height:50vh;padding:16px 18px 12px}
+    #dialog .tx{font-size:15px;line-height:1.65}
+    #dialog .ft .btn{min-height:44px}
+  }
+  /* ── 사내 메신저 앱 (js/desk/msgapp.js 가 이 판을 그린다) ──────────
+     대표 "메신저는 카톡처럼 그냥 화면 채워지는 막대로 있고, 누르면 창 바로 뜨면 될 것 같아.
+     「열어 보기」 이런 건 의미 없을 듯."
+     ① 대화 목록 = 창을 가득 채우는 가로 막대. 줄을 누르면 곧바로 그 대화가 열린다.
+     ② 대화창 = 말풍선이 위아래로 쌓인다(상대 왼쪽 · 나 오른쪽).
+     ③ 답할 것이 있으면 창 **아래**에 선택지 버튼이나 짧은 입력칸이 붙는다. 별도 작성 창은 없다. */
+  .msgApp{position:relative;display:flex;flex-direction:column;height:100%;min-height:0;background:#fff;font-size:13px}
+  .msgHd{flex:none;padding:12px 16px 10px;font-size:13px;font-weight:700;color:var(--mute);
+    letter-spacing:.02em;border-bottom:1px solid var(--line)}
+  .msgList{flex:1;overflow:auto}
+  .msgBar{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:#fff;
+    padding:13px 16px;border-bottom:1px solid var(--line)}
+  .msgBar:hover{background:var(--soft)}
+  .msgBar .fa{flex:none;width:44px;height:44px;border-radius:16px;background:var(--soft);
+    border:1px solid var(--line);display:grid;place-items:center;font-size:22px;overflow:hidden}
+  .msgBar .fa img{width:100%;height:100%;object-fit:cover;display:block}
+  .msgBar .mid{flex:1;min-width:0}
+  .msgBar .nm{display:flex;align-items:baseline;gap:6px}
+  .msgBar .nm b{font-size:14px} .msgBar .nm small{font-size:11.5px;color:var(--mute)}
+  .msgBar .ls{display:block;margin-top:2px;font-size:12.5px;color:var(--mute);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .msgBar.un .ls{color:var(--ink)}
+  .msgBar .rt{flex:none;display:flex;flex-direction:column;align-items:flex-end;gap:5px;min-width:42px}
+  .msgBar .tm{font-size:11.5px;color:var(--mute);font-variant-numeric:tabular-nums}
+  .msgBar .nb{min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:var(--bad);
+    color:#fff;font-size:11.5px;font-weight:700;line-height:19px;text-align:center}
+  .msgConv{position:absolute;inset:0;display:flex;flex-direction:column;background:#fff}
+  .msgTop{flex:none;display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line)}
+  .msgTop .back{border:1px solid var(--line2);background:#fff;border-radius:10px;padding:5px 11px;font-size:13px}
+  .msgTop .fa{flex:none;width:32px;height:32px;border-radius:11px;background:var(--soft);border:1px solid var(--line);
+    display:grid;place-items:center;font-size:17px;overflow:hidden}
+  .msgTop .fa img{width:100%;height:100%;object-fit:cover;display:block}
+  .msgTop b{font-size:14px} .msgTop small{display:block;font-size:11.5px;color:var(--mute)}
+  .msgBody{flex:1;overflow:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;background:var(--panel2)}
+  .msgRow{display:flex;align-items:flex-end;gap:6px;max-width:82%}
+  .msgRow.me{align-self:flex-end;flex-direction:row-reverse}
+  .msgRow .bub{background:#fff;border:1px solid var(--line);border-radius:14px 14px 14px 4px;
+    padding:9px 13px;line-height:1.62;font-size:13.5px;white-space:pre-wrap}
+  .msgRow.me .bub{background:var(--acc-soft);border-color:var(--acc-line);border-radius:14px 14px 4px 14px}
+  .msgRow .at{flex:none;font-size:11px;color:var(--mute);font-variant-numeric:tabular-nums}
+  .msgNote{align-self:center;max-width:92%;font-size:12px;color:var(--mute);background:var(--soft);
+    border-radius:999px;padding:4px 12px;text-align:center}
+  .msgNote.hi{background:var(--ok-soft);color:var(--ok)} .msgNote.lo{background:var(--bad-soft);color:var(--bad)}
+  .msgFoot{flex:none;border-top:1px solid var(--line);padding:10px 14px 12px;background:#fff;
+    display:flex;flex-direction:column;gap:7px}
+  .msgFoot .tip{font-size:12px;color:var(--mute)}
+  .msgFoot textarea{width:100%;min-height:62px;resize:vertical;border:1px solid var(--line2);border-radius:12px;
+    padding:9px 11px;font:inherit;line-height:1.55;background:#fff}
+  .msgFoot textarea:focus{outline:2px solid var(--acc);outline-offset:0}
+  .msgFoot .btns{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .msgFoot .len{margin-left:auto;font-size:11.5px;color:var(--mute)}
+  .msgEmpty{padding:34px 16px;color:var(--mute);font-size:13px;text-align:center;line-height:1.7}
+  /* 57차 대화별 대기열 — 한 대화에 카드가 둘 이상이면 아래 칸 맨 위에 「남은 일 N건」과 건마다 단추(도착 시각 · 제목).
+     고른 건 = 테두리(어느 건에 답하는지만 — 처리 단추 강조가 아니다) · 줄 선 새 건 = 빨간 점 · 다른 건 말풍선은 눌러서 고른다 */
+  .msgPick{display:flex;flex-wrap:wrap;gap:5px 6px;align-items:center}
+  .msgPick .lb{font-size:12px;font-weight:700;color:var(--mute);margin-right:2px}
+  .msgPick .ch{display:inline-flex;align-items:center;gap:5px;max-width:100%;border:1px solid var(--line2);background:#fff;
+    border-radius:999px;padding:2px 9px;font-size:12px;line-height:1.5;color:var(--ink);cursor:pointer}
+  .msgPick .ch:hover{background:var(--soft)}
+  .msgPick .ch .tm{flex:none;color:var(--mute);font-variant-numeric:tabular-nums}
+  .msgPick .ch .sj{min-width:0;max-width:104px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .win.maxed .msgPick .ch .sj{max-width:220px}
+  .msgPick .ch.on{border-color:var(--acc);box-shadow:inset 0 0 0 1px var(--acc)}
+  .msgPick .ch.new::after{content:'';flex:none;width:7px;height:7px;border-radius:50%;background:var(--bad)}
+  .msgRow.pick .bub{border-color:var(--acc-line);box-shadow:inset 3px 0 0 var(--acc)}
+  .msgRow.can{cursor:pointer}
+  .msgRow.can:hover .bub{background:var(--soft)}
+  /* ── 전화 메모 앱 ── */
+  .telApp{height:100%;overflow:auto;background:#fff;font-size:13px}
+  .telApp .msgHd{border-bottom:1px solid var(--line)}
+  .telRow{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:#fff;
+    padding:12px 16px;border-bottom:1px solid var(--line)}
+  .telRow:hover{background:var(--soft)}
+  .telRow .fa{flex:none;width:40px;height:40px;border-radius:14px;background:var(--bad-soft);
+    display:grid;place-items:center;font-size:19px}
+  .telRow.done .fa{background:var(--ok-soft)}
+  .telRow .mid{flex:1;min-width:0} .telRow .mid b{font-size:13.5px}
+  .telRow .mid span{display:block;margin-top:2px;font-size:12.5px;color:var(--mute);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .telRow .tm{flex:none;font-size:11.5px;color:var(--mute);font-variant-numeric:tabular-nums}
+  /* ── PC 화면 안 사내 메신저 알림 ──────────────────────────────────
+     사람이 말풍선으로 컴퓨터 화면에 끼어드는 모양을 없애려고 만든 자리다.
+     대사 장면(브리핑·선택지)은 PC 를 접고 3D 사무실에서 하고, 지나가는 한 줄만
+     여기로 온다. #pc 안에 있으므로 컴퓨터를 끄면 같이 사라진다. */
+  #pcNotis{position:absolute;right:16px;top:68px;z-index:60;display:flex;flex-direction:column;gap:8px;
+    width:min(300px,42vw);pointer-events:none}
+  .pcNoti{background:#fff;border:1px solid var(--line);border-radius:12px;padding:9px 12px;
+    box-shadow:0 8px 24px rgba(20,30,45,.18);animation:tin .22s ease-out}
+  .pcNoti .hd{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--mute);font-weight:700;margin-bottom:3px}
+  .pcNoti .hd b{color:var(--acc-d)}
+  .pcNoti .tx{font-size:12.5px;line-height:1.55;color:var(--ink)}
+  /* ── PC 바탕화면이 열려 있을 때 ── */
+  body.pc-on #inbox,body.pc-on #card,body.pc-on #side{backdrop-filter:none}
+  /* 아래에 붙는 것들은 독(바닥에서 60px)을 비켜선다 — 안 비키면 토스트가 독을 덮는다 */
+  body.pc-on #toasts,body.pc-on #dialog,body.pc-on #phoneBar{bottom:76px}
+  #pcBtn{position:relative;padding:6px 12px;border:1px solid var(--line2);border-radius:999px;background:#fff;color:var(--ink)}
+  /* 새 메시지가 오면 내용 대신 이 점만 뜬다 — 읽는 곳은 컴퓨터 안이다 */
+  #pcBtn .dot{position:absolute;right:-4px;top:-5px;min-width:17px;height:17px;padding:0 4px;
+    border-radius:999px;background:var(--bad);color:#fff;font-size:11px;font-weight:700;line-height:17px;
+    text-align:center;box-shadow:0 0 0 2px #fff}
+  #pcBtn .dot[hidden]{display:none}
+  #pcBtn.on{background:var(--acc);border-color:var(--acc-d);color:#fff;font-weight:700}
+</style>
+<link rel="stylesheet" href="js/desk/desk.css?v=20260929i">
+</head>
+<body>
+<iframe id="stage" title="사무실" allow="autoplay"></iframe>
+<!-- 로딩 화면. 첫 진입에는 #tut(조작법 카드)가 대신 뜨고, 카드를 다 보거나 건너뛰면
+     아래 「로딩 중」 한 줄로 돌아간다. #loadMsg 는 평소에 비어 있고(:empty 로 접힌다)
+     불러오기가 실패했을 때만 까닭을 적는다 — 진행 문구는 콘솔에만 남긴다. -->
+<div id="loading">
+  <div id="tut" hidden aria-live="polite">
+    <div class="tutHd"><span class="tag">조작법</span><span class="no"><b id="tutNo">1</b> / <span id="tutAll">6</span></span><button class="btn" id="tutSkip" type="button">건너뛰기</button></div>
+    <div class="tutCard" id="tutCard"></div>
+    <div class="tutFt"><div class="tutDots" id="tutDots"></div><button class="btn pri" id="tutNext" type="button">다음</button></div>
+    <div class="tutLoad" id="tutLoad"><i></i><span id="tutLoadTx">사무실을 준비하는 중…</span><span class="tutBar" aria-hidden="true"><b id="tutBarFill"></b></span></div>
+  </div>
+  <div class="t">로딩 중</div><div class="bar"><i></i></div><div class="st" id="loadStage" aria-live="polite"></div><div class="s" id="loadMsg"></div><button class="btn" id="loadBack" type="button" style="display:none">홈으로</button>
+</div>
+
+<div id="home"><div class="wrap">
+  <h1>WORK SIM — 첫 일주일</h1>
+  <div class="sub">개인 코드로 들어오면 어제 끝난 데서 이어 합니다. 코드가 없으면 데모로 시작할 수 있어요.</div>
+  <div class="row"><input id="homeCode" placeholder="개인 코드 (예: WS7-XXXX-XXXX)" autocomplete="off"><select id="homeTeam" title="팀(데모용)"></select><button class="btn pri" id="homeGo" type="button">시작</button><button class="btn" id="homeDemo" type="button">데모로 시작</button></div>
+  <div id="homeMsg"></div>
+  <div class="muted" id="homeBackend"></div>
+  <div id="homeDays"></div>
+  <div class="row" id="homePdf" style="display:none"></div>
+  <div class="row"><span class="muted" style="margin:0">내 캐릭터</span><button class="btn" id="homeAvF" type="button" aria-pressed="false">여성</button><button class="btn" id="homeAvM" type="button" aria-pressed="false">남성</button></div>
+  <div class="row"><button class="btn" id="homeReset" type="button">이 기기의 진행 지우기</button></div>
+</div></div>
+
+<div id="top">
+  <div class="ttl" id="title">WORK SIM</div>
+  <div id="unlocks"></div>
+  <div id="cnt"><span>처리 <b id="cDone">0</b>/<span id="cAll">0</span></span><span>넘김 <b id="cPass">0</b></span><span>물어봄 <b id="cAsk">0</b></span></div>
+  <div id="clockBox"><div id="clock">09:00</div><span id="clockLeft"></span><span class="chip" id="lunch" hidden>점심</span><button id="skipBtn" type="button" hidden title="지금 할 일이 없을 때만 — 다음 업무가 오는 시각까지 시간을 넘깁니다">다음 업무까지 넘기기</button></div>
+  <span id="saveStat"></span>
+  <button id="seatBtn" type="button" title="내 자리로 걸어가 앉습니다">내 자리로</button>
+  <button id="pcBtn" type="button" title="내 자리에 앉으면 컴퓨터를 켤 수 있어요">PC<span class="dot" id="pcDot" hidden></span></button>
+  <div id="pauseWrap">
+    <button id="pause" type="button" aria-haspopup="true" aria-expanded="false">일시정지</button>
+    <div id="pauseMenu" hidden>
+      <button class="btn" id="pmResume" type="button">계속하기</button>
+      <button class="btn" id="pmAvatar" type="button">캐릭터 바꾸기</button>
+      <button class="btn" id="pmQuit" type="button">오늘 그만하기</button>
+    </div>
+  </div>
+  <button id="homeBtn" type="button" title="진행은 저장돼요">홈으로</button>
+</div>
+
+<!-- 컴퓨터는 내 자리에 앉아야 쓸 수 있다. 자리에 있으면 「PC 켜기」, 멀리 있으면 「내 자리로」. -->
+<div id="pcHint"><span id="pcHintTx">내 자리 모니터를 누르면 컴퓨터가 켜져요.</span><button class="btn" id="pcHintGo" type="button">PC 켜기</button></div>
+
+<!-- 내 자리 컴퓨터. 안쪽 구조는 co-work-sim game.html 그대로다 —
+     벽지 뒤, 아이콘 밭, 창 레이어, 떠 있는 독 차례. -->
+<div id="pc">
+  <main id="deskEnv">
+    <div id="wallpaper"></div>
+    <div id="dtIcons"></div>
+    <div id="winLayer"></div>
+    <div id="taskbar">
+      <div id="dockApps"></div>
+      <span class="dock-sep"></span>
+      <div id="tbWins"></div>
+      <div class="tb-right"><span id="tbClock">09:00</span><button id="pcSkip" type="button" hidden title="지금 할 일이 없을 때만 — 다음 업무가 오는 시각까지 시간을 넘깁니다">다음 업무까지 넘기기</button><span class="tb-esc">ESC 로 사무실</span><button id="pcOff" type="button" title="ESC 를 눌러도 됩니다">사무실로</button><button id="pcHome" type="button" title="진행은 저장돼요">홈으로</button></div>
+    </div>
+  </main>
+  <!-- 사내 메신저 알림 — 사람 말풍선이 컴퓨터 화면 위에 끼어들지 않게, PC 가 켜져
+       있는 동안 동료의 한 줄은 이 알림 카드로 온다(대사 장면은 사무실에서 한다). -->
+  <div id="pcNotis" aria-live="polite"></div>
+</div>
+<!-- 창 밖으로 나온 앱 화면의 보관함. #pc 밖에 두어야 한다 — 안에 두면 컴퓨터를
+     껐을 때 display:none 이 되어 엔진이 재는 패널 상자가 전부 0 이 된다. -->
+<div id="stash"></div>
+
+<aside id="inbox" class="panel"><h3 id="inboxHd"><span>메일함</span><span id="inboxN"></span></h3><div id="list"><div class="empty-msg">아직 도착한 메일이 없어요</div></div></aside>
+
+<section id="card" class="panel" aria-live="polite">
+  <div class="hd"><div class="meta"><div class="from" id="cFrom"></div><div class="subj" id="cSubj"></div></div><button class="x" id="cClose" type="button" aria-label="닫기">×</button></div>
+  <div id="cScroll">
+  <div class="bd" id="cBody"></div>
+  <div id="cNote" class="note" style="display:none"></div>
+  <div id="cActs" class="acts"></div>
+  <div id="composer" style="display:none">
+    <div class="row"><span>받는 사람 <b id="cpTo"></b></span><span>제목 <b id="cpSubj"></b></span><span class="mode" id="cpMode">규칙 채점</span></div>
+    <textarea id="composeText" placeholder="고객이 무엇을 원하는지 한 줄로 먼저 적고, 답장을 써 보세요."></textarea>
+    <div id="cpWork"><span>결과값</span><input id="cpWorkIn" type="text" autocomplete="off" placeholder="결과값 — 숫자와 단위를 함께(일·원·건·%)"></div>
+    <div class="foot"><button class="btn pri" id="composeSend" type="button">보내기</button><button class="btn" id="composeCancel" type="button">취소</button><span class="cnt2" id="cpLen">0자</span></div>
+  </div>
+  <div id="cResult" class="result" style="display:none"></div>
+  </div>
+</section>
+
+<aside id="side" class="panel">
+  <div id="tabs"><button id="tabHint" type="button" class="cur">힌트</button><button id="tabRule" type="button">사규집</button><button id="tabOrg" type="button">조직도</button><button id="tabProg" type="button">진행</button></div>
+  <div id="todo"><div><small id="tAnsL">답할 것</small><b id="tAns">0</b></div><div><small id="tPassL">넘길 것</small><b id="tPass">0</b></div><div><small id="tAskL">물어볼 것</small><b id="tAsk">0</b></div></div>
+  <div class="tabpane" id="tab_hint"><div id="hint"><div class="who">사수</div><div id="hintTx">메일이 오면 여기서 한 줄 알려 줄게요.</div></div></div>
+  <div class="tabpane" id="tab_rule" style="display:none"><div class="rbHead"><select id="rbBook"></select><input id="rbSearch" placeholder="조항 번호·낱말 검색" autocomplete="off"></div><div id="rbList"></div></div>
+  <div class="tabpane" id="tab_org" style="display:none"><div id="orgList"></div></div>
+  <div class="tabpane" id="tab_prog" style="display:none"></div>
+  <div class="stat" id="stat"></div>
+</aside>
+
+<div id="toasts"></div>
+<div id="dialog"><div class="who" id="dWho"></div><div class="tx" id="dTx"></div><div class="ft"><button class="btn" id="dSkip" type="button">건너뛰기</button><button class="btn pri" id="dNext" type="button">다음</button></div></div>
+<!-- 대화 모드 — NPC 와 주고받는 이야기 · 전화 · 방문 응대가 모두 이 창을 쓴다 -->
+<div id="talk" role="dialog" aria-label="대화"><div class="tkBox" tabindex="-1">
+  <div class="tkWho"><span class="tkFace" id="tkFace"></span><span><b id="tkName"></b><small id="tkRole"></small></span></div>
+  <div class="tkTx" id="tkTx"></div>
+  <div class="tkSr" id="tkLive" aria-live="polite"></div>
+  <div class="tkOpts" id="tkOpts"></div>
+</div></div>
+<!-- 전화 벨·「오늘 마무리」 그림은 승인 입체 아이콘(15 통화 · 28 업무 마무리, 2026-09-29) — 그림 문자 ☎ 자리 -->
+<div id="phoneBar"><span class="ring"><img class="oc-ic" src="assets/appicon/talk.webp?v=3" alt="" aria-hidden="true" draggable="false"></span><span id="phoneTx">전화가 왔어요</span><button class="btn" id="phoneTake" type="button">받기</button><button class="btn" id="phoneLater" type="button">나중에</button></div>
+<!-- 「오늘 할 일을 다 했습니다」일 때만 뜬다. 퇴근 시각에는 뜨지 않는다 —
+     하루를 끝내는 것은 버튼을 누르는 일이 아니라 팀장이 오는 일이다. -->
+<div id="endbar"><span id="endbarTx">오늘 할 일을 다 했습니다.</span><button class="btn pri" id="finishBtn" type="button"><img class="oc-ic" src="assets/appicon/finish.webp?v=3" alt="" aria-hidden="true" draggable="false">오늘 마무리</button><button class="btn" id="moreBtn" type="button">더 볼래요</button></div>
+<div id="endNotice"><div class="card"><b id="enTitle">퇴근 시간입니다</b><span id="enSub">팀장이 결과를 보러 옵니다.</span></div></div>
+<div id="triage"><div class="wrap"><h1>동시에 왔어요 — 순서를 정하세요</h1><div class="sub">지금 / 오전 중 / 오늘 중. 처리 순서가 아니라 "어느 칸에 두느냐"를 봅니다. 시한이 있는 것부터.</div><div id="triageList"></div><div class="foot"><button class="btn pri" id="triageGo" type="button" disabled>정했어요</button></div></div></div>
+<div id="avatar"><div class="wrap">
+  <h1>나는 어떤 사람인가요</h1>
+  <div class="sub">사무실 내 자리에 앉을 캐릭터입니다. 언제든 일시정지 메뉴나 홈 화면에서 바꿀 수 있어요.</div>
+  <div class="avPick">
+    <button class="avCard" id="avF" type="button"><span class="pic" id="avFPic"></span><b>여성</b><span>신입사원</span></button>
+    <button class="avCard" id="avM" type="button"><span class="pic" id="avMPic"></span><b>남성</b><span>신입사원</span></button>
+  </div>
+  <div class="row" style="justify-content:center;margin-top:18px"><button class="btn" id="avKeep" type="button" hidden>그대로 두기</button></div>
+</div></div>
+<div id="debrief"><div class="wrap" id="dbWrap"></div></div>
+<div id="ep7"><div class="wrap" id="ep7Wrap"></div></div>
+
+<script src="js/gated.js?v=20260921a"></script>
+<script>/* 사규집: 로컬은 파일, 배포본은 화 데이터와 함께 서버에서 받는다(js/play/day.js loadStoryFromServer) */
+if(!window.WS7_GATED){ const s=document.createElement('script'); s.src='data/rulebook.js?v=20260907g'; document.head.appendChild(s); }</script>
+<script src="js/backend-url.js?v=20260907g"></script>
+<script>
+/* 백엔드 클라이언트(js/backend.js, W2)는 있으면 쓰고 없으면 localStorage 로 폴백. 404 콘솔 오류를 피하려고 먼저 확인한다 */
+window.__backendReady=fetch('js/backend.js',{method:'HEAD'}).then(r=>{ if(!r.ok) return null; return new Promise(res=>{ const s=document.createElement('script'); s.src='js/backend.js'; s.onload=()=>{ try{ if(window.BACKEND_URL&&window.Backend&&window.Backend.configure) window.Backend.configure(window.BACKEND_URL); }catch(e){} res(true); }; s.onerror=()=>res(null); document.head.appendChild(s); }); }).catch(()=>null);
+</script>
+<!-- PC 바탕화면 — appicon·windows·desktop·wallpaper 넷은 co-work-sim 원본 그대로다.
+     deskapp.js 만 우리 것이고, 원본이 기대하는 의존을 채우고 앱 둘을 얹는다.
+     appicon 의 그림 폴더만 우리 자리(assets/appicon/)로 알려 준다 — 파일은 한 글자도 안 다르다. -->
+<script src="js/desk/appicon.js?v=20260929i" data-art-dir="assets/appicon/"></script>
+<script src="js/desk/windows.js?v=20260929i"></script>
+<script src="js/desk/wallpaper.js?v=20260907g"></script>
+<script src="js/desk/desktop.js?v=20260929i"></script>
+<script src="js/desk/msgapp.js?v=20260929i"></script>
+<script src="js/desk/telapp.js?v=20260929i"></script>
+<script src="js/desk/deskapp.js?v=20260929i"></script>
+<script src="js/office-roster.js?v=20260929-name47"></script>
+<script src="js/office-story-roster.js"></script>
+<script src="js/play/core.js?v=20260929-final33"></script>
+<script src="js/play/intro.js?v=20260913e"></script>
+<script src="js/ncs.js?v=20260929c"></script>
+<script src="js/ncs_eval.js?v=20260929c"></script>
+<script src="js/ncs_report.js?v=20260928r"></script>
+<script src="js/play/grade.js?v=20260927f"></script>
+<script src="js/play/grader.js?v=20260923e1b"></script>
+<script src="js/play/cards.js?v=20260929i"></script>
+<script src="js/play/day.js?v=20260929c"></script>
+<script src="js/play/ep7grade.js?v=20260923e1c"></script>
+<script src="js/play/ep7.js?v=20260929c"></script>
+<script src="js/play/talk.js?v=20261002bubble"></script>
+<script src="js/play/pc.js?v=20260929i"></script>
+<script src="js/play/result_pdf.js?v=20260929c"></script>
+</body>
+</html>

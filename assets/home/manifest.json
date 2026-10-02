@@ -1,0 +1,50 @@
+{
+ "note": "home.html 이 쓰는 그림 목록. 원본은 이 폴더에, 웹용으로 줄인 판은 w/ 에 둔다. 삽화를 새로 넣으면 files·web 에 이름을 적어야 화면에 끼워진다 (없는 파일에 <img> 를 걸면 404 가 콘솔 오류로 남아 명시로 관리한다). 「함께 일하는 사람들」 띠는 38차부터 w/team_office.jpg(사무실 장면)를 쓴다 — 이전의 줄 세우기 w/team_eye.png·team_pose.png·team_2d.png 는 다른 자리에 쓸 수 있어 지우지 않았다. 얼굴 아바타는 w/av_c*.png, 화면 사진은 w/shot_ncs.jpg(디브리프)·w/shot_admin.jpg(관리자 진행 현황).",
+ "files": [
+  "ill_ncs.png",
+  "ill_report.png",
+  "ill_letter.png",
+  "ill_seven.png",
+  "team_office3.png",
+  "team_eye.png"
+ ],
+ "web": {
+  "ill_ncs.png": "w/ill_ncs.jpg",
+  "ill_report.png": "w/ill_report.jpg",
+  "ill_letter.png": "w/ill_letter.jpg",
+  "ill_seven.png": "w/ill_seven.jpg",
+  "team_office3.png": "w/team_office.jpg"
+ },
+ "scenes": {
+  "note": "소개 페이지 「이런 장면들이 이어집니다」 슬라이드. 이름은 고정이다 — 3D 최종본(카메라 3인칭·방 확대·복도 재구성·NPC 자율 행동)이 끝나면 같은 이름으로 덮어쓰기만 하면 화면이 바뀐다. 장 수를 늘리려면 home.html 의 SCENES 목록에 한 줄을 더한다.",
+  "촬영 지침": "위에서 비스듬히 내려다본 3/4 부감. 가로 1400px 안팎, JPEG 82. 사람이 화면 안에서 무엇을 하는지 한눈에 보이게.",
+  "상태": "자리표시자 — shots/office/ 의 기존 스냅을 줄여 넣었다. 최종본으로 교체 대기.",
+  "files": [
+   {
+    "web": "w/scene_1.jpg",
+    "자리표시자": "shots/office/hero_still.jpg",
+    "설명": "내 자리에서 메일을 씁니다"
+   },
+   {
+    "web": "w/scene_2.jpg",
+    "자리표시자": "shots/office/npc_ask_npc.jpg",
+    "설명": "막히면 옆 자리로 걸어가 묻습니다"
+   },
+   {
+    "web": "w/scene_3.jpg",
+    "자리표시자": "shots/office/corr_travel_3corr.jpg",
+    "설명": "복도를 지나 다른 팀으로 갑니다"
+   },
+   {
+    "web": "w/scene_4.jpg",
+    "자리표시자": "shots/office/corr_deliver_6deliver.jpg",
+    "설명": "맞는 담당자에게 직접 전달합니다"
+   },
+   {
+    "web": "w/scene_5.jpg",
+    "자리표시자": "shots/office/npc_report_arrive.jpg",
+    "설명": "하루가 끝나면 팀장에게 보고합니다"
+   }
+  ]
+ }
+}

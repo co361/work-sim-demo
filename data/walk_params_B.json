@@ -1,0 +1,82 @@
+{
+ "name": "walk_B_20260930",
+ "description": "B — 차분한 사람 걸음: 주기 1.15s(초당 1.74걸음), 발은 낮게 뒤꿈치→발끝으로 굴림, 팔은 몸 옆에서 작게 반대로, 위아래 출렁임·골반 틀기 최소, 머리 수평, 팔·머리가 몸보다 살짝 늦게, 좌우 약간 다르게",
+ "period_s": 0.78,
+ "step_m": 0.27,
+ "duty": 0.56,
+ "keys_per_cycle": 40,
+ "foot_lift_m": 0.015,
+ "heel_strike_deg": 8,
+ "toe_off_deg": 14,
+ "crouch_m": 0.002,
+ "bob_extra_m": 0.002,
+ "reach_margin_m": 0.002,
+ "sway_m": 0.004,
+ "pelvis_yaw_deg": 2,
+ "pelvis_roll_deg": 1,
+ "chest_yaw_deg": -2.5,
+ "spine_lean_deg": 1.5,
+ "head_nod_deg": 0.4,
+ "arm_swing_deg": 12,
+ "arm_back_ratio": 0.8,
+ "arm_out_deg": 18,
+ "forearm_swing_deg": 5,
+ "hair_bounce_deg": 1.2,
+ "keep_tracks_from_original": [
+  "ClothControl",
+  "FaceControl",
+  "blink"
+ ],
+ "drape_morphs": "phase",
+ "skirt": {
+  "_note": "허벅지 앞뒤 각에 곱하는 비율 [윗뼈 _1, 아랫뼈 _2] — 세계 X 축 회전 · flare_deg 걸을 때 퍼짐",
+  "front": [
+   1.3,
+   0.2
+  ],
+  "back": [
+   1.0,
+   0.2
+  ],
+  "side": [
+   0.7,
+   0.1
+  ],
+  "flare_deg": 5
+ },
+ "drape_phase_offset": 0.96,
+ "variants": {
+  "_note": "치마(보이는 치마 메시가 있는 사람) / 바지. 보폭이 달라 고유 속도가 다르고, 게임은 사람마다 실제 속도 ÷ 고유 속도로 재생한다. v3(2026-09-30, 합본 검증 — 17·33 걷는 중 앞 허벅지·배 피부 비침 늘어남): 치마는 발 들림 1.5→1.3cm(1.0 이면 흔들 발 발끝이 바닥에 1.6mm 까지 내려와 끌린다 — 1.3 = 4.5mm)·골반 낮춤 0·위아래 4→2mm(허벅지가 덜 들려 치맛단 밑으로 안 나온다), 척추 앞 숙임 3→0°·가슴 비틀기 −4→−2°(배 쪽 허리선이 벌어지지 않게), 팔 벌림 4→6°(30 옆구리 — 팔 흔들 때 윗옷 옆판이 들린다). 보폭·주기는 그대로(고유 속도 0.56m/s 불변). 바지는 v2 와 같다",
+  "skirt": {
+   "step_m": 0.15,
+   "foot_lift_m": 0.013,
+   "heel_strike_deg": 5,
+   "toe_off_deg": 12,
+   "pelvis_yaw_deg": 0,
+   "pelvis_roll_deg": 0,
+   "sway_m": 0.003,
+   "spine_lean_deg": 0,
+   "chest_yaw_deg": -1.5,
+   "arm_swing_deg": 10,
+   "arm_out_deg": 16,
+   "crouch_m": 0,
+   "bob_extra_m": 0.002,
+   "move_mps": 0.66
+  },
+  "pants": {}
+ },
+ "arm_pose": "hang",
+ "pace": {
+  "max_ts": 1.02,
+  "hurry": 1.06,
+  "busy_k": 1.08,
+  "busy_ts": 1.02,
+  "busy_from": 2.5,
+  "note": "반응성 우선(2026-09-30): 이동 속도 move_mps(바지 0.76·치마 0.66m/s, 남은 길 2.5m 넘으면 ×1.08) · 걸음 빈도 초당 2.56걸음(재생 속도 1.02배까지 = 초당 2.6걸음, 먼 길도 같음) — 남는 차이는 발 미끄러짐으로(바지 직선 약 5cm/s, 치마는 보폭 한계 0.15m 라 약 27cm/s) · 방향 전환 초당 630°"
+ },
+ "elbow_deg": 10,
+ "arm_lag": 0.04,
+ "head_lag": 0.06,
+ "asym": 0.06,
+ "move_mps": 0.76
+}

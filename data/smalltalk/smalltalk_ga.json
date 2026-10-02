@@ -1,0 +1,682 @@
+{
+ "schema": "worksim.smalltalk.team.v1",
+ "fixed_roster_version": 1,
+ "team_code": "ga",
+ "team_name": "총무팀",
+ "scored": false,
+ "affects_ncs": false,
+ "affects_trust": false,
+ "characters": {
+  "acnh_24": {
+   "display_name": "이재훈 팀장",
+   "seat_id": "lead",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "player_register": "polite",
+   "basic": {
+    "hi": ["왔어요? 필요한 거 있으면 말해요.", "○○ 씨, 잘 지내죠?"],
+    "how": ["나야 늘 비슷해요. 괜찮아요.", "아침에 고구마 하나 먹었더니 든든해요."],
+    "bye": ["그래요, 가 봐요.", "필요하면 또 와요."]
+   },
+   "fallback": ["지금은 손이 좀 바빠서요. 이따 봐요.", "얘기는 여기까지 해요. 또 와요.", "잠깐 다녀올 데가 있어요. 나중에 봐요."],
+   "topics": [
+    {
+     "id": "acnh_24_first_day", "category": "first_day", "when": {"days": [1]},
+     "opener": ["첫날이죠? 내가 말수가 적어도 신경 쓰지 말아요."],
+     "choices": [
+      {"text": "네, 편하게 있을게요.", "reply": ["그래요. 필요한 건 먼저 챙길게요."]},
+      {"text": "팀장님은 원래 조용하세요?", "reply": ["말보다 손이 먼저 가는 편이에요.", "대신 부르면 바로 와요."], "face": "happy"},
+      {"text": "잘 부탁드립니다.", "reply": ["나도요. 모르는 건 편하게 물어요."]}
+     ],
+     "closing": "첫날은 천천히 둘러보면 돼요."
+    },
+    {
+     "id": "acnh_24_breakfast", "category": "breakfast", "when": {"slots": ["morning"]},
+     "opener": ["아침은 먹었어요? 나는 군고구마 하나."],
+     "choices": [
+      {"text": "저도 간단히 먹었어요.", "reply": ["잘했어요. 속이 든든해야 오전이 가요."]},
+      {"text": "군고구마를 아침에 드세요?", "reply": ["전날 구워 두면 아침에 딱이에요.", "껍질째 먹어요."], "face": "happy"},
+      {"text": "오늘은 못 먹었어요.", "reply": ["내 서랍에 고구마 하나 더 있어요.", "배고프면 가져가요."]}
+     ],
+     "closing": "그럼 천천히 시작해요."
+    },
+    {
+     "id": "acnh_24_commute", "category": "commute", "when": {"slots": ["morning"]},
+     "opener": ["나는 첫차 다음 버스 타고 와요.", "아침엔 사무실이 조용해서 좋아요."],
+     "choices": [
+      {"text": "그렇게 일찍 오세요?", "reply": ["일곱 시 반쯤요. 버릇이 됐어요."]},
+      {"text": "조용할 때 뭐 하세요?", "reply": ["창문 열고 사무실 한 바퀴 돌아요.", "화분에 물 주는 것도 그때 해요."]},
+      {"text": "저는 오늘 버스가 늦었어요.", "reply": ["그런 날도 있죠. 무사히 왔으면 됐어요."]}
+     ],
+     "closing": "출근길 조심히 다녀요."
+    },
+    {
+     "id": "acnh_24_lunch", "category": "lunch", "when": {"slots": ["late_morning", "lunch"]},
+     "opener": ["점심은 국밥 어때요? 뒷골목에 잘하는 데 있어요."],
+     "choices": [
+      {"text": "좋아요. 같이 가요.", "reply": ["그래요. 열두 시 조금 넘어서 가요.", "그때가 덜 붐벼요."], "face": "happy"},
+      {"text": "국밥 좋아하세요?", "reply": ["일주일에 세 번은 먹어요.", "순대 빼 달라고 하면 돼요."]},
+      {"text": "오늘은 동기들이랑 먹기로 했어요.", "reply": ["좋아요. 그게 더 중요해요."]}
+     ],
+     "closing": "든든하게 먹고 와요."
+    },
+    {
+     "id": "acnh_24_afternoon", "category": "afternoon", "when": {"slots": ["afternoon"]},
+     "opener": ["믹스커피 한 잔 줄까요? 오후엔 이게 좋아요."],
+     "choices": [
+      {"text": "네, 감사합니다.", "reply": ["물은 반만 넣는 게 맛있어요."], "face": "happy"},
+      {"text": "팀장님은 하루 몇 잔 드세요?", "reply": ["딱 한 잔이요. 오후 세 시에.", "그게 내 쉬는 시간이에요."]},
+      {"text": "저는 괜찮아요.", "reply": ["그래요. 물이라도 한 잔 마셔요."]}
+     ],
+     "closing": "잠깐 쉬었다 해요."
+    },
+    {
+     "id": "acnh_24_after_work", "category": "after_work", "when": {"slots": ["evening"]},
+     "opener": ["퇴근 시간 다 됐네요. 저녁엔 뭐 해요?", "나는 공방 들러서 나무 좀 다듬어요."],
+     "choices": [
+      {"text": "공방이요? 뭐 만드세요?", "reply": ["작은 선반이요. 이번 게 세 번째예요."], "face": "happy"},
+      {"text": "저는 집에서 쉬려고요.", "reply": ["그게 제일이에요. 푹 쉬어요."]},
+      {"text": "나무 다루는 거 어렵지 않으세요?", "reply": ["처음엔 비뚤어지기만 했어요.", "지금은 그냥 즐거워요."]}
+     ],
+     "closing": "오늘도 애썼어요. 들어가 봐요."
+    },
+    {
+     "id": "acnh_24_weekend_plan", "category": "weekend_plan", "when": {"weekdays": ["fri"]},
+     "opener": ["금요일이네요. 나는 주말에 목공방 가요."],
+     "choices": [
+      {"text": "선반 만드시는 거예요?", "reply": ["네, 이번엔 신발장 옆에 둘 거예요.", "치수부터 다시 재야 해요."]},
+      {"text": "저는 아직 계획이 없어요.", "reply": ["그것도 좋아요. 쉬는 게 계획이죠."]},
+      {"text": "완성되면 보여 주세요.", "reply": ["사진 찍어 올게요. 삐뚤어도요."], "face": "happy"}
+     ],
+     "closing": "푹 쉬고 와요."
+    },
+    {
+     "id": "acnh_24_weekend_review", "category": "weekend_review", "when": {"weekdays": ["mon"], "exclude_days": [1]},
+     "opener": ["우산 물기 좀 털고 올게요.", "주말은 잘 보냈어요?"],
+     "choices": [
+      {"text": "네, 푹 쉬었어요.", "reply": ["잘했어요. 비 오는 날은 쉬는 게 맞아요."]},
+      {"text": "선반은 완성하셨어요?", "reply": ["다리 하나가 짧아서 다시 깎았어요.", "이번 주 안엔 끝나요."], "face": "happy"},
+      {"text": "비 와서 오기 힘드셨죠?", "reply": ["우산살 하나가 휘었어요.", "뭐, 고치면 돼요."]}
+     ],
+     "closing": "비 오는 날은 천천히 다녀요."
+    },
+    {
+     "id": "acnh_24_weather", "category": "weather", "when": {"exclude_days": [6]},
+     "opener": ["요즘 아침에도 공기가 후텁지근해요."],
+     "choices": [
+      {"text": "네, 조금만 걸어도 땀이 나요.", "reply": ["고구마보다 물을 더 챙겨야겠어요."]},
+      {"text": "곧 장마라던데요.", "reply": ["작은 우산 하나 서랍에 넣어 둬요."]},
+      {"text": "사무실은 시원해서 좋아요.", "reply": ["다행이에요. 밖이랑 온도 차는 조심하고요."]}
+     ],
+     "closing": "더울수록 천천히 움직여요."
+    },
+    {
+     "id": "acnh_24_hobby", "category": "hobby", "when": {},
+     "opener": ["나는 주말마다 나무로 뭘 만들어요."],
+     "choices": [
+      {"text": "어떤 걸 만드세요?", "reply": ["선반이나 작은 받침대요.", "집에 쓰는 것만 만들어요."]},
+      {"text": "저도 한번 해 보고 싶어요.", "reply": ["처음엔 도마 하나부터 해 봐요.", "사포질만 해도 재밌어요."], "face": "happy"},
+      {"text": "공구도 많으시겠어요.", "reply": ["많진 않아요. 쓰는 것만 가지런히 둬요."]}
+     ],
+     "closing": "망가져도 고치면 돼요. 그게 재미예요."
+    },
+    {
+     "id": "acnh_24_recent_watch", "category": "recent_watch", "when": {},
+     "opener": ["요즘 목공 영상 보는 재미가 있어요."],
+     "choices": [
+      {"text": "어떤 영상이에요?", "reply": ["오래된 의자를 새것처럼 바꾸는 거요.", "말없이 손만 나와서 좋아요."]},
+      {"text": "저도 그런 영상 좋아해요.", "reply": ["그렇죠? 보고 있으면 마음이 차분해요."], "face": "happy"},
+      {"text": "팀장님이랑 잘 어울려요.", "reply": ["그런가요. 나도 말이 없으니까요."]}
+     ],
+     "closing": "좋은 영상 있으면 알려 줄게요."
+    },
+    {
+     "id": "acnh_24_office_small", "category": "office_small", "when": {},
+     "opener": ["창가 화분에 아침마다 물 주는 사람이 나예요."],
+     "choices": [
+      {"text": "몰랐어요. 매일 주세요?", "reply": ["이틀에 한 번이요. 흙 만져 보고 줘요."]},
+      {"text": "화분 잘 자라요?", "reply": ["새 잎이 두 장 나왔어요.", "그런 게 은근히 좋아요."], "face": "happy"}
+     ],
+     "closing": "지나가다 한 번씩 봐 줘요."
+    }
+   ]
+  },
+  "acnh_22": {
+   "display_name": "최은서 선임",
+   "seat_id": "senior",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "player_register": "polite",
+   "basic": {
+    "hi": ["어, ○○ 씨! 잘 지내요?", "왔어요? 오늘도 파이팅이에요."],
+    "how": ["저야 늘 정신없죠. 그래도 좋아요.", "아침부터 뛰어다녔더니 배고파요."],
+    "bye": ["네, 가 봐요. 또 봐요!", "필요하면 언제든 불러요."]
+   },
+   "fallback": ["아, 지금 좀 급해서요! 이따 얘기해요.", "잠깐만요, 금방 다녀올게요.", "오늘 수다는 여기까지! 또 와요."],
+   "topics": [
+    {
+     "id": "acnh_22_first_day", "category": "first_day", "when": {"days": [1]},
+     "opener": ["아침에 사원증 건넬 때 정신없었죠?", "인사를 제대로 못 해서 마음에 걸렸어요."],
+     "choices": [
+      {"text": "아니에요. 친절하게 알려 주셨어요.", "reply": ["아, 그거요! 다행이다.", "첫날 아침은 늘 정신이 없어서요."], "face": "happy"},
+      {"text": "선임님 이름은 기억해요.", "reply": ["고마워요. 저는 최은서예요.", "저도 ○○ 씨 이름 바로 외웠어요."]},
+      {"text": "신입이 많아서 바쁘셨죠?", "reply": ["열 팀에 다 나눠 주느라 뛰었어요.", "그래도 새로 온 분들 보는 게 좋아요."]}
+     ],
+     "closing": "모르는 사람 있으면 저한테 물어봐요."
+    },
+    {
+     "id": "acnh_22_breakfast", "category": "breakfast", "when": {"slots": ["morning"]},
+     "opener": ["저는 아침에 바나나우유 하나 들고 뛰어요."],
+     "choices": [
+      {"text": "저도 오늘 뛰어 왔어요.", "reply": ["아, 그거요! 역에서 여기까지 뛰기 딱 좋죠."], "face": "happy"},
+      {"text": "바나나우유 좋아하세요?", "reply": ["어릴 때부터 제일 좋아해요.", "빨대 꽂는 순간 잠이 깨요."]},
+      {"text": "아침 드시고 오시는 줄 알았어요.", "reply": ["먹고 싶은데 늘 시간이 없어요.", "대신 점심을 든든하게 먹어요."]}
+     ],
+     "closing": "오늘도 부지런히 가 봐요."
+    },
+    {
+     "id": "acnh_22_commute", "category": "commute", "when": {"slots": ["morning"]},
+     "opener": ["지하철에서 내리면 저는 무조건 뛰어요."],
+     "choices": [
+      {"text": "왜 뛰세요?", "reply": ["신호 하나 놓치면 삼 분이 가요.", "그 삼 분이 아까워서요."]},
+      {"text": "저는 천천히 걸어와요.", "reply": ["그게 맞아요. 저도 그러고 싶어요."]},
+      {"text": "운동 되겠어요.", "reply": ["아, 그거요! 제 유일한 운동이에요."], "face": "happy"}
+     ],
+     "closing": "그래도 계단에선 천천히요."
+    },
+    {
+     "id": "acnh_22_lunch", "category": "lunch", "when": {"slots": ["late_morning", "lunch"]},
+     "opener": ["점심 분식 어때요? 떡볶이 당기는 날이에요."],
+     "choices": [
+      {"text": "좋아요. 떡볶이 좋아해요.", "reply": ["역시! 회사 뒤 분식집 국물이 좋아요.", "순대도 같이 시켜요."], "face": "happy"},
+      {"text": "매운 건 잘 못 먹어요.", "reply": ["그 집 짜장 떡볶이도 있어요.", "하나도 안 매워요."]},
+      {"text": "선임님 단골집 있으세요?", "reply": ["근처 떡볶이집은 거의 다 가 봤어요.", "순위도 매겨 놨어요."]}
+     ],
+     "closing": "배고프니까 빨리 가요!"
+    },
+    {
+     "id": "acnh_22_afternoon", "category": "afternoon", "when": {"slots": ["afternoon"]},
+     "opener": ["오후엔 떡꼬치 하나면 힘이 나요."],
+     "choices": [
+      {"text": "떡꼬치 어디서 사세요?", "reply": ["편의점 옆 분식집이요.", "소스를 두 번 발라 줘요."]},
+      {"text": "간식 좋아하시네요.", "reply": ["아, 그거요! 달고 매운 게 최고예요."], "face": "happy"},
+      {"text": "저는 커피 마시러 가려고요.", "reply": ["휴게실 원두 바뀐 거 마셔 봤어요?", "좀 새콤해졌더라고요."]}
+     ],
+     "closing": "당 떨어지기 전에 뭐라도 먹어요."
+    },
+    {
+     "id": "acnh_22_after_work", "category": "after_work", "when": {"slots": ["evening"]},
+     "opener": ["퇴근길에 새로 생긴 떡볶이집 가 보려고요."],
+     "choices": [
+      {"text": "어디에 생겼어요?", "reply": ["역 앞 골목 두 번째 집이요.", "국물 떡볶이가 유명하대요."]},
+      {"text": "저는 집에 가서 쉬려고요.", "reply": ["그것도 좋죠. 오늘 고생했어요."]},
+      {"text": "후기 알려 주세요.", "reply": ["그럼요. 맛있으면 바로 알려 줄게요."], "face": "happy"}
+     ],
+     "closing": "조심히 들어가요!"
+    },
+    {
+     "id": "acnh_22_weekend_plan", "category": "weekend_plan", "when": {"weekdays": ["fri"]}, "face": "happy",
+     "opener": ["이번 주말에 공원 앞에서 플리마켓 열린대요!"],
+     "choices": [
+      {"text": "어디서 열려요?", "reply": ["공원 앞 광장이요.", "손으로 만든 물건이 많아요."]},
+      {"text": "선임님 가세요?", "reply": ["당연하죠! 컵이랑 엽서 사려고요."], "face": "happy"},
+      {"text": "저는 푹 쉬려고요.", "reply": ["그것도 최고의 계획이에요."]}
+     ],
+     "closing": "주말 신나게 보내요!"
+    },
+    {
+     "id": "acnh_22_weekend_review", "category": "weekend_review", "when": {"weekdays": ["mon"], "exclude_days": [1]},
+     "opener": ["비 오는 월요일이라 입구에 우산이 한가득이에요."],
+     "choices": [
+      {"text": "주말 잘 쉬었어요.", "reply": ["다행이다. 푹 쉬어야 한 주가 가요."]},
+      {"text": "플리마켓은 어떠셨어요?", "reply": ["아, 그거요! 머그컵 두 개 샀어요.", "하나는 고양이 그림이에요."], "face": "happy"},
+      {"text": "우산 많네요.", "reply": ["비 오는 날은 늘 이래요.", "자기 우산 헷갈리지 않게 조심해요."]}
+     ],
+     "closing": "비 오는 날은 발밑 조심해요."
+    },
+    {
+     "id": "acnh_22_weather", "category": "weather", "when": {"exclude_days": [6]},
+     "opener": ["요즘 뛰어서 출근하면 땀이 줄줄 나요."],
+     "choices": [
+      {"text": "조금 천천히 오세요.", "reply": ["그러고 싶은데 발이 먼저 뛰어요."]},
+      {"text": "곧 장마라던데요.", "reply": ["그럼 뛰기도 힘들겠네요.", "우비라도 사야 하나 봐요."]},
+      {"text": "사무실이 시원해서 다행이에요.", "reply": ["맞아요. 들어오는 순간 살 것 같아요."]}
+     ],
+     "closing": "물 자주 마시고요!"
+    },
+    {
+     "id": "acnh_22_hobby", "category": "hobby", "when": {},
+     "opener": ["저는 주말마다 떡볶이집 순례를 해요."],
+     "choices": [
+      {"text": "몇 군데나 가 보셨어요?", "reply": ["올해만 스무 곳 넘었어요.", "수첩에 다 적어 놨어요."]},
+      {"text": "제일 맛있던 데는 어디예요?", "reply": ["아, 그거요! 시장 안 오래된 집이요.", "국물이 진해서 계속 생각나요."]},
+      {"text": "저도 떡볶이 좋아해요.", "reply": ["반가워요! 다음에 같이 가요."], "face": "happy"}
+     ],
+     "closing": "맛집 생기면 제일 먼저 알려 줄게요."
+    },
+    {
+     "id": "acnh_22_recent_watch", "category": "recent_watch", "when": {},
+     "opener": ["어제 플리마켓 브이로그 보다가 늦게 잤어요."],
+     "choices": [
+      {"text": "플리마켓 브이로그요?", "reply": ["사람들이 파는 물건 구경하는 거예요.", "보다 보면 가고 싶어져요."]},
+      {"text": "재밌겠네요.", "reply": ["아, 그거요! 은근 시간 순삭이에요."], "face": "happy"},
+      {"text": "늦게 주무셨으면 피곤하시겠어요.", "reply": ["조금요. 그래서 커피 두 잔 마셨어요."]}
+     ],
+     "closing": "재밌는 거 찾으면 공유해요."
+    },
+    {
+     "id": "acnh_22_office_small", "category": "office_small", "when": {}, "links": ["cheese_cat"],
+     "opener": ["주차장 입구에 치즈 고양이 봤어요?"],
+     "choices": [
+      {"text": "아직 못 봤어요.", "reply": ["화단 쪽에 자주 앉아 있어요.", "멀리서만 봐야 도망 안 가요."]},
+      {"text": "봤어요. 엄청 귀엽던데요.", "reply": ["그렇죠? 볕 좋은 날엔 늘 거기 있어요."], "face": "happy"},
+      {"text": "이름이 있어요?", "reply": ["아, 그거요! 다들 치즈라고 불러요.", "누가 먼저 불렀는지는 몰라요."]}
+     ],
+     "closing": "보게 되면 조용히 지나가 줘요."
+    }
+   ]
+  },
+  "acnh_27": {
+   "display_name": "권민호 주임",
+   "seat_id": "chief",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "player_register": "polite",
+   "basic": {
+    "hi": ["어, ○○ 씨. 잘 지내요?", "안녕하세요. 커피는 마셨어요?"],
+    "how": ["저는 괜찮아요. 오늘 커피가 잘 내려졌어요.", "소소하지만요, 오늘은 버스가 안 밀렸어요."],
+    "bye": ["네, 또 봐요.", "그럼 이따 휴게실에서 봐요."]
+   },
+   "fallback": ["지금은 잠깐 자리를 비워야 해서요. 이따 봐요.", "이 얘기는 커피 마시면서 마저 해요.", "조금 있다가 다시 얘기해요."],
+   "topics": [
+    {
+     "id": "acnh_27_first_day", "category": "first_day", "when": {"days": [1]},
+     "opener": ["첫날이죠? 휴게실 위치는 알아요?"],
+     "choices": [
+      {"text": "아직 몰라요. 어디예요?", "reply": ["복도 끝 오른쪽이요.", "커피랑 차가 늘 있어요."]},
+      {"text": "아침에 지나가면서 봤어요.", "reply": ["잘했네요. 거기가 제일 편한 곳이에요."], "face": "happy"},
+      {"text": "주임님은 총무팀 오래 계셨어요?", "reply": ["사 년째예요.", "사무실 구석구석은 제가 좀 알아요."]}
+     ],
+     "closing": "소소하지만요, 거기 창가 자리가 제일 좋아요."
+    },
+    {
+     "id": "acnh_27_breakfast", "category": "breakfast", "when": {"slots": ["morning"]},
+     "opener": ["저는 아침마다 에그 샌드위치 먹어요."],
+     "choices": [
+      {"text": "직접 만드세요?", "reply": ["네, 달걀만 삶아 두면 오 분이면 돼요."]},
+      {"text": "저도 샌드위치 좋아해요.", "reply": ["반가워요. 마요네즈는 조금만 넣어요."], "face": "happy"},
+      {"text": "오늘은 아침을 못 먹었어요.", "reply": ["그럼 휴게실 비스킷이라도 드세요.", "빈속에 커피는 속 쓰려요."]}
+     ],
+     "closing": "아침 든든하게 챙겨요."
+    },
+    {
+     "id": "acnh_27_commute", "category": "commute", "when": {"slots": ["morning"]},
+     "opener": ["출근 버스에서 시티팝 들으면 기분이 좋아요."],
+     "choices": [
+      {"text": "시티팝이요? 어떤 노래예요?", "reply": ["팔십 년대 느낌 나는 가요예요.", "창밖 보면서 들으면 딱이에요."]},
+      {"text": "저는 출근길에 잠이 와요.", "reply": ["그럼 신나는 노래를 들어 봐요.", "잠이 좀 깨요."]},
+      {"text": "추천해 주실 노래 있어요?", "reply": ["소소하지만요, 목록 하나 보내 드릴게요."], "face": "happy"}
+     ],
+     "closing": "출근길이 즐거워야 하루가 즐겁죠."
+    },
+    {
+     "id": "acnh_27_lunch", "category": "lunch", "when": {"slots": ["late_morning", "lunch"]},
+     "opener": ["저는 점심을 늘 한 시 넘어서 먹어요.", "그때 가면 김밥집이 한가해요."],
+     "choices": [
+      {"text": "늦게 드시면 배고프지 않으세요?", "reply": ["오전에 비스킷 하나 먹어 둬요."]},
+      {"text": "김밥 좋아하세요?", "reply": ["참치 김밥이면 매일도 먹어요."], "face": "happy"},
+      {"text": "저는 동기들이랑 먹으러 가요.", "reply": ["좋네요. 맛있는 데 찾으면 알려 줘요."]}
+     ],
+     "closing": "맛있게 드세요."
+    },
+    {
+     "id": "acnh_27_afternoon", "category": "afternoon", "when": {"slots": ["afternoon"]}, "links": ["bean_change"],
+     "opener": ["요즘 휴게실 원두, 제가 고른 거예요.", "산미 있는 걸로 바꿨는데 마셔 봤어요?"],
+     "choices": [
+      {"text": "네, 마셔 봤는데 상큼했어요.", "reply": ["다행이다. 호불호가 갈려서 걱정했어요."], "face": "happy"},
+      {"text": "산미가 뭐예요?", "reply": ["커피에서 나는 새콤한 맛이요.", "과일 향처럼 느껴져요."]},
+      {"text": "원두는 어떻게 고르세요?", "reply": ["향부터 맡아 보고 골라요.", "소소하지만요, 그게 제 즐거움이에요."]}
+     ],
+     "closing": "마셔 보고 어떤지 알려 줘요."
+    },
+    {
+     "id": "acnh_27_after_work", "category": "after_work", "when": {"slots": ["evening"]},
+     "opener": ["퇴근하고 한 정거장 걸으면서 노래 들어요."],
+     "choices": [
+      {"text": "좋은 습관이네요.", "reply": ["하루 정리하는 시간이에요."]},
+      {"text": "저는 바로 집에 가요.", "reply": ["그것도 좋아요. 쉬는 게 먼저죠."]},
+      {"text": "오늘은 무슨 노래 들으세요?", "reply": ["여름 밤 노래 모음이요.", "저녁 바람이랑 잘 어울려요."], "face": "happy"}
+     ],
+     "closing": "오늘도 고생 많았어요."
+    },
+    {
+     "id": "acnh_27_weekend_plan", "category": "weekend_plan", "when": {"weekdays": ["fri"]},
+     "opener": ["주말엔 근교로 드라이브 가려고요."],
+     "choices": [
+      {"text": "어디로 가세요?", "reply": ["호수 있는 동네요. 한 시간 걸려요.", "가서 커피 한 잔 마시고 와요."]},
+      {"text": "저는 집에서 쉬려고요.", "reply": ["그게 최고예요. 잘 쉬어요."]},
+      {"text": "드라이브 좋아하시네요.", "reply": ["창문 열고 노래 틀면 딱이에요."], "face": "happy"}
+     ],
+     "closing": "좋은 주말 보내요, ○○ 씨."
+    },
+    {
+     "id": "acnh_27_weekend_review", "category": "weekend_review", "when": {"weekdays": ["mon"], "exclude_days": [1]},
+     "opener": ["비 와서 호숫가 대신 카페에만 있었어요."],
+     "choices": [
+      {"text": "그래도 좋으셨겠어요.", "reply": ["네, 빗소리 들으면서 쉬었어요."], "face": "happy"},
+      {"text": "저는 집에서 쉬었어요.", "reply": ["비 오는 날엔 그게 제일이죠."]},
+      {"text": "커피는 맛있었어요?", "reply": ["산미 있는 원두였는데 괜찮았어요.", "휴게실 커피랑 비슷했어요."]}
+     ],
+     "closing": "월요일이니까 천천히 가요."
+    },
+    {
+     "id": "acnh_27_weather", "category": "weather", "when": {"exclude_days": [6]},
+     "opener": ["요즘 습해서 원두도 금방 눅눅해져요."],
+     "choices": [
+      {"text": "커피도 날씨를 타요?", "reply": ["그럼요. 뚜껑 꼭 닫아 둬야 해요."]},
+      {"text": "곧 장마라던데 더 심해지겠네요.", "reply": ["그러게요. 밀폐 통을 하나 더 사야겠어요."]},
+      {"text": "사람도 눅눅해요.", "reply": ["맞아요. 저도 에어컨 앞을 못 떠나요."], "face": "happy"}
+     ],
+     "closing": "습한 날엔 물 많이 마셔요."
+    },
+    {
+     "id": "acnh_27_hobby", "category": "hobby", "when": {},
+     "opener": ["혹시 시티팝 들어 봤어요?"],
+     "choices": [
+      {"text": "들어 봤어요. 좋아해요.", "reply": ["반가워요. 좋아하는 사람 드물어요."], "face": "happy"},
+      {"text": "잘 몰라요.", "reply": ["옛날 도시 느낌 나는 노래예요.", "처음 듣는데도 익숙할 거예요."]},
+      {"text": "주임님은 언제 들으세요?", "reply": ["출근길, 퇴근길, 주말 드라이브요.", "거의 하루 종일이네요."]}
+     ],
+     "closing": "소소하지만요, 노래 하나 추천할게요."
+    },
+    {
+     "id": "acnh_27_recent_watch", "category": "recent_watch", "when": {},
+     "opener": ["주말에 커피 다큐를 하나 봤어요."],
+     "choices": [
+      {"text": "어떤 내용이에요?", "reply": ["커피 농장에서 잔까지 오는 이야기요.", "원두 한 알이 귀해 보였어요."]},
+      {"text": "커피 진짜 좋아하시네요.", "reply": ["네, 소소한 낙이에요."], "face": "happy"},
+      {"text": "저도 보고 싶어요.", "reply": ["제목 적어서 드릴게요."]}
+     ],
+     "closing": "보고 나면 커피가 더 맛있어요."
+    },
+    {
+     "id": "acnh_27_office_small", "category": "office_small", "when": {},
+     "opener": ["휴게실 창가에 작은 스피커 하나 뒀어요."],
+     "choices": [
+      {"text": "노래 틀어 주시는 거예요?", "reply": ["점심시간에만 작게요.", "조용한 노래로 골라요."], "face": "happy"},
+      {"text": "몰랐어요. 가 볼게요.", "reply": ["점심 먹고 커피 마시면서 들어 봐요."]}
+     ],
+     "closing": "듣고 싶은 노래 있으면 말해요."
+    }
+   ]
+  },
+  "acnh_57": {
+   "display_name": "박도현 사원",
+   "seat_id": "staff_m",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "player_register": "casual",
+   "basic": {
+    "hi": ["어, 왔어? 이거 봐 봐, 새 볼펜이야.", "안녕! 오늘 편의점 신상 나왔대."],
+    "how": ["나? 잘 지내. 볼펜 하나 새로 샀어.", "그럭저럭. 아침에 삼각김밥 두 개 먹었어."],
+    "bye": ["응, 가 봐. 또 보자.", "이따 점심때 봐!"]
+   },
+   "fallback": ["아, 나 지금 이거 정리 중이야. 이따 봐.", "수다는 점심때 이어서 하자!", "잠깐만, 금방 다시 올게."],
+   "topics": [
+    {
+     "id": "acnh_57_first_day", "category": "first_day", "when": {"days": [1]}, "face": "happy",
+     "opener": ["첫날 기념으로 볼펜 하나 새로 샀어. 이거 봐 봐."],
+     "choices": [
+      {"text": "오, 색 좋다.", "reply": ["그치? 잉크가 부드럽게 나와."], "face": "happy"},
+      {"text": "볼펜 모으는 거야?", "reply": ["응, 벌써 서른 자루 넘었어.", "첫날 기념으로 하나 더 늘었지."]},
+      {"text": "나도 동기라 반가워.", "reply": ["나도! 우리 서로 챙기자."]}
+     ],
+     "closing": "모르는 거 생기면 같이 찾아보자."
+    },
+    {
+     "id": "acnh_57_breakfast", "category": "breakfast", "when": {"slots": ["morning"]},
+     "opener": ["오늘 아침은 참치마요 삼각김밥이었어."],
+     "choices": [
+      {"text": "나도 편의점에서 먹었어.", "reply": ["편의점 동지다. 뭐 먹었어?"], "face": "happy"},
+      {"text": "삼각김밥 잘 뜯어?", "reply": ["이거 봐 봐, 이제 한 번에 뜯어.", "석 달 연습한 결과야."]},
+      {"text": "나는 집에서 먹고 왔어.", "reply": ["부럽다. 집밥이 최고지."]}
+     ],
+     "closing": "배고프면 내 서랍 열어 봐."
+    },
+    {
+     "id": "acnh_57_commute", "category": "commute", "when": {"slots": ["morning"]},
+     "opener": ["나 오늘 버스에서 자리 앉았어. 운 좋았지."],
+     "choices": [
+      {"text": "좋았겠다. 나는 서서 왔어.", "reply": ["고생했네. 다음엔 너도 앉길 빌게."]},
+      {"text": "버스 몇 분 타?", "reply": ["한 번에 이십 분. 딱 좋아."]},
+      {"text": "앉아서 뭐 했어?", "reply": ["편의점 신상 목록 봤지.", "오늘 새로 나온 과자가 있더라."], "face": "happy"}
+     ],
+     "closing": "출근길 운 좋은 날은 하루가 잘 풀려."
+    },
+    {
+     "id": "acnh_57_lunch", "category": "lunch", "when": {"slots": ["late_morning", "lunch"]}, "links": ["lunch_1f"],
+     "opener": ["점심 12시에 1층에서 모이는 거 알지?"],
+     "choices": [
+      {"text": "응, 알아. 같이 가자.", "reply": ["좋아. 오늘은 내가 메뉴 골라 볼게."], "face": "happy"},
+      {"text": "몇 명이나 와?", "reply": ["동기들 오는 대로 가.", "보통 대여섯 명쯤 돼."]},
+      {"text": "오늘 메뉴는 뭐야?", "reply": ["아무거나 좋아. 나 가리는 거 없어."]}
+     ],
+     "closing": "12시에 1층, 잊지 마!"
+    },
+    {
+     "id": "acnh_57_afternoon", "category": "afternoon", "when": {"slots": ["afternoon"]},
+     "opener": ["이거 봐 봐, 편의점 신상 과자야."],
+     "choices": [
+      {"text": "무슨 맛이야?", "reply": ["옥수수 버터 맛. 생각보다 달아."]},
+      {"text": "하나 먹어 봐도 돼?", "reply": ["당연하지. 반 나눠 먹자."], "face": "happy"},
+      {"text": "신상 진짜 빨리 찾는다.", "reply": ["매주 목요일에 새로 들어오거든.", "그날 꼭 들러."]}
+     ],
+     "closing": "맛있으면 다음 주에 또 사 올게."
+    },
+    {
+     "id": "acnh_57_after_work", "category": "after_work", "when": {"slots": ["evening"]},
+     "opener": ["퇴근하고 문구점 들렀다 가려고."],
+     "choices": [
+      {"text": "뭐 사려고?", "reply": ["새로 나온 형광펜 보려고.", "색이 여섯 개래."]},
+      {"text": "나도 같이 가도 돼?", "reply": ["좋지! 같이 구경하자."], "face": "happy"},
+      {"text": "나는 집 가서 쉴래.", "reply": ["그래, 푹 쉬어. 좋은 거 있으면 보여 줄게."]}
+     ],
+     "closing": "오늘도 고생했어, 동기야."
+    },
+    {
+     "id": "acnh_57_weekend_plan", "category": "weekend_plan", "when": {"weekdays": ["fri"]},
+     "opener": ["주말에 조조 영화 보러 갈 거야."],
+     "choices": [
+      {"text": "조조로 보는 거야?", "reply": ["응, 아침 일찍 가면 싸고 한가해.", "팝콘도 금방 사."]},
+      {"text": "무슨 영화 봐?", "reply": ["우주 나오는 영화. 화면 큰 데서 봐야 해."], "face": "happy"},
+      {"text": "나는 늦잠 잘래.", "reply": ["그것도 최고의 계획이지."]}
+     ],
+     "closing": "재밌게 쉬고 월요일에 만나!"
+    },
+    {
+     "id": "acnh_57_weekend_review", "category": "weekend_review", "when": {"weekdays": ["mon"], "exclude_days": [1]},
+     "opener": ["비 오니까 버스가 엄청 막혔어.", "주말엔 뭐 하고 놀았어?"],
+     "choices": [
+      {"text": "푹 쉬었어.", "reply": ["잘했다. 나도 영화 보고 푹 쉬었어."]},
+      {"text": "영화는 어땠어?", "reply": ["화면이 커서 진짜 우주에 간 줄 알았어."], "face": "happy"},
+      {"text": "비 와서 집에만 있었어.", "reply": ["비 오면 집이 최고지."]}
+     ],
+     "closing": "오늘은 우산 잘 챙겨 가."
+    },
+    {
+     "id": "acnh_57_weather", "category": "weather", "when": {"exclude_days": [6]},
+     "opener": ["요즘 편의점 아이스크림이 제일 잘 팔린대."],
+     "choices": [
+      {"text": "나도 어제 하나 사 먹었어.", "reply": ["역시. 요즘 날씨엔 그게 답이야."], "face": "happy"},
+      {"text": "진짜 너무 덥다.", "reply": ["그치? 정류장까지만 걸어도 녹아."]},
+      {"text": "곧 장마 온다더라.", "reply": ["우산부터 사야겠다. 편의점 걸로."]}
+     ],
+     "closing": "더위 먹지 말고 물 많이 마셔."
+    },
+    {
+     "id": "acnh_57_hobby", "category": "hobby", "when": {},
+     "opener": ["문구점 가면 나는 시간 가는 줄 몰라."],
+     "choices": [
+      {"text": "나도 문구 좋아해.", "reply": ["진짜? 우리 문구점 투어 가자."], "face": "happy"},
+      {"text": "뭐 제일 좋아해?", "reply": ["볼펜. 쓰는 느낌이 다 달라.", "이거 봐 봐, 이건 0.38이야."]},
+      {"text": "모으면 다 써?", "reply": ["거의 다 써. 안 쓰면 아깝잖아."]}
+     ],
+     "closing": "좋은 볼펜 찾으면 하나 줄게."
+    },
+    {
+     "id": "acnh_57_recent_watch", "category": "recent_watch", "when": {},
+     "opener": ["지난 주말에 조조로 본 영화 진짜 좋았어."],
+     "choices": [
+      {"text": "무슨 영화였어?", "reply": ["바닷속 탐험 영화. 화면이 끝내줬어."], "face": "happy"},
+      {"text": "조조는 사람 없어서 좋지.", "reply": ["맞아. 거의 혼자 본 느낌이었어."]},
+      {"text": "나도 볼까?", "reply": ["꼭 봐. 큰 화면으로 봐."]}
+     ],
+     "closing": "보면 감상 꼭 얘기해 줘."
+    },
+    {
+     "id": "acnh_57_office_small", "category": "office_small", "when": {},
+     "opener": ["이거 봐 봐, 비품함에 새 포스트잇 들어왔어."],
+     "choices": [
+      {"text": "색깔 뭐 있어?", "reply": ["파랑, 노랑, 분홍. 분홍이 제일 귀여워."], "face": "happy"},
+      {"text": "필요하면 가져가도 돼?", "reply": ["응, 쓸 만큼 가져가면 돼."]}
+     ],
+     "closing": "좋은 문구는 나눠 써야지."
+    }
+   ]
+  },
+  "acnh_58": {
+   "display_name": "정민서 사원",
+   "seat_id": "staff_f",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "player_register": "casual",
+   "basic": {
+    "hi": ["어, 왔어? 잘 지내?", "안녕. 오늘 컨디션 어때?"],
+    "how": ["나는 괜찮아. 아침에 오디오북 들었어.", "평소랑 비슷해. 좋은 편이야."],
+    "bye": ["응, 또 보자.", "가 봐. 나도 하던 거 할게."]
+   },
+   "fallback": ["지금은 좀 집중하는 중이야. 이따 얘기해.", "그 얘기 점심때 마저 하자.", "잠깐만, 이거 끝내고 갈게."],
+   "topics": [
+    {
+     "id": "acnh_58_first_day", "category": "first_day", "when": {"days": [1]},
+     "opener": ["첫날이라 그런지 오늘 시계가 느리게 가."],
+     "choices": [
+      {"text": "나도 그래. 긴장돼.", "reply": ["괜찮아. 우리 같이 천천히 가자."]},
+      {"text": "우리 동기지? 반가워.", "reply": ["응, 나도 반가워. 편하게 지내자."], "face": "happy"},
+      {"text": "긴장 풀리는 방법 있어?", "reply": ["나는 숨 크게 세 번 쉬어.", "클라이밍할 때 쓰는 방법이야."]}
+     ],
+     "closing": "점심 먹고 나면 좀 괜찮아질 거야."
+    },
+    {
+     "id": "acnh_58_breakfast", "category": "breakfast", "when": {"slots": ["morning"]}, "face": "happy",
+     "opener": ["나 아침에 꼬마김밥 싸 왔어. 하나 먹을래?"],
+     "choices": [
+      {"text": "고마워, 하나 먹을게.", "reply": ["단무지 대신 오이 넣었어. 어때?"], "face": "happy"},
+      {"text": "아침마다 직접 싸?", "reply": ["응, 재료만 있으면 십 분이면 돼."]},
+      {"text": "나는 먹고 왔어.", "reply": ["좋다, 그거. 아침은 챙겨야지."]}
+     ],
+     "closing": "배고프면 언제든 말해."
+    },
+    {
+     "id": "acnh_58_commute", "category": "commute", "when": {"slots": ["morning"]},
+     "opener": ["지하철에서 오디오북 들으면서 왔어."],
+     "choices": [
+      {"text": "무슨 책 들어?", "reply": ["바다 건너는 모험 소설.", "성우 목소리가 좋아서 계속 들어."]},
+      {"text": "나도 해 보고 싶다.", "reply": ["좋다, 그거. 앱 알려 줄게."], "face": "happy"},
+      {"text": "사람 많아서 힘들지 않아?", "reply": ["눈 감고 들으면 좀 괜찮아."]}
+     ],
+     "closing": "출근길이 짧게 느껴져서 좋아."
+    },
+    {
+     "id": "acnh_58_lunch", "category": "lunch", "when": {"slots": ["late_morning", "lunch"]},
+     "opener": ["점심은 국수 어때? 나 국수 좋아해."],
+     "choices": [
+      {"text": "좋아, 국수 먹자.", "reply": ["비빔국수 잘하는 데 알아. 거기로 가."], "face": "happy"},
+      {"text": "다른 것도 괜찮아?", "reply": ["응, 네가 먹고 싶은 걸로 하자."]},
+      {"text": "동기들 다 같이 가자.", "reply": ["좋다, 그거. 다 같이 먹자."]}
+     ],
+     "closing": "배고프다, 얼른 가자."
+    },
+    {
+     "id": "acnh_58_afternoon", "category": "afternoon", "when": {"slots": ["afternoon"]},
+     "opener": ["오후엔 에너지바 하나씩 먹어."],
+     "choices": [
+      {"text": "무슨 맛이야?", "reply": ["땅콩이랑 초코. 하나 줄까?"], "face": "happy"},
+      {"text": "운동 때문에 먹는 거야?", "reply": ["응, 클라이밍 가는 날엔 꼭.", "힘이 빠지면 안 되거든."]},
+      {"text": "나도 간식 가져올걸.", "reply": ["괜찮아, 하나 나눠 줄게."]}
+     ],
+     "closing": "힘내서 마저 하자."
+    },
+    {
+     "id": "acnh_58_after_work", "category": "after_work", "when": {"slots": ["evening"]},
+     "opener": ["나는 화요일이랑 목요일엔 클라이밍 가."],
+     "choices": [
+      {"text": "클라이밍 어렵지 않아?", "reply": ["처음엔 벽에 매달리기만 했어.", "지금은 중간까지는 가."]},
+      {"text": "나는 집에 가서 쉴 거야.", "reply": ["좋다, 그거. 쉬는 것도 중요해."]},
+      {"text": "나도 한번 해 보고 싶다.", "reply": ["체험 수업 있어. 같이 가 볼래?"], "face": "happy"}
+     ],
+     "closing": "오늘 하루도 수고했어."
+    },
+    {
+     "id": "acnh_58_weekend_plan", "category": "weekend_plan", "when": {"weekdays": ["fri"]},
+     "opener": ["주말엔 오디오북 틀고 산책할 거야."],
+     "choices": [
+      {"text": "좋은 계획이다.", "reply": ["걸으면서 들으면 한 권 금방이야."], "face": "happy"},
+      {"text": "어디로 걸어?", "reply": ["집 근처 강변길. 그늘이 많아."]},
+      {"text": "나는 친구 만나.", "reply": ["좋다, 그거. 재밌게 놀다 와."]}
+     ],
+     "closing": "다음 주에 또 보자."
+    },
+    {
+     "id": "acnh_58_weekend_review", "category": "weekend_review", "when": {"weekdays": ["mon"], "exclude_days": [1]},
+     "opener": ["비 와서 산책은 못 하고 집에서 들었어."],
+     "choices": [
+      {"text": "그래도 좋았겠다.", "reply": ["응, 빗소리랑 같이 들으니까 좋더라."], "face": "happy"},
+      {"text": "무슨 책 들었어?", "reply": ["추리 소설. 범인을 거의 맞혔어."]},
+      {"text": "나도 집에서 쉬었어.", "reply": ["잘했어. 비 오는 날엔 그게 최고야."]}
+     ],
+     "closing": "오늘은 우산 꼭 챙겨 가."
+    },
+    {
+     "id": "acnh_58_weather", "category": "weather", "when": {"exclude_days": [6]},
+     "opener": ["요즘 습해서 손이 자꾸 미끄러워."],
+     "choices": [
+      {"text": "클라이밍할 때 힘들겠다.", "reply": ["응, 초크를 평소 두 배로 써."]},
+      {"text": "곧 장마래.", "reply": ["그럼 실내 클라이밍 가기 딱 좋네."], "face": "happy"},
+      {"text": "에어컨 앞이 최고야.", "reply": ["맞아. 여기 있으면 나가기 싫어."]}
+     ],
+     "closing": "더위 조심하자, 우리."
+    },
+    {
+     "id": "acnh_58_hobby", "category": "hobby", "when": {},
+     "opener": ["나 요즘 실내 클라이밍에 빠졌어."],
+     "choices": [
+      {"text": "무섭지 않아?", "reply": ["매트가 두꺼워서 괜찮아.", "떨어지는 것도 연습해."]},
+      {"text": "재밌어 보인다.", "reply": ["좋다, 그거. 한 번 해 보면 빠져."], "face": "happy"},
+      {"text": "어떤 점이 좋아?", "reply": ["한 칸씩 올라가는 게 재밌어.", "머리도 쓰고 몸도 써."]}
+     ],
+     "closing": "관심 생기면 말해. 같이 가자."
+    },
+    {
+     "id": "acnh_58_recent_watch", "category": "recent_watch", "when": {},
+     "opener": ["요즘 듣는 오디오북 성우가 진짜 잘해."],
+     "choices": [
+      {"text": "어떤 이야기야?", "reply": ["작은 섬마을 빵집 이야기야.", "듣다 보면 빵이 먹고 싶어."]},
+      {"text": "나도 들어 볼래.", "reply": ["첫 장만 들어 봐. 금방 빠질 거야."], "face": "happy"},
+      {"text": "책으로 읽는 거랑 달라?", "reply": ["응, 목소리가 있으니까 드라마 같아."]}
+     ],
+     "closing": "다 들으면 감상 얘기해 줄게."
+    },
+    {
+     "id": "acnh_58_office_small", "category": "office_small", "when": {},
+     "opener": ["휴게실 창가 자리 오후에 햇빛 좋더라."],
+     "choices": [
+      {"text": "몰랐어. 가 봐야겠다.", "reply": ["오후 두 시쯤이 제일 따뜻해."], "face": "happy"},
+      {"text": "거기서 뭐 해?", "reply": ["오디오북 한 챕터 듣고 와.", "십 분이면 머리가 맑아져."]}
+     ],
+     "closing": "쉬는 시간에 한번 가 봐."
+    }
+   ]
+  }
+ }
+}

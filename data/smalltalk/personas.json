@@ -1,0 +1,2249 @@
+{
+ "schema": "worksim.smalltalk.personas.v1",
+ "fixed_roster_version": 1,
+ "roster_source": "data/office_roster.json",
+ "generated": "2026-09-30",
+ "scored": false,
+ "affects_ncs": false,
+ "affects_trust": false,
+ "scoring_note": "스몰토크는 채점하지 않는다. NCS·점수·신뢰·결과 보고서 어디에도 반영하지 않는다.",
+ "calendar": {
+  "source": "data/story/*-ep1~7.js 의 date 필드(1일차 2026-07-06 월 … 6일차 07-13 월, 7일차 07-14 화)",
+  "note": "요일 조건(weekdays)은 이 표로 푼다. 달력이 바뀌면 이 표만 고치면 된다.",
+  "days": [
+   {
+    "day": 1,
+    "date": "2026-07-06",
+    "weekday": "mon",
+    "label": "첫 출근"
+   },
+   {
+    "day": 2,
+    "date": "2026-07-07",
+    "weekday": "tue",
+    "label": ""
+   },
+   {
+    "day": 3,
+    "date": "2026-07-08",
+    "weekday": "wed",
+    "label": ""
+   },
+   {
+    "day": 4,
+    "date": "2026-07-09",
+    "weekday": "thu",
+    "label": ""
+   },
+   {
+    "day": 5,
+    "date": "2026-07-10",
+    "weekday": "fri",
+    "label": "주말 앞"
+   },
+   {
+    "day": 6,
+    "date": "2026-07-13",
+    "weekday": "mon",
+    "label": "주말 다음 · 비 오는 월요일(총무팀 6화 이재훈 팀장 젖은 우산)"
+   },
+   {
+    "day": 7,
+    "date": "2026-07-14",
+    "weekday": "tue",
+    "label": "마지막 날"
+   }
+  ]
+ },
+ "time_slots": {
+  "source": "js/play/core.js fmtClock — 표시 시각 09:00~18:00(내부 1분 = 표시 18분). 점심 표시 12:00~13:00",
+  "slots": [
+   {
+    "id": "morning",
+    "from": "09:00",
+    "to": "09:59",
+    "label": "출근~10시 — 아침밥·출근길"
+   },
+   {
+    "id": "late_morning",
+    "from": "10:00",
+    "to": "11:29",
+    "label": "오전 — 커피·잡담"
+   },
+   {
+    "id": "lunch",
+    "from": "11:30",
+    "to": "13:29",
+    "label": "점심 전후 — 메뉴"
+   },
+   {
+    "id": "afternoon",
+    "from": "13:30",
+    "to": "16:29",
+    "label": "오후 — 간식·졸음"
+   },
+   {
+    "id": "evening",
+    "from": "16:30",
+    "to": "18:00",
+    "label": "퇴근 전 — 퇴근 후 계획"
+   }
+  ]
+ },
+ "categories": [
+  {
+   "id": "first_day",
+   "label": "첫날 인사",
+   "when": {
+    "days": [
+     1
+    ]
+   }
+  },
+  {
+   "id": "breakfast",
+   "label": "아침밥",
+   "when": {
+    "slots": [
+     "morning"
+    ]
+   }
+  },
+  {
+   "id": "commute",
+   "label": "출근길",
+   "when": {
+    "slots": [
+     "morning"
+    ]
+   }
+  },
+  {
+   "id": "lunch",
+   "label": "점심 메뉴",
+   "when": {
+    "slots": [
+     "late_morning",
+     "lunch"
+    ]
+   }
+  },
+  {
+   "id": "afternoon",
+   "label": "오후 간식·커피",
+   "when": {
+    "slots": [
+     "afternoon"
+    ]
+   }
+  },
+  {
+   "id": "after_work",
+   "label": "퇴근 후 계획",
+   "when": {
+    "slots": [
+     "evening"
+    ]
+   }
+  },
+  {
+   "id": "weekend_plan",
+   "label": "주말 계획",
+   "when": {
+    "weekdays": [
+     "fri"
+    ]
+   }
+  },
+  {
+   "id": "weekend_review",
+   "label": "주말 후기",
+   "when": {
+    "weekdays": [
+     "mon"
+    ],
+    "exclude_days": [
+     1
+    ]
+   }
+  },
+  {
+   "id": "weather",
+   "label": "날씨(7월 초 더위·습기·장마 소식)",
+   "when": {
+    "exclude_days": [
+     6
+    ]
+   }
+  },
+  {
+   "id": "hobby",
+   "label": "취미",
+   "when": {}
+  },
+  {
+   "id": "recent_watch",
+   "label": "최근 본 것·들은 것",
+   "when": {}
+  },
+  {
+   "id": "office_small",
+   "label": "사무실 소소한 일",
+   "when": {}
+  },
+  {
+   "id": "extra",
+   "label": "인물 관심사 추가 주제(선택)",
+   "when": null
+  }
+ ],
+ "tone_by_title": {
+  "팀장": "여유·배려. 짧게 묻고 신입의 답을 편하게 받아 준다. 업무 얘기로 끌고 가지 않는다.",
+  "선임": "친근한 조언. 생활 팁을 한마디씩 얹는다. 같은 팀이면 사수, 다른 팀이면 먼저 말 거는 선배.",
+  "주임": "또래 동료. 맞장구와 공감, 몇 년 먼저 들어온 선배 정도의 거리.",
+  "사원": "동기(같은 날 입사). 반말로 편하게 수다. 플레이어 선택지도 반말."
+ },
+ "world": [
+  {
+   "id": "bakery",
+   "name": "1층 보리밭 베이커리",
+   "desc": "회사 건물 1층 로비 옆 빵집. 아침 8시에 열고 소금빵이 유명하다.",
+   "keywords": [
+    "보리밭",
+    "소금빵"
+   ],
+   "characters": [
+    "acnh_31",
+    "acnh_21"
+   ]
+  },
+  {
+   "id": "cheese_cat",
+   "name": "주차장 입구 치즈 고양이",
+   "desc": "회사 뒤편 주차장 입구 화단에 자주 나타나는 치즈색 길고양이. 직원들이 '치즈'라고 부르고 멀리서 보기만 한다.",
+   "keywords": [
+    "치즈"
+   ],
+   "characters": [
+    "acnh_23",
+    "acnh_22",
+    "acnh_64"
+   ]
+  },
+  {
+   "id": "run_club",
+   "name": "목요일 러닝 모임",
+   "desc": "목요일 퇴근 뒤 회사 뒤 개천 산책로를 5km 뛰는 사내 모임. 경영기획팀 조성민 팀장이 만들었고 교육팀 반지훈 주임이 개근한다.",
+   "keywords": [
+    "러닝",
+    "뛰"
+   ],
+   "characters": [
+    "acnh_41",
+    "acnh_36",
+    "acnh_61",
+    "acnh_54"
+   ]
+  },
+  {
+   "id": "bean_change",
+   "name": "휴게실 원두 교체",
+   "desc": "이번 주부터 휴게실 커피 원두가 산미 있는 원두로 바뀌었다. 총무팀 권민호 주임이 골랐다.",
+   "keywords": [
+    "원두"
+   ],
+   "characters": [
+    "acnh_27",
+    "acnh_20",
+    "acnh_55"
+   ]
+  },
+  {
+   "id": "kalguksu",
+   "name": "회사 앞 한그릇 칼국수",
+   "desc": "회사 앞 골목 칼국숫집. 바지락 칼국수가 기본이고 수요일에만 들깨 칼국수가 나온다.",
+   "keywords": [
+    "한그릇",
+    "칼국수"
+   ],
+   "characters": [
+    "acnh_32",
+    "acnh_43",
+    "acnh_45"
+   ]
+  },
+  {
+   "id": "food_truck",
+   "name": "금요일 푸드트럭",
+   "desc": "금요일 점심마다 1층 앞 광장에 오는 푸드트럭. 이번 주 메뉴는 타코.",
+   "keywords": [
+    "푸드트럭"
+   ],
+   "characters": [
+    "acnh_33",
+    "acnh_65"
+   ]
+  },
+  {
+   "id": "monstera",
+   "name": "품질관리팀 창가 몬스테라 '몬식이'",
+   "desc": "품질관리팀 창가 화분. 배정훈 팀장이 새 잎 수를 적어 두고, 남기웅 선임이 라벨 프린터로 '몬식이' 이름표를 붙였다.",
+   "keywords": [
+    "몬스테라",
+    "몬식이"
+   ],
+   "characters": [
+    "acnh_26",
+    "acnh_28",
+    "acnh_35"
+   ]
+  },
+  {
+   "id": "drama",
+   "name": "주말 드라마 「오후 세 시의 정원」",
+   "desc": "토·일 밤에 하는 가상의 주말 드라마. 홍보팀 진아름 선임과 교육팀 손예지 선임이 같이 챙겨 보는 사이.",
+   "keywords": [
+    "오후 세 시의 정원"
+   ],
+   "characters": [
+    "acnh_44",
+    "acnh_46"
+   ]
+  },
+  {
+   "id": "boardgame",
+   "name": "수요일 점심 보드게임",
+   "desc": "수요일 점심에 휴게실에서 30분짜리 보드게임을 한 판 하는 모임. 교육팀 백승현 사원이 룰 설명 담당.",
+   "keywords": [
+    "보드게임"
+   ],
+   "characters": [
+    "acnh_67",
+    "acnh_62"
+   ]
+  },
+  {
+   "id": "lunch_1f",
+   "name": "동기 점심 12시 1층",
+   "desc": "같은 날 입사한 신입 동기들이 점심 12시에 1층 로비에서 모인다(스토리 정본: 동기 메신저 '점심 12시 1층').",
+   "keywords": [
+    "12시",
+    "1층"
+   ],
+   "characters": [
+    "acnh_54",
+    "acnh_57",
+    "acnh_61",
+    "acnh_64",
+    "acnh_70"
+   ]
+  }
+ ],
+ "personas": [
+  {
+   "character_id": "acnh_30",
+   "display_name": "김민아 팀장",
+   "full_name": "김민아",
+   "title": "팀장",
+   "gender": "female",
+   "team_code": "cs",
+   "team_name": "고객상담팀",
+   "seat_id": "lead",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "팀장",
+   "personality": "말수는 적지만 끝까지 듣고, 짧게 챙겨 주는 차분한 팀장",
+   "speech": {
+    "level": "짧은 해요체",
+    "tic": "괜찮네",
+    "note": "문장을 짧게 끊는다. 칭찬은 한마디."
+   },
+   "player_register": "polite",
+   "interests": [
+    "베란다 방울토마토 화분",
+    "아침 스트레칭",
+    "보리차 텀블러"
+   ],
+   "daily": {
+    "breakfast": "삶은 달걀 두 개와 보리차",
+    "commute": "지하철, 두 정거장 먼저 내려 걷기",
+    "lunch": "비빔밥·쌀국수처럼 가벼운 것",
+    "snack": "방울토마토 한 줌",
+    "after_work": "베란다 화분 물 주기",
+    "weekend": "동네 꽃시장 구경"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 한 걸음 떨어져 지켜보다 먼저 안부를 묻는 상사, 다른 팀이면 정중하고 짧게.",
+   "story_basis": "스토리 고객상담팀 팀장: 짧게 말하고 근거를 묻는다. 칭찬은 \"괜찮네\" 한 마디(존댓)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_31",
+   "display_name": "박서윤 선임",
+   "full_name": "박서윤",
+   "title": "선임",
+   "gender": "female",
+   "team_code": "cs",
+   "team_name": "고객상담팀",
+   "seat_id": "senior",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "선임(같은 팀이면 사수)",
+   "personality": "늘 바쁜데 지나가면서 꼭 한마디 챙기는 빵 좋아하는 선배",
+   "speech": {
+    "level": "해요체+반말 토막",
+    "tic": "그쵸?",
+    "note": "해요체 끝에 반말 한 토막(\"맛있어, 진짜.\")."
+   },
+   "player_register": "polite",
+   "interests": [
+    "빵집 탐방(1층 보리밭 소금빵)",
+    "여행 팟캐스트",
+    "동네 산책 코스 찾기"
+   ],
+   "daily": {
+    "breakfast": "1층 빵집 소금빵과 아이스 라떼",
+    "commute": "버스 30분, 여행 팟캐스트",
+    "lunch": "빨리 먹고 한 바퀴 산책",
+    "snack": "빵 반쪽 나눠 먹기",
+    "after_work": "새 산책 코스 찾기",
+    "weekend": "새로 연 빵집 찾아가기"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 옆자리 사수라 제일 가깝고, 다른 팀이면 \"신입이네\" 하고 먼저 말 거는 선배.",
+   "story_basis": "스토리 고객상담팀 사수(박선임): 바쁘지만 챙긴다. 반말 섞인 존댓말",
+   "links": [
+    "bakery"
+   ]
+  },
+  {
+   "character_id": "acnh_21",
+   "display_name": "이수아 주임",
+   "full_name": "이수아",
+   "title": "주임",
+   "gender": "female",
+   "team_code": "cs",
+   "team_name": "고객상담팀",
+   "seat_id": "chief",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "주임(또래 선배)",
+   "personality": "조용하고 손이 야무진, 잘 들어 주는 또래 선배",
+   "speech": {
+    "level": "부드러운 해요체",
+    "tic": "그러니까요",
+    "note": "맞장구가 먼저 나온다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "코바늘 뜨개(여름 컵받침)",
+    "편의점 신상 디저트",
+    "라디오 사연 듣기"
+   ],
+   "daily": {
+    "breakfast": "요거트에 그래놀라",
+    "commute": "지하철 한 번 환승, 라디오 앱",
+    "lunch": "잔치국수·냉국수",
+    "snack": "편의점 신상 푸딩",
+    "after_work": "코바늘 뜨개 30분",
+    "weekend": "실 가게 구경"
+   },
+   "pet": null,
+   "distance": "몇 년 먼저 들어온 또래 선배. 편하게 물어볼 수 있는 사이.",
+   "story_basis": "스토리 고객상담팀 주임(이주임): 배경 근무, 타 팀엔 조력자로 노출",
+   "links": [
+    "bakery"
+   ]
+  },
+  {
+   "character_id": "acnh_53",
+   "display_name": "윤서진 사원",
+   "full_name": "윤서진",
+   "title": "사원",
+   "gender": "male",
+   "team_code": "cs",
+   "team_name": "고객상담팀",
+   "seat_id": "staff_m",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "느긋하고 잘 웃는, 아침잠 많은 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "아 맞다,",
+    "note": "말이 느리고 웃음이 섞인다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "홈카페 라떼아트 연습",
+    "고양이 영상 보기",
+    "늦잠 방지 알람 챌린지"
+   ],
+   "daily": {
+    "breakfast": "우유 한 잔(늦잠)",
+    "commute": "지하철, 졸다가 지나칠 뻔",
+    "lunch": "돈가스면 무조건 좋음",
+    "snack": "직접 내린 라떼",
+    "after_work": "라떼아트 연습",
+    "weekend": "늦잠 뒤 동네 카페"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(고객상담팀 남자 사원)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_34",
+   "display_name": "윤채원 사원",
+   "full_name": "윤채원",
+   "title": "사원",
+   "gender": "female",
+   "team_code": "cs",
+   "team_name": "고객상담팀",
+   "seat_id": "staff_f",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "에너지 넘치고 운동 좋아하는 직진형 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "가자!",
+    "note": "짧고 힘 있게 말한다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "풋살 동호회",
+    "매운 음식 도전",
+    "자전거 출근"
+   ],
+   "daily": {
+    "breakfast": "바나나와 두유",
+    "commute": "자전거 20분",
+    "lunch": "매운 짬뽕·떡볶이",
+    "snack": "견과류 한 봉",
+    "after_work": "수요일 풋살",
+    "weekend": "풋살 친선 경기"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 물류팀 편 동기(정수빈 — 고객상담팀 신입, 점심 메신저 친구)가 v2에서 이 인물로 연결됨",
+   "links": []
+  },
+  {
+   "character_id": "acnh_45",
+   "display_name": "강태호 팀장",
+   "full_name": "강태호",
+   "title": "팀장",
+   "gender": "male",
+   "team_code": "logi",
+   "team_name": "물류팀",
+   "seat_id": "lead",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "팀장",
+   "personality": "말은 짧고 투박하지만 몸으로 챙기는 현장형 팀장",
+   "speech": {
+    "level": "짧은 반말",
+    "tic": "됐네",
+    "note": "두세 마디로 끝낸다. 걱정은 행동으로 표현."
+   },
+   "player_register": "polite",
+   "interests": [
+    "주말 새벽 등산",
+    "하루 만 보 걷기",
+    "한그릇 칼국수"
+   ],
+   "daily": {
+    "breakfast": "누룽지 한 그릇",
+    "commute": "걸어서 25분, 창고 먼저 한 바퀴",
+    "lunch": "칼국수·국밥",
+    "snack": "찐 옥수수",
+    "after_work": "동네 한 바퀴 더 걷기",
+    "weekend": "새벽 등산 뒤 낮잠"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 무뚝뚝하게 챙기는 팀장, 다른 팀이면 \"어, 왔어\" 정도.",
+   "story_basis": "스토리 물류팀 팀장: 현장형. 창고에서 올라온다. 말이 짧다. 칭찬은 \"됐네\"(반말)",
+   "links": [
+    "kalguksu"
+   ]
+  },
+  {
+   "character_id": "acnh_23",
+   "display_name": "오세훈 선임",
+   "full_name": "오세훈",
+   "title": "선임",
+   "gender": "male",
+   "team_code": "logi",
+   "team_name": "물류팀",
+   "seat_id": "senior",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "선임(같은 팀이면 사수)",
+   "personality": "창고와 사무실을 부지런히 오가며 농담 한마디 던지는 캠핑 좋아하는 선배",
+   "speech": {
+    "level": "해요체+반말 토막",
+    "tic": "아무튼요,",
+    "note": "말 끝에 \"~거든, 아무튼요\"처럼 한 토막."
+   },
+   "player_register": "polite",
+   "interests": [
+    "차박 캠핑",
+    "주차장 치즈 고양이 목격담",
+    "대용량 아이스 아메리카노"
+   ],
+   "daily": {
+    "breakfast": "차에서 김밥 한 줄",
+    "commute": "자가용 40분",
+    "lunch": "제육볶음",
+    "snack": "대용량 아이스 아메리카노",
+    "after_work": "캠핑 장비 구경",
+    "weekend": "차박 캠핑"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 사수, 다른 팀이면 복도에서 먼저 농담 거는 선배.",
+   "story_basis": "스토리 물류팀 사수(오대리·오세훈): 창고와 사무실을 오간다. 바쁘지만 챙긴다. 반말 섞인 존댓말",
+   "links": [
+    "cheese_cat"
+   ]
+  },
+  {
+   "character_id": "acnh_52",
+   "display_name": "조민서 주임",
+   "full_name": "조민서",
+   "title": "주임",
+   "gender": "female",
+   "team_code": "logi",
+   "team_name": "물류팀",
+   "seat_id": "chief",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "주임(또래 선배)",
+   "personality": "꼼꼼하고 계획적인, 도시락 싸 오는 알뜰한 동료",
+   "speech": {
+    "level": "차분한 해요체",
+    "tic": "딱 좋네요",
+    "note": "말이 차분하고 정돈돼 있다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "1000피스 직소 퍼즐",
+    "도시락 밀프렙",
+    "식물 물꽂이"
+   ],
+   "daily": {
+    "breakfast": "밥 반 공기에 김",
+    "commute": "지하철 한 번",
+    "lunch": "싸 온 도시락",
+    "snack": "오이 스틱",
+    "after_work": "직소 퍼즐 한 구역",
+    "weekend": "일요일 도시락 밀프렙"
+   },
+   "pet": null,
+   "distance": "또래 선배. 차분하게 들어 주는 사이.",
+   "story_basis": "스토리 물류팀 주임(장주임 배역 → v2 조민서): 배경 근무, 타 팀엔 물류팀 창구로 노출",
+   "links": []
+  },
+  {
+   "character_id": "acnh_18",
+   "display_name": "장준영 사원",
+   "full_name": "장준영",
+   "title": "사원",
+   "gender": "male",
+   "team_code": "logi",
+   "team_name": "물류팀",
+   "seat_id": "staff_m",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "자취 첫 달이라 모든 게 새로운, 순한 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "진짜?",
+    "note": "잘 놀라고 리액션이 순하다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "자취 요리 도전(계란 요리부터)",
+    "야구 중계",
+    "중고거래 구경"
+   ],
+   "daily": {
+    "breakfast": "계란프라이(가끔 태움)",
+    "commute": "버스 한 번",
+    "lunch": "제육·돈가스 뭐든",
+    "snack": "초코우유",
+    "after_work": "야구 중계 틀고 요리",
+    "weekend": "마트 장보기와 반찬 만들기"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — v2에서 사원으로 확정(옛 장주임 배역은 조민서 주임이 맡음)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_54",
+   "display_name": "박지우 사원",
+   "full_name": "박지우",
+   "title": "사원",
+   "gender": "female",
+   "team_code": "logi",
+   "team_name": "물류팀",
+   "seat_id": "staff_f",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "맛집 리스트를 정리하는 계획형, 새로 시작하는 걸 좋아하는 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "내가 알아 둘게",
+    "note": "정보를 챙겨 주는 말투."
+   },
+   "player_register": "casual",
+   "interests": [
+    "점심 맛집 리스트",
+    "필름카메라",
+    "러닝 입문"
+   ],
+   "daily": {
+    "breakfast": "잼 바른 토스트",
+    "commute": "지하철에 마을버스",
+    "lunch": "새 식당 개척, 12시 1층",
+    "snack": "젤리",
+    "after_work": "러닝 3km 연습",
+    "weekend": "필름카메라 들고 산책"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 고객상담팀 편 동기(윤하린 — 물류팀 신입, 점심 메신저 친구)가 v2에서 이 인물로 연결됨",
+   "links": [
+    "run_club",
+    "lunch_1f"
+   ]
+  },
+  {
+   "character_id": "acnh_55",
+   "display_name": "김현우 팀장",
+   "full_name": "김현우",
+   "title": "팀장",
+   "gender": "male",
+   "team_code": "acct",
+   "team_name": "회계팀",
+   "seat_id": "lead",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "팀장",
+   "personality": "숫자에 정확한데, 일상 숫자 얘기로 은근히 웃기는 팀장",
+   "speech": {
+    "level": "짧은 해요체",
+    "tic": "맞네",
+    "note": "숫자를 섞어 짧게 말한다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "새벽 수영",
+    "바둑 앱",
+    "걸음 수 기록"
+   ],
+   "daily": {
+    "breakfast": "사과 반 개와 두유",
+    "commute": "지하철 급행, 딱 42분",
+    "lunch": "늘 가는 백반집",
+    "snack": "아몬드 스무 알",
+    "after_work": "바둑 앱 한 판",
+    "weekend": "새벽 수영 1km"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 조용히 지켜보는 팀장, 다른 팀이면 가볍게 목례하는 사이.",
+   "story_basis": "스토리 회계팀 팀장(옛 서지현 팀장 배역 → v2 김현우): 숫자에 냉정. 문장이 짧다. 칭찬은 \"맞네\"(존댓)",
+   "links": [
+    "bean_change"
+   ]
+  },
+  {
+   "character_id": "acnh_19",
+   "display_name": "서지현 선임",
+   "full_name": "서지현",
+   "title": "선임",
+   "gender": "female",
+   "team_code": "acct",
+   "team_name": "회계팀",
+   "seat_id": "senior",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "선임(같은 팀이면 사수)",
+   "personality": "짧고 정확하게 말하고, 일상도 번호 매겨 정리하는 선배",
+   "speech": {
+    "level": "짧은 해요체",
+    "tic": "첫째는요,",
+    "note": "뭐든 첫째·둘째로 나눠 말한다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "주말 스콘 굽기",
+    "요일별 점심 루틴",
+    "클래식 라디오"
+   ],
+   "daily": {
+    "breakfast": "전날 구운 스콘",
+    "commute": "버스, 클래식 라디오",
+    "lunch": "요일별로 정해 둔 메뉴",
+    "snack": "스콘 조각 나눔",
+    "after_work": "반죽 휴지시키기",
+    "weekend": "스콘·파운드케이크 굽기"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 사수, 다른 팀이면 짧게 인사하고 필요한 말만 하는 선배.",
+   "story_basis": "스토리 회계팀 사수(한주임 배역 → v2 서지현 선임): 바쁘지만 챙긴다. 짧은 존댓말. 규정을 조 번호로 말하는 습관",
+   "links": []
+  },
+  {
+   "character_id": "acnh_20",
+   "display_name": "문예린 주임",
+   "full_name": "문예린",
+   "title": "주임",
+   "gender": "female",
+   "team_code": "acct",
+   "team_name": "회계팀",
+   "seat_id": "chief",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "주임(또래 선배)",
+   "personality": "커피에 진심인, 차분하게 농담하는 동료",
+   "speech": {
+    "level": "해요체",
+    "tic": "음, 괜찮은데요?",
+    "note": "천천히 말하고 끝을 올린다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "핸드드립 커피",
+    "웹툰 정주행",
+    "로스터리 카페 탐방"
+   ],
+   "daily": {
+    "breakfast": "핸드드립 커피와 크래커",
+    "commute": "지하철",
+    "lunch": "쌀국수",
+    "snack": "드립백 커피",
+    "after_work": "웹툰 몰아보기",
+    "weekend": "로스터리 카페 탐방"
+   },
+   "pet": null,
+   "distance": "또래 선배. 커피 얘기로 금방 친해지는 사이.",
+   "story_basis": "스토리 회계팀 주임(문주임): 배경 근무",
+   "links": [
+    "bean_change"
+   ]
+  },
+  {
+   "character_id": "acnh_37",
+   "display_name": "한도현 사원",
+   "full_name": "한도현",
+   "title": "사원",
+   "gender": "male",
+   "team_code": "acct",
+   "team_name": "회계팀",
+   "seat_id": "staff_m",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "아침 운동을 루틴처럼 지키는 성실한, 은근 허당인 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "오케이.",
+    "note": "짧게 끊고 웃는다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "출근 전 헬스",
+    "닭가슴살 도시락",
+    "e스포츠 경기 보기"
+   ],
+   "daily": {
+    "breakfast": "운동 뒤 단백질 쉐이크",
+    "commute": "헬스장 들렀다 지하철",
+    "lunch": "닭가슴살 도시락(가끔 실패)",
+    "snack": "고구마 말랭이",
+    "after_work": "하체 운동",
+    "weekend": "e스포츠 경기 보기"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — v2에서 사원으로 확정(옛 한주임 배역은 서지현 선임이 맡음)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_56",
+   "display_name": "이서연 사원",
+   "full_name": "이서연",
+   "title": "사원",
+   "gender": "female",
+   "team_code": "acct",
+   "team_name": "회계팀",
+   "seat_id": "staff_f",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "걱정이 많지만 꼼꼼하고, 작은 일에 크게 기뻐하는 동기",
+   "speech": {
+    "level": "조심스러운 반말",
+    "tic": "괜찮겠지?",
+    "note": "말끝을 물음으로 흐린다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "가계부·절약 챌린지",
+    "다이어리 꾸미기",
+    "반려묘 두 마리"
+   ],
+   "daily": {
+    "breakfast": "집에서 싸 온 주먹밥",
+    "commute": "지하철, 붐빌까 봐 일찍",
+    "lunch": "가성비 백반",
+    "snack": "집에서 가져온 과자",
+    "after_work": "가계부 정리",
+    "weekend": "고양이랑 집에서 다이어리 꾸미기"
+   },
+   "pet": "고양이 두 마리(보리·쌀)",
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 총무팀 편 동기(백하은 — 회계팀 신입, 숫자에 예민하고 겁이 많다)가 v2에서 이 인물로 연결됨",
+   "links": []
+  },
+  {
+   "character_id": "acnh_24",
+   "display_name": "이재훈 팀장",
+   "full_name": "이재훈",
+   "title": "팀장",
+   "gender": "male",
+   "team_code": "ga",
+   "team_name": "총무팀",
+   "seat_id": "lead",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "팀장",
+   "personality": "말보다 손이 먼저 가는, 뭐든 고쳐 쓰는 조용한 팀장",
+   "speech": {
+    "level": "짧은 해요체",
+    "tic": "고치면 돼요",
+    "note": "말수가 적고 결론부터."
+   },
+   "player_register": "polite",
+   "interests": [
+    "주말 목공(작은 선반)",
+    "공구 정리",
+    "이른 출근 뒤 사무실 한 바퀴"
+   ],
+   "daily": {
+    "breakfast": "군고구마 하나",
+    "commute": "버스, 늘 제일 먼저 출근",
+    "lunch": "국밥",
+    "snack": "믹스커피 한 잔",
+    "after_work": "공방 들러 나무 다듬기",
+    "weekend": "목공방에서 선반 만들기"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 조용히 필요한 걸 챙겨 주는 팀장, 다른 팀이면 \"필요한 거 있으면 말해요\" 하는 사이.",
+   "story_basis": "스토리 총무팀 팀장: 말수가 적고 늘 어딘가를 고치러 다닌다. 마스터키 뭉치(존댓)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_22",
+   "display_name": "최은서 선임",
+   "full_name": "최은서",
+   "title": "선임",
+   "gender": "female",
+   "team_code": "ga",
+   "team_name": "총무팀",
+   "seat_id": "senior",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "선임(같은 팀이면 사수)",
+   "personality": "회사 사람 얼굴과 이름을 다 아는, 말 빠르고 정 많은 선배",
+   "speech": {
+    "level": "빠른 해요체",
+    "tic": "아, 그거요!",
+    "note": "말이 빠르고 감탄이 먼저 나온다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "떡볶이 맛집 투어",
+    "주말 플리마켓",
+    "주차장 치즈 고양이"
+   ],
+   "daily": {
+    "breakfast": "편의점 바나나우유",
+    "commute": "지하철 내려서 뛰기",
+    "lunch": "분식",
+    "snack": "떡꼬치",
+    "after_work": "동네 떡볶이집 탐방",
+    "weekend": "플리마켓 구경"
+   },
+   "pet": null,
+   "distance": "첫날 사원증을 건네준 사람이라 모든 신입과 안면이 있다. 같은 팀이면 사수.",
+   "story_basis": "스토리 총무팀 사수(최주임·최은서): 사원증·출입 담당. 말이 빠르고 포스트잇을 붙여 준다. 1일차엔 사무적",
+   "links": [
+    "cheese_cat"
+   ]
+  },
+  {
+   "character_id": "acnh_27",
+   "display_name": "권민호 주임",
+   "full_name": "권민호",
+   "title": "주임",
+   "gender": "male",
+   "team_code": "ga",
+   "team_name": "총무팀",
+   "seat_id": "chief",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "주임(또래 선배)",
+   "personality": "사무실 구석구석 소소한 변화를 챙기는 다정한 동료",
+   "speech": {
+    "level": "해요체",
+    "tic": "소소하지만요,",
+    "note": "작은 얘기를 즐겁게 한다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "휴게실 원두 고르기",
+    "시티팝 듣기",
+    "주말 근교 드라이브"
+   ],
+   "daily": {
+    "breakfast": "에그 샌드위치",
+    "commute": "버스, 시티팝 들으며",
+    "lunch": "1시 넘어 늦은 김밥",
+    "snack": "새 원두 시음",
+    "after_work": "시티팝 들으며 걷기",
+    "weekend": "근교 드라이브"
+   },
+   "pet": null,
+   "distance": "또래 선배. 휴게실에서 자주 마주치는 사이.",
+   "story_basis": "스토리 총무팀 주임(권주임): 회의실·세미나실·기안 담당(배경)",
+   "links": [
+    "bean_change"
+   ]
+  },
+  {
+   "character_id": "acnh_57",
+   "display_name": "박도현 사원",
+   "full_name": "박도현",
+   "title": "사원",
+   "gender": "male",
+   "team_code": "ga",
+   "team_name": "총무팀",
+   "seat_id": "staff_m",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "문구·비품에 눈이 반짝이는 수다스러운 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "이거 봐 봐.",
+    "note": "뭔가를 보여 주며 말을 건다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "볼펜 수집",
+    "편의점 신상 구경",
+    "조조 영화"
+   ],
+   "daily": {
+    "breakfast": "편의점 삼각김밥",
+    "commute": "버스 한 번",
+    "lunch": "12시 1층, 뭐든",
+    "snack": "편의점 신상 과자",
+    "after_work": "문구점 구경",
+    "weekend": "조조 영화"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 회계팀 편 동기(임도윤 — 총무팀 신입, 사원증·비품 얘기)가 v2에서 이 인물로 연결됨",
+   "links": [
+    "lunch_1f"
+   ]
+  },
+  {
+   "character_id": "acnh_58",
+   "display_name": "정민서 사원",
+   "full_name": "정민서",
+   "title": "사원",
+   "gender": "female",
+   "team_code": "ga",
+   "team_name": "총무팀",
+   "seat_id": "staff_f",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "차분하게 자기 페이스를 지키는, 도전 좋아하는 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "좋다, 그거.",
+    "note": "담백하게 말한다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "실내 클라이밍",
+    "김밥 싸기",
+    "오디오북"
+   ],
+   "daily": {
+    "breakfast": "직접 싼 꼬마김밥",
+    "commute": "지하철, 오디오북",
+    "lunch": "국수",
+    "snack": "에너지바",
+    "after_work": "화·목 실내 클라이밍",
+    "weekend": "오디오북 들으며 산책"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(총무팀 여자 사원)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_32",
+   "display_name": "노윤아 팀장",
+   "full_name": "노윤아",
+   "title": "팀장",
+   "gender": "female",
+   "team_code": "rec",
+   "team_name": "채용팀",
+   "seat_id": "lead",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "팀장",
+   "personality": "말은 짧고 직설적이지만 사람 챙기는 걸 잊지 않는 팀장",
+   "speech": {
+    "level": "짧은 반말",
+    "tic": "그래서?",
+    "note": "되묻고 기다려 준다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "한그릇 칼국수 단골",
+    "주말 테니스",
+    "추리소설"
+   ],
+   "daily": {
+    "breakfast": "아메리카노 한 잔",
+    "commute": "버스",
+    "lunch": "한그릇 칼국수, 수요일은 들깨",
+    "snack": "자두",
+    "after_work": "추리소설 한 챕터",
+    "weekend": "테니스 레슨"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 짧게 묻고 챙기는 팀장, 다른 팀이면 \"밥은 먹었어?\" 정도.",
+   "story_basis": "스토리 채용팀 팀장: 말이 짧고 숫자를 되묻는다. \"그래서?\" 칭찬은 \"됐어\"(반말)",
+   "links": [
+    "kalguksu"
+   ]
+  },
+  {
+   "character_id": "acnh_17",
+   "display_name": "김다솔 선임",
+   "full_name": "김다솔",
+   "title": "선임",
+   "gender": "female",
+   "team_code": "rec",
+   "team_name": "채용팀",
+   "seat_id": "senior",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "선임(같은 팀이면 사수)",
+   "personality": "말 빠르고 에너지 넘치는, 공연 얘기만 나오면 신나는 선배",
+   "speech": {
+    "level": "빠른 해요체",
+    "tic": "~거든요",
+    "note": "설명 끝에 \"~거든요\"가 붙는다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "뮤지컬 관람",
+    "아침 스무디",
+    "주말 피아노 한 곡 연습"
+   ],
+   "daily": {
+    "breakfast": "바나나 스무디",
+    "commute": "버스, 뮤지컬 넘버 듣기",
+    "lunch": "샐러드 빨리",
+    "snack": "다크초콜릿",
+    "after_work": "공연 예매 대기",
+    "weekend": "뮤지컬 관람"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 사수, 다른 팀이면 신나게 말 거는 선배.",
+   "story_basis": "스토리 채용팀 사수(김선임·김다솔): 말이 빠르고 포스트잇을 남긴다. 존댓말에 \"~거든요\"",
+   "links": []
+  },
+  {
+   "character_id": "acnh_43",
+   "display_name": "홍정우 주임",
+   "full_name": "홍정우",
+   "title": "주임",
+   "gender": "male",
+   "team_code": "rec",
+   "team_name": "채용팀",
+   "seat_id": "chief",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "주임(또래 선배)",
+   "personality": "요리 얘기만 나오면 레시피를 술술 푸는 친절한 동료",
+   "speech": {
+    "level": "해요체",
+    "tic": "그거 은근 쉬워요",
+    "note": "알려 주는 말투."
+   },
+   "player_register": "polite",
+   "interests": [
+    "주말 파스타 요리",
+    "배드민턴 동호회",
+    "한그릇 칼국수"
+   ],
+   "daily": {
+    "breakfast": "전날 만든 파스타 샐러드",
+    "commute": "지하철",
+    "lunch": "팀장님 따라 칼국수",
+    "snack": "블루베리",
+    "after_work": "화·금 배드민턴",
+    "weekend": "새 파스타 레시피"
+   },
+   "pet": null,
+   "distance": "또래 선배. 먹는 얘기로 금방 친해지는 사이.",
+   "story_basis": "스토리 채용팀 주임(홍주임): 전형 현황판·공고 기안 담당(배경)",
+   "links": [
+    "kalguksu"
+   ]
+  },
+  {
+   "character_id": "acnh_59",
+   "display_name": "윤시우 사원",
+   "full_name": "윤시우",
+   "title": "사원",
+   "gender": "male",
+   "team_code": "rec",
+   "team_name": "채용팀",
+   "seat_id": "staff_m",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "조용하지만 관찰력 좋은, 하늘 사진 찍는 동기",
+   "speech": {
+    "level": "조곤조곤한 반말",
+    "tic": "음, 그러네.",
+    "note": "천천히 말한다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "하늘 사진",
+    "웹소설",
+    "노을 산책"
+   ],
+   "daily": {
+    "breakfast": "시리얼바 하나",
+    "commute": "버스 창가 자리, 하늘 사진",
+    "lunch": "뜨끈한 국물",
+    "snack": "사탕",
+    "after_work": "웹소설",
+    "weekend": "노을 사진 산책"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(채용팀 남자 사원)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_60",
+   "display_name": "최유진 사원",
+   "full_name": "최유진",
+   "title": "사원",
+   "gender": "female",
+   "team_code": "rec",
+   "team_name": "채용팀",
+   "seat_id": "staff_f",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "말 많고 겁 없는, 어디서든 금방 친해지는 분위기 메이커 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "대박.",
+    "note": "리액션이 크고 말이 빠르다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "방송 댄스 학원",
+    "새 맛집 도전",
+    "코인노래방"
+   ],
+   "daily": {
+    "breakfast": "편의점 컵과일",
+    "commute": "지하철, 늘 뛰어옴",
+    "lunch": "안 먹어 본 메뉴 도전",
+    "snack": "아이스크림",
+    "after_work": "월·수 댄스 학원",
+    "weekend": "코인노래방과 맛집"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(채용팀 여자 사원)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_41",
+   "display_name": "조성민 팀장",
+   "full_name": "조성민",
+   "title": "팀장",
+   "gender": "male",
+   "team_code": "plan",
+   "team_name": "경영기획팀",
+   "seat_id": "lead",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "팀장",
+   "personality": "말수 적고 숫자에 밝은데, 달리기 얘기엔 말이 조금 길어지는 팀장",
+   "speech": {
+    "level": "짧은 해요체",
+    "tic": "음, 좋네요",
+    "note": "짧다. 달리기 얘기만 한 문장 더."
+   },
+   "player_register": "polite",
+   "interests": [
+    "목요일 러닝 모임",
+    "재즈 LP",
+    "오트밀"
+   ],
+   "daily": {
+    "breakfast": "오트밀",
+    "commute": "지하철",
+    "lunch": "가벼운 한식",
+    "snack": "블랙커피",
+    "after_work": "목요일 러닝 모임",
+    "weekend": "10km 달리기와 재즈 LP"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 조용히 지켜보는 팀장, 다른 팀이면 러닝 모임 얘기로 말 거는 사이.",
+   "story_basis": "스토리 경영기획팀 팀장: 말수가 적고 숫자만 본다. 칭찬은 \"됐네\"(존댓)",
+   "links": [
+    "run_club"
+   ]
+  },
+  {
+   "character_id": "acnh_40",
+   "display_name": "류하진 선임",
+   "full_name": "류하진",
+   "title": "선임",
+   "gender": "female",
+   "team_code": "plan",
+   "team_name": "경영기획팀",
+   "seat_id": "senior",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "선임(같은 팀이면 사수)",
+   "personality": "모든 걸 수첩에 적는 메모광, 책 얘기엔 눈이 반짝이는 선배",
+   "speech": {
+    "level": "해요체",
+    "tic": "출처.",
+    "note": "말끝에 \"출처는 제 수첩.\" 같은 농담."
+   },
+   "player_register": "polite",
+   "interests": [
+    "독서 노트",
+    "만년필",
+    "동네 도서관"
+   ],
+   "daily": {
+    "breakfast": "토마토 주스와 식빵",
+    "commute": "지하철에서 책 읽기",
+    "lunch": "조용한 국숫집",
+    "snack": "캐러멜",
+    "after_work": "동네 도서관",
+    "weekend": "서점 산책"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 사수, 다른 팀이면 책 추천을 건네는 선배.",
+   "story_basis": "스토리 경영기획팀 사수(류선임·류하진): 메모광. 바쁘지만 챙긴다. 말끝에 \"출처.\"",
+   "links": []
+  },
+  {
+   "character_id": "acnh_38",
+   "display_name": "신예은 주임",
+   "full_name": "신예은",
+   "title": "주임",
+   "gender": "female",
+   "team_code": "plan",
+   "team_name": "경영기획팀",
+   "seat_id": "chief",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "주임(또래 선배)",
+   "personality": "일상도 표로 정리하는 계획 덕후, 웃음 많은 동료",
+   "speech": {
+    "level": "해요체",
+    "tic": "정리하면요,",
+    "note": "정리해서 말하고 잘 웃는다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "여행 계획표 짜기",
+    "레고 조립",
+    "아이스티"
+   ],
+   "daily": {
+    "breakfast": "월요일에 소분해 둔 과일컵",
+    "commute": "버스",
+    "lunch": "먹은 메뉴를 표로 기록",
+    "snack": "아이스티",
+    "after_work": "레고 조립",
+    "weekend": "당일치기 여행 계획"
+   },
+   "pet": null,
+   "distance": "또래 선배. 뭐든 같이 정리해 주는 사이.",
+   "story_basis": "스토리 경영기획팀 주임(신주임): 표를 만드는 사람(배경)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_61",
+   "display_name": "한지훈 사원",
+   "full_name": "한지훈",
+   "title": "사원",
+   "gender": "male",
+   "team_code": "plan",
+   "team_name": "경영기획팀",
+   "seat_id": "staff_m",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "호기심 많고 뭐든 일단 해 보는 긍정파 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "일단 해 보자.",
+    "note": "밝고 추진력 있다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "러닝 입문",
+    "플레이리스트 만들기",
+    "동네 새 카페"
+   ],
+   "daily": {
+    "breakfast": "편의점 샌드위치",
+    "commute": "지하철에 도보 10분",
+    "lunch": "12시 1층",
+    "snack": "초코바",
+    "after_work": "러닝 입문, 플레이리스트 정리",
+    "weekend": "동네 새 카페"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 교육팀 편 동기(차은우 — 경영기획팀 신입, 점심 메신저 친구)가 v2에서 이 인물로 연결됨",
+   "links": [
+    "run_club",
+    "lunch_1f"
+   ]
+  },
+  {
+   "character_id": "acnh_62",
+   "display_name": "김다은 사원",
+   "full_name": "김다은",
+   "title": "사원",
+   "gender": "female",
+   "team_code": "plan",
+   "team_name": "경영기획팀",
+   "seat_id": "staff_f",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "느긋하고 손재주 좋은, 그림 그리기 좋아하는 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "나 그거 알아!",
+    "note": "아는 얘기가 나오면 반가워한다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "태블릿 낙서",
+    "수요일 점심 보드게임",
+    "라면 레시피 실험"
+   ],
+   "daily": {
+    "breakfast": "크림빵 하나",
+    "commute": "버스 두 번",
+    "lunch": "면 요리면 다 좋음",
+    "snack": "과자 나눠 먹기",
+    "after_work": "태블릿 낙서",
+    "weekend": "라면 레시피 실험"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(경영기획팀 여자 사원)",
+   "links": [
+    "boardgame"
+   ]
+  },
+  {
+   "character_id": "acnh_26",
+   "display_name": "배정훈 팀장",
+   "full_name": "배정훈",
+   "title": "팀장",
+   "gender": "male",
+   "team_code": "qc",
+   "team_name": "품질관리팀",
+   "seat_id": "lead",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "팀장",
+   "personality": "무뚝뚝해 보이지만 화분 하나에도 정성인 팀장",
+   "speech": {
+    "level": "짧은 해요체",
+    "tic": "기록됐네",
+    "note": "짧고 담담하다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "창가 몬스테라 키우기",
+    "새벽 민물낚시",
+    "아침 두유"
+   ],
+   "daily": {
+    "breakfast": "두유와 삶은 감자",
+    "commute": "지하철",
+    "lunch": "순두부찌개",
+    "snack": "볶은 콩",
+    "after_work": "낚시 채비 정리",
+    "weekend": "새벽 민물낚시(잡으면 놓아줌)"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 담담하게 챙기는 팀장, 다른 팀이면 화분 얘기로 말 거는 사이.",
+   "story_basis": "스토리 품질관리팀 팀장: 검사 현장 출신. 말이 짧다. 칭찬은 \"기록됐네\"(존댓)",
+   "links": [
+    "monstera"
+   ]
+  },
+  {
+   "character_id": "acnh_28",
+   "display_name": "남기웅 선임",
+   "full_name": "남기웅",
+   "title": "선임",
+   "gender": "male",
+   "team_code": "qc",
+   "team_name": "품질관리팀",
+   "seat_id": "senior",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "선임(같은 팀이면 사수)",
+   "personality": "뭐든 라벨 붙여 정리하는 정리왕, 야구 얘기엔 목소리가 커지는 선배",
+   "speech": {
+    "level": "해요체+반말 토막",
+    "tic": "정리 끝.",
+    "note": "해요체 끝에 반말 한 토막."
+   },
+   "player_register": "polite",
+   "interests": [
+    "집 수납 정리",
+    "야구 직관",
+    "컵라면 조합 연구"
+   ],
+   "daily": {
+    "breakfast": "편의점 유부초밥",
+    "commute": "버스에 도보",
+    "lunch": "뭐든 빨리",
+    "snack": "새로운 컵라면 조합",
+    "after_work": "집 수납 정리",
+    "weekend": "야구 직관"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 사수, 다른 팀이면 라벨 프린터 들고 지나가며 인사하는 선배.",
+   "story_basis": "스토리 품질관리팀 사수(남선임·남기웅): 손에 늘 라벨 프린터. 반말 섞인 존댓말. 바쁘지만 챙긴다",
+   "links": [
+    "monstera"
+   ]
+  },
+  {
+   "character_id": "acnh_35",
+   "display_name": "도하린 주임",
+   "full_name": "도하린",
+   "title": "주임",
+   "gender": "female",
+   "team_code": "qc",
+   "team_name": "품질관리팀",
+   "seat_id": "chief",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "주임(또래 선배)",
+   "personality": "손으로 만드는 걸 좋아하는, 제철 과일 챙기는 다정한 동료",
+   "speech": {
+    "level": "해요체",
+    "tic": "제철이잖아요",
+    "note": "계절 얘기를 자주 한다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "도자기 공방",
+    "제철 과일(7월 복숭아)",
+    "창가 몬스테라 관찰"
+   ],
+   "daily": {
+    "breakfast": "복숭아 한 개",
+    "commute": "지하철",
+    "lunch": "비빔국수",
+    "snack": "제철 과일 나눔",
+    "after_work": "수요일 도자기 공방",
+    "weekend": "공방에서 컵 만들기"
+   },
+   "pet": null,
+   "distance": "또래 선배. 과일 나눠 주며 말 거는 사이.",
+   "story_basis": "스토리 품질관리팀 주임(도주임): 검사 결과표·결재 문서 작성자(배경)",
+   "links": [
+    "monstera"
+   ]
+  },
+  {
+   "character_id": "acnh_63",
+   "display_name": "임재현 사원",
+   "full_name": "임재현",
+   "title": "사원",
+   "gender": "male",
+   "team_code": "qc",
+   "team_name": "품질관리팀",
+   "seat_id": "staff_m",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "수줍지만 빵 얘기엔 말이 많아지는 베이킹 입문 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "아, 그거 나도.",
+    "note": "처음엔 작게, 좋아하는 얘기엔 길게."
+   },
+   "player_register": "casual",
+   "interests": [
+    "베이킹 입문(머핀)",
+    "줄넘기",
+    "애니메이션"
+   ],
+   "daily": {
+    "breakfast": "직접 구운 머핀",
+    "commute": "버스",
+    "lunch": "백반",
+    "snack": "남은 머핀",
+    "after_work": "줄넘기 1000개",
+    "weekend": "애니메이션 정주행과 베이킹"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(품질관리팀 남자 사원)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_64",
+   "display_name": "조은채 사원",
+   "full_name": "조은채",
+   "title": "사원",
+   "gender": "female",
+   "team_code": "qc",
+   "team_name": "품질관리팀",
+   "seat_id": "staff_f",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "털털하고 스포츠 좋아하는 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "완전 인정.",
+    "note": "시원시원하게 말한다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "프로축구 직관",
+    "주차장 치즈 고양이 사진",
+    "아침 시리얼"
+   ],
+   "daily": {
+    "breakfast": "시리얼에 우유",
+    "commute": "지하철",
+    "lunch": "12시 1층, 국밥파",
+    "snack": "쿠키",
+    "after_work": "축구 하이라이트",
+    "weekend": "프로축구 직관"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 구매팀 편 동기(하지원 — 품질관리팀 신입, 점심 메신저 친구)가 v2에서 이 인물로 연결됨",
+   "links": [
+    "cheese_cat",
+    "lunch_1f"
+   ]
+  },
+  {
+   "character_id": "acnh_42",
+   "display_name": "황서연 팀장",
+   "full_name": "황서연",
+   "title": "팀장",
+   "gender": "female",
+   "team_code": "pr",
+   "team_name": "홍보팀",
+   "seat_id": "lead",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "팀장",
+   "personality": "말이 빠르고 호기심 많은, 새로 생긴 건 먼저 가 보는 팀장",
+   "speech": {
+    "level": "빠른 반말",
+    "tic": "좋아, 다음",
+    "note": "짧게 묻고 다음 얘기로 넘어간다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "팝업스토어 구경",
+    "전시회",
+    "아침 산책과 테이크아웃 커피"
+   ],
+   "daily": {
+    "breakfast": "테이크아웃 커피와 베이글",
+    "commute": "지하철, 새 가게 구경하며 걷기",
+    "lunch": "새로 생긴 곳",
+    "snack": "마카롱",
+    "after_work": "팝업스토어 구경",
+    "weekend": "전시회"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 빠르게 챙기는 팀장, 다른 팀이면 요즘 뜨는 곳을 묻는 사이.",
+   "story_basis": "스토리 홍보팀 팀장: 말이 빠르다. 문장이 짧다. 칭찬은 \"좋아, 다음\"(반말)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_44",
+   "display_name": "진아름 선임",
+   "full_name": "진아름",
+   "title": "선임",
+   "gender": "female",
+   "team_code": "pr",
+   "team_name": "홍보팀",
+   "seat_id": "senior",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "선임(같은 팀이면 사수)",
+   "personality": "말을 한 줄씩 짧게 끊어 하는, 드라마 얘기엔 진심인 선배",
+   "speech": {
+    "level": "짧게 끊는 해요체",
+    "tic": "한 줄 요약하면요,",
+    "note": "메신저처럼 한 줄씩 끊어 말한다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "주말 드라마 「오후 세 시의 정원」",
+    "사진 보정",
+    "주말 브런치"
+   ],
+   "daily": {
+    "breakfast": "그래놀라바",
+    "commute": "지하철, 드라마 클립 보기",
+    "lunch": "샌드위치",
+    "snack": "아이스 라떼",
+    "after_work": "사진 보정",
+    "weekend": "브런치 카페와 드라마 본방"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 사수, 다른 팀이면 드라마 얘기로 말 거는 선배.",
+   "story_basis": "스토리 홍보팀 사수(진선임·진아름): 채널·예약 발행 담당. 메신저로 한 줄씩. 바쁘지만 챙긴다",
+   "links": [
+    "drama"
+   ]
+  },
+  {
+   "character_id": "acnh_33",
+   "display_name": "표유나 주임",
+   "full_name": "표유나",
+   "title": "주임",
+   "gender": "female",
+   "team_code": "pr",
+   "team_name": "홍보팀",
+   "seat_id": "chief",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "주임(또래 선배)",
+   "personality": "글 쓰는 걸 좋아하는, 금요일 푸드트럭을 기다리는 동료",
+   "speech": {
+    "level": "해요체",
+    "tic": "오, 그 표현 좋다",
+    "note": "좋은 말을 들으면 반응한다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "필사(좋은 문장 베껴 쓰기)",
+    "금요일 푸드트럭",
+    "향초 만들기"
+   ],
+   "daily": {
+    "breakfast": "밥 한 공기와 된장국",
+    "commute": "버스, 창밖 보며 문장 떠올리기",
+    "lunch": "금요일은 푸드트럭",
+    "snack": "캐모마일 차",
+    "after_work": "필사 한 페이지",
+    "weekend": "향초 만들기"
+   },
+   "pet": null,
+   "distance": "또래 선배. 말 한마디도 예쁘게 받아 주는 사이.",
+   "story_basis": "스토리 홍보팀 주임(표주임): 보도자료·기안 담당(배경)",
+   "links": [
+    "food_truck"
+   ]
+  },
+  {
+   "character_id": "acnh_65",
+   "display_name": "강민준 사원",
+   "full_name": "강민준",
+   "title": "사원",
+   "gender": "male",
+   "team_code": "pr",
+   "team_name": "홍보팀",
+   "seat_id": "staff_m",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "영상 편집이 취미인 장난기 있는 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "그거 찍어 둘걸.",
+    "note": "장난스럽게 말한다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "브이로그 편집",
+    "볶음밥 요리",
+    "금요일 푸드트럭"
+   ],
+   "daily": {
+    "breakfast": "남은 볶음밥",
+    "commute": "버스",
+    "lunch": "금요일은 푸드트럭",
+    "snack": "탄산수",
+    "after_work": "브이로그 편집",
+    "weekend": "동네 브이로그 촬영"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(홍보팀 남자 사원)",
+   "links": [
+    "food_truck"
+   ]
+  },
+  {
+   "character_id": "acnh_66",
+   "display_name": "서유진 사원",
+   "full_name": "서유진",
+   "title": "사원",
+   "gender": "female",
+   "team_code": "pr",
+   "team_name": "홍보팀",
+   "seat_id": "staff_f",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "조용히 자기 취향이 확실한, 인디 음악 좋아하는 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "나쁘지 않네.",
+    "note": "담담하지만 좋아하는 건 확실히 말한다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "인디 공연",
+    "롱보드",
+    "빙수 맛집"
+   ],
+   "daily": {
+    "breakfast": "호밀빵",
+    "commute": "롱보드로 역까지, 지하철",
+    "lunch": "냉면",
+    "snack": "빙수",
+    "after_work": "인디 공연",
+    "weekend": "롱보드 타기"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(홍보팀 여자 사원)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_29",
+   "display_name": "문경수 팀장",
+   "full_name": "문경수",
+   "title": "팀장",
+   "gender": "male",
+   "team_code": "edu",
+   "team_name": "교육팀",
+   "seat_id": "lead",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "팀장",
+   "personality": "느리고 낮게 말하는, 차 한 잔처럼 여유 있는 팀장",
+   "speech": {
+    "level": "느린 해요체",
+    "tic": "천천히 해요",
+    "note": "낮고 느리게, 말 사이에 여백."
+   },
+   "player_register": "polite",
+   "interests": [
+    "서예",
+    "녹차",
+    "주말농장(상추·고추)"
+   ],
+   "daily": {
+    "breakfast": "녹차와 호두 몇 알",
+    "commute": "버스, 창밖 보며 천천히",
+    "lunch": "나물 비빔밥",
+    "snack": "녹차",
+    "after_work": "서예 한 장",
+    "weekend": "주말농장 상추 따기"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 느긋하게 기다려 주는 팀장, 다른 팀이면 차 한 잔 권하는 사이.",
+   "story_basis": "스토리 교육팀 팀장: 느리고 낮게 말한다. 출처를 먼저 묻는다. 칭찬은 \"됐네\"(존댓)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_46",
+   "display_name": "손예지 선임",
+   "full_name": "손예지",
+   "title": "선임",
+   "gender": "female",
+   "team_code": "edu",
+   "team_name": "교육팀",
+   "seat_id": "senior",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "선임(같은 팀이면 사수)",
+   "personality": "말 빠르고 리액션 큰, 드라마 메이트 찾는 선배",
+   "speech": {
+    "level": "해요체+반말 토막",
+    "tic": "진짜야.",
+    "note": "\"~요\" 뒤에 반말 한 토막(\"맛있어요. 진짜야.\")."
+   },
+   "player_register": "polite",
+   "interests": [
+    "주말 드라마 「오후 세 시의 정원」",
+    "마라탕",
+    "유튜브 홈트"
+   ],
+   "daily": {
+    "breakfast": "편의점 김밥",
+    "commute": "버스, 홈트 영상 저장",
+    "lunch": "마라탕",
+    "snack": "꿀떡",
+    "after_work": "유튜브 홈트 20분",
+    "weekend": "드라마 정주행"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 사수, 다른 팀이면 리액션 크게 받아 주는 선배.",
+   "story_basis": "스토리 교육팀 사수(손선임·손예지): 말이 빠르고 챙긴다. \"~요\" 뒤에 반말 한 토막",
+   "links": [
+    "drama"
+   ]
+  },
+  {
+   "character_id": "acnh_36",
+   "display_name": "반지훈 주임",
+   "full_name": "반지훈",
+   "title": "주임",
+   "gender": "male",
+   "team_code": "edu",
+   "team_name": "교육팀",
+   "seat_id": "chief",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "주임(또래 선배)",
+   "personality": "성실하고 담백한, 러닝 모임 개근하는 동료",
+   "speech": {
+    "level": "해요체",
+    "tic": "꾸준히가 답이죠",
+    "note": "담백하게 짧게."
+   },
+   "player_register": "polite",
+   "interests": [
+    "목요일 러닝 모임",
+    "역사 팟캐스트",
+    "두부 요리"
+   ],
+   "daily": {
+    "breakfast": "두부 샐러드",
+    "commute": "걸어서, 러닝화 신고",
+    "lunch": "두부 들어간 도시락",
+    "snack": "바나나칩",
+    "after_work": "목요일 러닝 모임",
+    "weekend": "팟캐스트 들으며 장거리 러닝"
+   },
+   "pet": null,
+   "distance": "또래 선배. 같이 뛰자고 권하는 사이.",
+   "story_basis": "스토리 교육팀 주임(반주임): 교육 대장·출석부 관리(배경)",
+   "links": [
+    "run_club"
+   ]
+  },
+  {
+   "character_id": "acnh_67",
+   "display_name": "백승현 사원",
+   "full_name": "백승현",
+   "title": "사원",
+   "gender": "male",
+   "team_code": "edu",
+   "team_name": "교육팀",
+   "seat_id": "staff_m",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "룰 설명을 좋아하는 보드게임 마니아, 붙임성 좋은 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "룰은 간단해.",
+    "note": "설명하듯 말한다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "보드게임",
+    "레트로 게임기",
+    "버터 토스트"
+   ],
+   "daily": {
+    "breakfast": "버터 토스트",
+    "commute": "지하철",
+    "lunch": "12시 1층, 수요일은 보드게임",
+    "snack": "감자칩",
+    "after_work": "레트로 게임기",
+    "weekend": "보드게임 카페"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(교육팀 남자 사원)",
+   "links": [
+    "boardgame"
+   ]
+  },
+  {
+   "character_id": "acnh_68",
+   "display_name": "오지은 사원",
+   "full_name": "오지은",
+   "title": "사원",
+   "gender": "female",
+   "team_code": "edu",
+   "team_name": "교육팀",
+   "seat_id": "staff_f",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "밝고 먹는 거 좋아하는, 다정한 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "헉, 좋다.",
+    "note": "밝게 감탄한다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "인절미 떡집 순례",
+    "다육이 키우기",
+    "보호소 강아지 산책 봉사"
+   ],
+   "daily": {
+    "breakfast": "인절미 몇 조각",
+    "commute": "버스",
+    "lunch": "비빔밥",
+    "snack": "떡",
+    "after_work": "다육이 사진 찍기",
+    "weekend": "보호소 강아지 산책 봉사"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(교육팀 여자 사원)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_39",
+   "display_name": "양지훈 팀장",
+   "full_name": "양지훈",
+   "title": "팀장",
+   "gender": "male",
+   "team_code": "buy",
+   "team_name": "구매팀",
+   "seat_id": "lead",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "팀장",
+   "personality": "뭐든 순서대로 하는 걸 좋아하는, 요리도 레시피 순서를 지키는 팀장",
+   "speech": {
+    "level": "짧은 반말",
+    "tic": "순서대로 하면 돼",
+    "note": "짧게, 순서를 짚어 말한다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "주말 된장찌개 요리",
+    "자전거 라이딩",
+    "아침 사과"
+   ],
+   "daily": {
+    "breakfast": "사과와 요거트",
+    "commute": "지하철",
+    "lunch": "된장찌개",
+    "snack": "사과 조각",
+    "after_work": "요리 재료 손질",
+    "weekend": "자전거 라이딩과 된장찌개"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 짧게 챙기는 팀장, 다른 팀이면 인사만 짧게.",
+   "story_basis": "스토리 구매팀 팀장: 말이 짧고 늘 \"순서가 뭐야?\"를 묻는다. 칭찬은 \"됐어\"(반말)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_47",
+   "display_name": "구민정 선임",
+   "full_name": "구민정",
+   "title": "선임",
+   "gender": "female",
+   "team_code": "buy",
+   "team_name": "구매팀",
+   "seat_id": "senior",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "선임(같은 팀이면 사수)",
+   "personality": "장보기 목록부터 영화 목록까지 다 적어 두는 알뜰한 선배",
+   "speech": {
+    "level": "해요체",
+    "tic": "그거 적어 둬요",
+    "note": "좋은 정보가 나오면 적으라고 한다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "장보기 목록·할인 정보",
+    "심야 영화",
+    "티백 차 모으기"
+   ],
+   "daily": {
+    "breakfast": "적어 둔 대로 싸 온 샌드위치",
+    "commute": "버스",
+    "lunch": "할인하는 날 가는 식당",
+    "snack": "티백 차",
+    "after_work": "장보기 목록 정리",
+    "weekend": "심야 영화"
+   },
+   "pet": null,
+   "distance": "같은 팀이면 사수, 다른 팀이면 생활 정보 알려 주는 선배.",
+   "story_basis": "스토리 구매팀 사수(구선임·구민정, 여성): 바쁘지만 챙긴다. 포스트잇 메모광. \"그거 적어 둬요\"",
+   "links": []
+  },
+  {
+   "character_id": "acnh_48",
+   "display_name": "엄성준 주임",
+   "full_name": "엄성준",
+   "title": "주임",
+   "gender": "male",
+   "team_code": "buy",
+   "team_name": "구매팀",
+   "seat_id": "chief",
+   "player_selectable": false,
+   "skip_if_player": false,
+   "relation": "주임(또래 선배)",
+   "personality": "느긋하고 유쾌한, 열대어 키우는 동료",
+   "speech": {
+    "level": "해요체",
+    "tic": "아, 그거 좋죠",
+    "note": "여유 있게 웃으며 말한다."
+   },
+   "player_register": "polite",
+   "interests": [
+    "열대어 어항(구피)",
+    "퇴근 뒤 농구",
+    "편의점 도시락 리뷰"
+   ],
+   "daily": {
+    "breakfast": "편의점 주먹밥",
+    "commute": "지하철",
+    "lunch": "편의점 도시락 리뷰",
+    "snack": "초콜릿",
+    "after_work": "농구 코트",
+    "weekend": "어항 물 갈기"
+   },
+   "pet": "구피 열두 마리",
+   "distance": "또래 선배. 느긋하게 농담 주고받는 사이.",
+   "story_basis": "스토리 구매팀 주임(엄주임): 배경 근무, 타 팀엔 구매팀 창구로 노출",
+   "links": []
+  },
+  {
+   "character_id": "acnh_69",
+   "display_name": "문태호 사원",
+   "full_name": "문태호",
+   "title": "사원",
+   "gender": "male",
+   "team_code": "buy",
+   "team_name": "구매팀",
+   "seat_id": "staff_m",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "강아지 얘기에 목소리 커지는, 순하고 부지런한 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "귀엽지?",
+    "note": "좋아하는 얘기엔 신난다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "반려견 콩이 아침 산책",
+    "수제버거 맛집",
+    "기타 연습"
+   ],
+   "daily": {
+    "breakfast": "콩이 산책 뒤 토스트",
+    "commute": "버스",
+    "lunch": "수제버거",
+    "snack": "과자",
+    "after_work": "기타 연습",
+    "weekend": "콩이랑 공원"
+   },
+   "pet": "강아지 콩이",
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(구매팀 남자 사원)",
+   "links": []
+  },
+  {
+   "character_id": "acnh_70",
+   "display_name": "장하은 사원",
+   "full_name": "장하은",
+   "title": "사원",
+   "gender": "female",
+   "team_code": "buy",
+   "team_name": "구매팀",
+   "seat_id": "staff_f",
+   "player_selectable": true,
+   "skip_if_player": true,
+   "relation": "사원(동기)",
+   "personality": "승부욕 있지만 웃으며 지는 법도 아는, 볼링 좋아하는 동기",
+   "speech": {
+    "level": "반말",
+    "tic": "한 판 더?",
+    "note": "경쾌하게 말한다."
+   },
+   "player_register": "casual",
+   "interests": [
+    "볼링",
+    "방탈출 카페",
+    "그릭요거트"
+   ],
+   "daily": {
+    "breakfast": "그릭요거트",
+    "commute": "지하철",
+    "lunch": "12시 1층",
+    "snack": "초코칩 쿠키",
+    "after_work": "볼링 연습",
+    "weekend": "방탈출 카페"
+   },
+   "pet": null,
+   "distance": "같은 날 입사한 동기. 편한 반말 사이.",
+   "story_basis": "스토리 설정 없음 — 이번에 새로 정함(구매팀 여자 사원)",
+   "links": [
+    "lunch_1f"
+   ]
+  }
+ ]
+}

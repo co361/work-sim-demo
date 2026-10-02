@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WORK SIM — 그래픽 진단</title>
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231f4e8c'/%3E%3C/svg%3E">
+<style>
+  /* ══════════════════════════════════════════════════════════════════
+     그래픽 진단 페이지 — 대표 기기에서 「거의 못 할 정도로 끊긴다」의 원인을
+     캡처 한 장으로 알아내기 위한 단일 페이지.
+
+     팔레트·모서리·그림자는 play.html / home.html 규칙 그대로 쓴다(새 색 없음).
+     노트북 1280×800 에서 스크롤 없이 한 화면에 들어오게 고정 높이 격자로 짠다.
+     ══════════════════════════════════════════════════════════════════ */
+  :root{ --ink:#1b2430; --mute:#5b6675; --line:#dde3ec; --line2:#ccd4e0;
+         --page:#f5f6f8; --panel:#ffffff; --soft:#eef0f4;
+         --acc:#1f4e8c; --acc-d:#143766; --acc-soft:#e8eefa; --acc-line:#c5d5ee;
+         --ok:#177245; --ok-soft:#e6f3ec; --ok-line:#bfe0cb;
+         --bad:#b3261e; --bad-soft:#fbeae8; --bad-line:#f0c4bf;
+         --warn:#9a4a06; --warn-soft:#fdf1e3; --warn-line:#f0d5b4;
+         --r:14px;
+         --sh:0 1px 2px rgba(20,30,45,.05),0 10px 26px rgba(20,30,45,.08); }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--page);color:var(--ink);word-break:keep-all;
+    font:14px/1.5 -apple-system,system-ui,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    display:grid;grid-template-rows:auto auto 1fr auto;padding:14px 18px;overflow:hidden}
+  /* 경고가 없을 때 #alarm 은 display:none 이라 격자 항목에서 빠진다 —
+     그러면 main 이 auto 칸으로 밀리고 footer 가 1fr 을 먹어 아래가 텅 빈다. 칸을 못박아 둔다.
+     빈 칸에 gap 이 남지 않게 간격은 gap 대신 아래쪽 여백으로 준다. */
+  header{grid-row:1} #alarm{grid-row:2} main{grid-row:3} footer{grid-row:4}
+  header,main{margin-bottom:11px} #alarm.on{margin-bottom:11px}
+  button{font:inherit;color:inherit;cursor:pointer}
+
+  /* ── 머리말 ── */
+  header{display:flex;align-items:center;gap:12px;min-width:0}
+  header h1{margin:0;font-size:18px;letter-spacing:-.01em}
+  header .sub{color:var(--mute);font-size:12.5px}
+  header .sp{margin-left:auto}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 18px;
+    border:1px solid var(--acc-d);border-radius:999px;background:var(--acc);color:#fff;font-weight:700;font-size:13.5px}
+  .btn:hover{background:var(--acc-d)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ok{background:var(--ok);border-color:var(--ok)}
+
+  /* ── 최상단 경고 ── */
+  #alarm{display:none;border-radius:var(--r);padding:14px 20px;align-items:center;gap:16px;
+    border:2px solid var(--bad-line);background:var(--bad-soft)}
+  #alarm.on{display:flex}
+  #alarm.amber{border-color:var(--warn-line);background:var(--warn-soft)}
+  #alarm .mark{flex:none;width:44px;height:44px;border-radius:12px;background:var(--bad);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;line-height:1}
+  #alarm.amber .mark{background:var(--warn)}
+  #alarm b{display:block;font-size:20px;line-height:1.3;color:var(--bad);letter-spacing:-.01em}
+  #alarm.amber b{color:var(--warn)}
+  #alarm span{display:block;font-size:13.5px;color:var(--ink);margin-top:3px}
+
+  /* ── 본문 2단 ── */
+  main{display:grid;grid-template-columns:minmax(330px,.82fr) 1fr;gap:11px;min-height:0}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);
+    padding:14px 16px 15px;display:flex;flex-direction:column;min-height:0;min-width:0}
+  .card>h2{margin:0 0 10px;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--acc);
+    display:flex;align-items:center;gap:7px}
+  .card>h2 .n{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:6px;
+    background:var(--acc-soft);border:1px solid var(--acc-line);font-size:11px}
+
+  /* ① 그래픽 경로 */
+  .gpubox{border:1px solid var(--line);border-radius:12px;background:var(--soft);padding:11px 13px;margin-bottom:10px}
+  .gpubox .chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 11px;border-radius:999px;
+    font-size:11.5px;font-weight:700;margin-bottom:7px;
+    background:var(--ok-soft);border:1px solid var(--ok-line);color:var(--ok)}
+  .gpubox.soft{background:var(--bad-soft);border-color:var(--bad-line)}
+  .gpubox.soft .chip{background:var(--bad);border-color:var(--bad);color:#fff}
+  .gpubox .name{font-size:17px;font-weight:700;line-height:1.35;letter-spacing:-.01em;word-break:break-word}
+  .gpubox .ven{font-size:12px;color:var(--mute);margin-top:3px;word-break:break-word}
+  dl.kv{margin:0;display:grid;grid-template-columns:auto 1fr;gap:0;font-size:13px;overflow:auto;min-height:0}
+  dl.kv dt{color:var(--mute);padding:4px 14px 4px 0;border-top:1px solid var(--line);white-space:nowrap}
+  dl.kv dd{margin:0;padding:4px 0;border-top:1px solid var(--line);text-align:right;
+    font-variant-numeric:tabular-nums;font-weight:600;word-break:break-all}
+  dl.kv dt:first-of-type,dl.kv dd:first-of-type{border-top:0}
+  dl.kv dd.no{color:var(--bad)} dl.kv dd.yes{color:var(--ok)}
+  dl.kv dd.ua{font-weight:400;font-size:10.5px;color:var(--mute);line-height:1.4;text-align:left;grid-column:1/-1;
+    padding-top:5px;border-top:1px solid var(--line);word-break:break-all}
+
+  /* ② 성능 측정 */
+  table{width:100%;border-collapse:collapse;table-layout:fixed}
+  th,td{padding:9px 6px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+  th{font-size:11.5px;font-weight:600;color:var(--mute);border-bottom:1px solid var(--line2);white-space:nowrap}
+  th:first-child,td:first-child{text-align:left;padding-left:2px}
+  td.step{font-weight:700;font-size:13.5px}
+  td.step i{display:block;font-style:normal;font-weight:400;font-size:11.5px;color:var(--mute);margin-top:1px}
+  td.fps{font-size:20px;font-weight:800;letter-spacing:-.02em}
+  td.v{font-size:13px;font-weight:600;color:var(--mute)}
+  td.j{font-size:12.5px;font-weight:700;width:104px}
+  .j.good{color:var(--ok)} .j.mid{color:var(--warn)} .j.bad{color:var(--bad)}
+  tr.run td{background:var(--acc-soft)}
+  tr.run td.fps{color:var(--acc)}
+  .prev{margin-top:auto;padding-top:10px;display:flex;align-items:center;gap:12px}
+  .prev canvas{border-radius:10px;border:1px solid var(--line);background:var(--soft);display:block}
+  .prev .note{font-size:11.5px;color:var(--mute);line-height:1.55}
+  .prev .note b{color:var(--ink)}
+
+  /* ③ 판정 */
+  footer{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--sh);
+    padding:13px 18px;display:flex;gap:14px;align-items:flex-start}
+  footer.bad{border-color:var(--bad-line);background:var(--bad-soft)}
+  footer.good{border-color:var(--ok-line);background:var(--ok-soft)}
+  footer .tag{flex:none;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--acc);
+    background:var(--acc-soft);border:1px solid var(--acc-line);border-radius:999px;padding:4px 11px;margin-top:2px}
+  footer.bad .tag{color:#fff;background:var(--bad);border-color:var(--bad)}
+  footer.good .tag{color:#fff;background:var(--ok);border-color:var(--ok)}
+  footer p{margin:0;font-size:14.5px;line-height:1.7;max-width:104ch}
+  footer p b{font-weight:700}
+  footer p a{color:var(--acc-d);font-weight:700;text-decoration:none;border-bottom:2px solid var(--acc-line);
+    padding:1px 2px;border-radius:3px;white-space:nowrap}
+  footer p a:hover{background:var(--acc-soft)}
+
+  @media (max-height:720px){
+    body{padding:10px 14px}
+    header,main,#alarm.on{margin-bottom:8px}
+    .card{padding:11px 13px 12px}
+    footer p{font-size:13.5px;line-height:1.6}
+    th,td{padding:7px 6px}
+    td.fps{font-size:18px}
+  }
+  @media (max-width:900px){
+    body{overflow:auto;height:auto;min-height:100%}
+    main{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>WORK SIM 그래픽 진단</h1>
+  <span class="sub">이 화면을 그대로 캡처해서 보내 주세요 · 측정 15초</span>
+  <span class="sp"></span>
+  <button class="btn" id="copy">결과 복사</button>
+</header>
+
+<div id="alarm">
+  <div class="mark">!</div>
+  <div><b id="alarmT"></b><span id="alarmS"></span></div>
+</div>
+
+<main>
+  <!-- ① 그래픽 경로 -->
+  <section class="card">
+    <h2><span class="n">1</span>그래픽 경로</h2>
+    <div class="gpubox" id="gpubox">
+      <span class="chip" id="gpuChip">확인 중</span>
+      <div class="name" id="gpuName">확인 중…</div>
+      <div class="ven" id="gpuVen"></div>
+    </div>
+    <dl class="kv" id="kv"></dl>
+  </section>
+
+  <!-- ② 실제 성능 측정 -->
+  <section class="card">
+    <h2><span class="n">2</span>실제 성능 측정 — 단계마다 5초</h2>
+    <table>
+      <thead><tr>
+        <th>단계</th><th style="width:88px">평균 FPS</th><th style="width:96px">최악 프레임</th>
+        <th style="width:76px">드로우콜</th><th style="width:104px">판정</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div class="prev">
+      <canvas id="cv"></canvas>
+      <div class="note" id="prevNote">
+        측정하는 동안 <b>이 창을 그대로 두세요.</b><br>
+        다른 창으로 가거나 창을 줄이면 숫자가 틀어집니다.
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ③ 판정 요약 -->
+<footer id="sum">
+  <span class="tag" id="sumTag">판정</span>
+  <p id="sumP">그래픽 경로를 확인하고 있습니다…</p>
+</footer>
+
+<!-- ──────────────────────────────────────────────────────────────────
+     ① 그래픽 경로 조사는 three.js 와 무관하게 먼저 돌린다.
+     CDN 이 막힌 환경에서도 이 부분만은 반드시 화면에 남아야 한다.
+     ────────────────────────────────────────────────────────────────── -->
+<script>
+window.GPUCHK = (function(){
+  'use strict';
+  /* 소프트웨어 렌더러 이름들 — 하나라도 걸리면 그래픽카드를 안 쓰고 있는 것이다 */
+  var SOFT = /swiftshader|llvmpipe|software|microsoft basic|basic render|softpipe|mesa offscreen|generic renderer/i;
+
+  var I = {};
+  function kill(gl){ try{ var e = gl && gl.getExtension('WEBGL_lose_context'); if(e) e.loseContext(); }catch(err){} }
+
+  /* 주 컨텍스트 — WebGL2 를 먼저, 없으면 WebGL1 */
+  var c = document.createElement('canvas'), gl2 = null, gl1 = null;
+  try{ gl2 = c.getContext('webgl2'); }catch(e){}
+  if(!gl2){ try{ gl1 = c.getContext('webgl') || c.getContext('experimental-webgl'); }catch(e){} }
+  var gl = gl2 || gl1;
+
+  I.webgl2 = !!gl2; I.webgl = !!gl;
+  if(gl){
+    var dbg = null; try{ dbg = gl.getExtension('WEBGL_debug_renderer_info'); }catch(e){}
+    try{ I.renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : ''; }catch(e){ I.renderer=''; }
+    try{ I.vendor   = dbg ? gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL)  : ''; }catch(e){ I.vendor=''; }
+    try{ I.rendererPlain = gl.getParameter(gl.RENDERER) || ''; }catch(e){ I.rendererPlain=''; }
+    try{ I.vendorPlain   = gl.getParameter(gl.VENDOR)   || ''; }catch(e){ I.vendorPlain=''; }
+    try{ I.glVersion = gl.getParameter(gl.VERSION) || ''; }catch(e){ I.glVersion=''; }
+    try{ I.maxTex = gl.getParameter(gl.MAX_TEXTURE_SIZE) || 0; }catch(e){ I.maxTex=0; }
+    try{ var ax = gl.getExtension('EXT_texture_filter_anisotropic')
+              || gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic');
+         I.maxAniso = ax ? gl.getParameter(ax.MAX_TEXTURE_MAX_ANISOTROPY_EXT) : 1; }catch(e){ I.maxAniso=1; }
+  }
+  I.rendererShown = I.renderer || I.rendererPlain || '';
+  I.vendorShown   = I.vendor   || I.vendorPlain   || '';
+
+  /* 브라우저 자신의 판단 — failIfMajorPerformanceCaveat 로 컨텍스트가 안 잡히면
+     브라우저가 「이 경로는 성능이 크게 떨어진다」고 보고 있다는 뜻이다(가속 꺼짐·드라이버 차단). */
+  var c2 = document.createElement('canvas'), strict = null;
+  try{ strict = c2.getContext('webgl2', {failIfMajorPerformanceCaveat:true})
+              || c2.getContext('webgl',  {failIfMajorPerformanceCaveat:true}); }catch(e){}
+  I.accel = !!strict;
+  kill(strict); kill(gl);
+
+  I.soft = (!I.webgl) || (!I.webgl2) || SOFT.test(I.rendererShown) || SOFT.test(I.rendererPlain||'');
+
+  I.dpr = window.devicePixelRatio || 1;
+  I.screenW = (screen && screen.width) || 0; I.screenH = (screen && screen.height) || 0;
+  I.winW = window.innerWidth; I.winH = window.innerHeight;
+  /* office.html 이 실제로 그리는 픽셀 수 — setPixelRatio(min(dpr,2)) · setSize(innerWidth,innerHeight) */
+  I.pr = Math.min(I.dpr, 2);
+  I.bufW = Math.round(I.winW * I.pr); I.bufH = Math.round(I.winH * I.pr);
+  I.px = I.bufW * I.bufH;
+  I.mem = (navigator.deviceMemory != null) ? navigator.deviceMemory : null;
+  I.cores = navigator.hardwareConcurrency || null;
+  I.ua = navigator.userAgent;
+
+  /* ── 화면에 채운다 ── */
+  var box = document.getElementById('gpubox');
+  var chip = document.getElementById('gpuChip');
+  document.getElementById('gpuName').textContent =
+    I.rendererShown || (I.webgl ? '(렌더러 이름을 알려 주지 않는 브라우저)' : 'WebGL 을 쓸 수 없습니다');
+  document.getElementById('gpuVen').textContent =
+    (I.vendorShown ? '제조사 ' + I.vendorShown : '') + (I.glVersion ? '  ·  ' + I.glVersion : '');
+  if(I.soft){ box.className = 'gpubox soft'; chip.textContent = '소프트웨어 렌더링'; }
+  else if(!I.accel){ box.className = 'gpubox soft'; chip.textContent = '가속 확인 안 됨'; }
+  else { chip.textContent = '그래픽카드 사용 중'; }
+
+  var yn = function(b){ return b ? ['쓸 수 있음','yes'] : ['못 씀','no']; };
+  var rows = [
+    ['WebGL2', yn(I.webgl2)[0], yn(I.webgl2)[1]],
+    ['하드웨어 가속(브라우저 판단)', I.accel ? '켜짐' : '꺼짐 / 확인 안 됨', I.accel ? 'yes' : 'no'],
+    ['최대 텍스처 크기', I.maxTex ? (I.maxTex + ' px') : '—', ''],
+    ['devicePixelRatio', String(Math.round(I.dpr*100)/100), ''],
+    ['화면 해상도', I.screenW + ' × ' + I.screenH, ''],
+    ['창 크기', I.winW + ' × ' + I.winH, ''],
+    ['게임이 그리는 픽셀', I.bufW + ' × ' + I.bufH + '  (' + (I.px/1e6).toFixed(1) + '백만)', I.px > 5.5e6 ? 'no' : ''],
+    ['메모리(deviceMemory)', I.mem != null ? (I.mem + ' GB 이상') : '알려 주지 않음', ''],
+    ['CPU 코어', I.cores != null ? (I.cores + ' 개') : '알려 주지 않음', '']
+  ];
+  var kv = document.getElementById('kv'), html = '';
+  for(var i=0;i<rows.length;i++){
+    html += '<dt>' + rows[i][0] + '</dt><dd' + (rows[i][2] ? ' class="'+rows[i][2]+'"' : '') + '>' + rows[i][1] + '</dd>';
+  }
+  html += '<dd class="ua">' + I.ua.replace(/</g,'&lt;') + '</dd>';
+  kv.innerHTML = html;
+
+  /* 소프트웨어 렌더링이면 제일 위에 큰 빨간 경고 */
+  var al = document.getElementById('alarm');
+  if(I.soft){
+    al.className = 'on';
+    document.getElementById('alarmT').textContent = '그래픽카드를 안 쓰고 있습니다 — 이게 원인입니다';
+    document.getElementById('alarmS').textContent =
+      (!I.webgl ? 'WebGL 자체가 막혀 있습니다. ' : (!I.webgl2 ? 'WebGL2 가 안 잡힙니다. ' : '')) +
+      '지금은 그래픽카드 대신 CPU 가 화면을 한 픽셀씩 그리고 있어, 어떤 3D 도 정상 속도가 나오지 않습니다. ' +
+      'Chrome 설정 → 시스템 → 「사용 가능한 경우 그래픽 가속 사용」을 켜고 브라우저를 완전히 껐다 켜 주세요.';
+  } else if(!I.accel){
+    al.className = 'on amber';
+    document.getElementById('alarmT').textContent = '브라우저가 이 그래픽 경로를 「느린 경로」로 보고 있습니다';
+    document.getElementById('alarmS').textContent =
+      '그래픽카드 이름은 잡히지만, 가속을 요구하면 화면을 못 만듭니다. 드라이버가 차단됐거나 원격 접속·가상 화면일 수 있습니다. ' +
+      'chrome://gpu 를 열어 빨간 줄이 있는지 함께 캡처해 주세요.';
+  }
+  return I;
+})();
+</script>
+
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+}}
+</script>
+
+<!-- ──────────────────────────────────────────────────────────────────
+     ② 실제 성능 측정 — office.html 과 같은 설정(안티에일리어싱·PCF 부드러운 그림자·
+     ACES 톤매핑·그림자맵 2048)으로 세 단계를 5초씩 돌린다.
+     그리는 픽셀 수도 게임과 똑같이 맞춘다(창 크기 × min(dpr,2)).
+     ────────────────────────────────────────────────────────────────── -->
+<script type="module">
+import * as THREE from 'three';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+
+const I = window.GPUCHK;
+const rowsEl = document.getElementById('rows');
+const sum = document.getElementById('sum'), sumP = document.getElementById('sumP'), sumTag = document.getElementById('sumTag');
+
+const STEPS = [
+  {k:'empty', t:'① 빈 화면',        d:'상자 하나만 그린다'},
+  {k:'room',  t:'② 사무실 수준',    d:'상자·구 300개 + 그림자'},
+  {k:'char',  t:'③ 실제 캐릭터 1명', d:'게임에 쓰는 사람 모델'}
+];
+const R = {};                       /* 단계별 결과 */
+const cell = {};
+
+for(const s of STEPS){
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td class="step">${s.t}<i>${s.d}</i></td>
+    <td class="fps">–</td><td class="v">–</td><td class="v">–</td><td class="j">대기</td>`;
+  rowsEl.appendChild(tr);
+  cell[s.k] = {tr, fps:tr.children[1], worst:tr.children[2], calls:tr.children[3], j:tr.children[4]};
+}
+
+/* ── 판정 기준 ──
+   프레임 시간으로 본다(120Hz 화면에서 FPS 만 보면 기준이 흔들린다).
+   16.7ms=60fps · 20ms=50fps · 25ms=40fps · 40ms=25fps */
+function judge(fps){
+  if(fps >= 50) return ['정상', 'good'];
+  if(fps >= 35) return ['조금 느림', 'mid'];
+  if(fps >= 22) return ['느림', 'bad'];
+  return ['비정상', 'bad'];
+}
+
+if(!I.webgl){
+  for(const s of STEPS){ cell[s.k].j.textContent = '측정 불가'; cell[s.k].j.className = 'j bad'; }
+  finish();
+} else {
+  run().catch(err => {
+    for(const s of STEPS) if(!R[s.k]){ cell[s.k].j.textContent = '실패'; cell[s.k].j.className='j bad'; }
+    R.error = (err && err.message) || String(err);
+    finish();
+  });
+}
+
+/* ────────────────────────────────────────────────────────── 측정 본체 */
+async function run(){
+  const cv = document.getElementById('cv');
+  /* 미리보기는 작게 보여 주되, **실제로 그리는 픽셀 수는 게임과 똑같이** 잡는다.
+     setSize(w,h,false) 는 CSS 크기를 건드리지 않고 드로잉 버퍼만 바꾼다. */
+  const BW = Math.min(I.bufW, 8192), BH = Math.min(I.bufH, 8192);
+  const ph = 108, pw = Math.round(ph * (BW/BH));
+  cv.style.width = pw + 'px'; cv.style.height = ph + 'px';
+
+  const renderer = new THREE.WebGLRenderer({canvas:cv, antialias:true, powerPreference:'high-performance'});
+  renderer.setPixelRatio(1);
+  renderer.setSize(BW, BH, false);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+
+  const camera = new THREE.PerspectiveCamera(45, BW/BH, 0.1, 100);
+  const clear = new THREE.Color('#eef1f5');
+
+  /* ── ① 빈 화면 ── */
+  {
+    renderer.shadowMap.enabled = false;
+    const sc = new THREE.Scene(); sc.background = clear;
+    sc.add(new THREE.HemisphereLight('#ffffff','#cfcac4',1.5));
+    const d = new THREE.DirectionalLight('#fff4e4',1.2); d.position.set(2,4,3); sc.add(d);
+    const box = new THREE.Mesh(new THREE.BoxGeometry(1.5,1.5,1.5),
+      new THREE.MeshStandardMaterial({color:'#1f4e8c', roughness:.55, metalness:0}));
+    sc.add(box);
+    camera.position.set(0,0.6,4.2); camera.lookAt(0,0,0);
+    R.empty = await stage('empty', renderer, sc, camera, t => { box.rotation.set(t*0.5, t*0.8, 0); });
+    dispose(sc);
+  }
+
+  /* ── ② 사무실 수준 ── */
+  {
+    renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    const sc = new THREE.Scene(); sc.background = clear;
+    sc.add(new THREE.HemisphereLight('#ffffff','#cfcac4',1.5));
+    const sun = new THREE.DirectionalLight('#fff4e4',1.2); sun.position.set(3,7,4); sc.add(sun); sc.add(sun.target);
+    sun.castShadow = true; sun.shadow.mapSize.set(2048,2048);          /* office.html 과 같은 그림자맵 */
+    sun.shadow.camera.left=-8; sun.shadow.camera.right=8; sun.shadow.camera.top=8; sun.shadow.camera.bottom=-8;
+    sun.shadow.camera.near=0.5; sun.shadow.camera.far=20; sun.shadow.bias=-0.0008; sun.shadow.radius=6;
+
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(24,24),
+      new THREE.MeshStandardMaterial({color:'#e9ecef', roughness:.95, metalness:0}));
+    floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; sc.add(floor);
+
+    const gBox = new THREE.BoxGeometry(0.5,0.5,0.5), gSph = new THREE.SphereGeometry(0.3,18,14);
+    const pal = ['#1f4e8c','#5b6675','#c5d5ee','#dde3ec','#143766'];
+    const mats = pal.map(c => new THREE.MeshStandardMaterial({color:c, roughness:.7, metalness:0}));
+    const grp = new THREE.Group(); sc.add(grp);
+    let seed = 7;
+    const rnd = () => (seed = (seed*1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
+    for(let i=0;i<300;i++){
+      const m = new THREE.Mesh(i%2 ? gBox : gSph, mats[i % mats.length]);
+      const a = rnd()*Math.PI*2, r = 1.2 + rnd()*6.4;
+      m.position.set(Math.cos(a)*r, 0.3 + rnd()*2.2, Math.sin(a)*r);
+      m.rotation.set(rnd()*3, rnd()*3, rnd()*3);
+      m.castShadow = true; m.receiveShadow = true;
+      grp.add(m);
+    }
+    camera.position.set(0,4.2,9.5); camera.lookAt(0,1.4,0);
+    R.room = await stage('room', renderer, sc, camera, t => { grp.rotation.y = t*0.25; });
+    dispose(sc);
+  }
+
+  /* ── ③ 실제 캐릭터 1명 ── */
+  {
+    const sc = new THREE.Scene(); sc.background = clear;
+    sc.add(new THREE.HemisphereLight('#ffffff','#cfcac4',1.5));
+    const sun = new THREE.DirectionalLight('#fff4e4',1.2); sun.position.set(1.2,3.4,2.6); sc.add(sun);
+    sun.castShadow = true; sun.shadow.mapSize.set(2048,2048);
+    sun.shadow.camera.left=-2.5; sun.shadow.camera.right=2.5; sun.shadow.camera.top=2.5; sun.shadow.camera.bottom=-2.5;
+    sun.shadow.camera.near=0.5; sun.shadow.camera.far=12; sun.shadow.bias=-0.0008; sun.shadow.radius=6;
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(8,8),
+      new THREE.MeshStandardMaterial({color:'#e9ecef', roughness:.95, metalness:0}));
+    floor.rotation.x = -Math.PI/2; floor.receiveShadow = true; sc.add(floor);
+
+    cell.char.j.textContent = '내려받는 중';
+    let model = null;
+    try{
+      const [gltf, tex] = await Promise.all([
+        new GLTFLoader().loadAsync('assets/acnh_25_rigged.glb'),
+        new THREE.TextureLoader().loadAsync('assets/acnh_25_noface.jpg')
+      ]);
+      tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace;
+      tex.generateMipmaps = true; tex.minFilter = THREE.LinearMipmapLinearFilter;
+      tex.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy() || 1);
+      model = gltf.scene;
+      model.traverse(o => { if(o.isMesh){
+        o.castShadow = true; o.receiveShadow = true; o.frustumCulled = false;
+        /* 이 GLB 에는 법선이 없다 — office.html 도 불러온 뒤 직접 계산한다. 빼먹으면 새까맣게 나온다 */
+        if(!o.geometry.attributes.normal) o.geometry.computeVertexNormals();
+        o.material = new THREE.MeshStandardMaterial({map:tex, metalness:0, roughness:0.9, side:THREE.DoubleSide});
+      }});
+      const bb = new THREE.Box3().setFromObject(model);
+      model.position.y -= bb.min.y;
+      sc.add(model);
+      R.charBytes = 0;
+    }catch(e){
+      R.charFail = (e && e.message) || String(e);
+    }
+    camera.position.set(0,1.05,2.5); camera.lookAt(0,0.85,0);
+    if(model){
+      R.char = await stage('char', renderer, sc, camera, t => { model.rotation.y = t*0.7; });
+    } else {
+      cell.char.j.textContent = '모델 못 받음'; cell.char.j.className = 'j bad';
+    }
+    dispose(sc);
+  }
+
+  renderer.dispose();
+  finish();
+}
+
+/* 한 단계 = 준비 0.5초(숫자에 안 넣는다) + 측정 4.5초 */
+function stage(key, renderer, sc, camera, tick){
+  const c = cell[key];
+  c.tr.className = 'run'; c.j.textContent = '측정 중'; c.j.className = 'j';
+  return new Promise(res => {
+    const WARM = 500, SPAN = 4500;
+    const t00 = performance.now();
+    let last = t00, t0 = 0, started = false, frames = 0, worst = 0, calls = 0;
+    function loop(now){
+      tick((now - t00) / 1000);
+      renderer.render(sc, camera);
+      calls = renderer.info.render.calls;          /* 마지막 프레임 기준(시야 밖 물체가 빠진 실제 값) */
+      if(!started){
+        if(now - t00 >= WARM){ started = true; t0 = now; last = now; }
+      } else {
+        const dt = now - last; last = now;
+        frames++; if(dt > worst) worst = dt;
+        if(now - t0 >= SPAN){
+          const span = now - t0;
+          const out = {fps: frames*1000/span, worst, calls, avgMs: span/frames};
+          c.tr.className = '';
+          c.fps.textContent = out.fps.toFixed(0);
+          c.worst.textContent = out.worst.toFixed(0) + ' ms';
+          c.calls.textContent = String(out.calls);
+          const [txt, cls] = judge(out.fps);
+          c.j.textContent = txt; c.j.className = 'j ' + cls;
+          c.fps.className = 'fps ' + cls;
+          return res(out);
+        }
+      }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+  });
+}
+
+function dispose(sc){
+  sc.traverse(o => {
+    if(o.geometry) o.geometry.dispose();
+    for(const m of [].concat(o.material || [])){ if(!m) continue; if(m.map) m.map.dispose(); m.dispose(); }
+  });
+}
+
+/* ────────────────────────────────────────────── ③ 판정 요약 · 결과 복사 */
+function finish(){
+  const f = k => (R[k] ? R[k].fps : null);
+  const e = f('empty'), rm = f('room'), ch = f('char');
+  const n0 = v => (v == null ? '—' : v.toFixed(0));      /* 단계가 실패해도 문장이 깨지지 않게 */
+  const px = (I.px/1e6).toFixed(1);
+  let tone = '', tag = '판정', p = '';
+
+  if(!I.webgl){
+    tone = 'bad'; tag = '원인';
+    p = `<b>이 브라우저에서는 3D 를 아예 못 그립니다.</b> WebGL 이 꺼져 있거나 막혀 있습니다. 게임이 끊기는 게 아니라 그릴 수단이 없는 상태입니다. Chrome 설정 → 시스템에서 「사용 가능한 경우 그래픽 가속 사용」을 켜고, chrome://gpu 를 열어 함께 캡처해 주세요.`;
+  } else if(I.soft){
+    tone = 'bad'; tag = '원인';
+    p = `<b>원인은 그래픽카드를 안 쓰고 있다는 것입니다.</b> 지금 화면은 그래픽카드가 아니라 CPU 가 한 픽셀씩 그리고 있습니다(렌더러 이름 「${(I.rendererShown||'알 수 없음')}」). 이러면 이 게임뿐 아니라 어떤 웹 3D 도 정상 속도가 나오지 않습니다. 롤이 잘 돌아가는 것과 모순되지 않습니다 — 롤은 그래픽카드를 직접 쓰고, 브라우저만 못 쓰고 있는 상태이기 때문입니다. <b>Chrome 설정 → 시스템 → 「사용 가능한 경우 그래픽 가속 사용」을 켜고 브라우저를 완전히 종료했다 다시 열면</b> 해결됩니다. 코드 쪽 문제가 아닙니다.`;
+  } else if(e != null && e < 35){
+    tone = 'bad'; tag = '원인';
+    p = `<b>가장 단순한 화면(상자 하나)에서 이미 ${n0(e)}fps 입니다.</b> 장면이 무거워서가 아니라 그래픽 경로 자체가 느립니다. 그리는 픽셀이 ${I.bufW}×${I.bufH}(${px}백만)로 ${I.px > 5.5e6 ? '아주 많고, ' : ''}devicePixelRatio 가 ${Math.round(I.dpr*100)/100} 입니다. ${I.accel ? '' : '브라우저가 가속을 못 쓰고 있다고 답한 것도 같은 방향을 가리킵니다. '}드라이버·확장 프로그램·원격 화면 중 하나가 걸려 있을 가능성이 큽니다. chrome://gpu 화면을 함께 캡처해 주세요.`;
+  } else if(rm != null && rm < 35){
+    tone = 'bad'; tag = '원인';
+    p = `<b>빈 화면은 ${n0(e)}fps 로 멀쩡한데, 사무실 수준(물체 300개 + 그림자)에서 ${n0(rm)}fps 로 떨어집니다.</b> 그래픽카드는 살아 있지만 성능이 이 장면을 감당하지 못합니다. 그림자맵(2048×2048)과 물체 개수, 그리고 그리는 픽셀 수(${px}백만)가 부담입니다. 이건 코드에서 낮출 수 있는 항목들이라 — 픽셀 배율 상한을 1.5 로 낮추고, 그림자맵을 1024 로 줄이고, 안티에일리어싱을 끄는 순서로 손보면 됩니다.`;
+  } else if(ch != null && ch < 35){
+    tone = 'bad'; tag = '원인';
+    p = `<b>빈 화면(${n0(e)}fps)과 사무실 수준(${n0(rm)}fps)은 정상인데, 캐릭터 한 명을 넣자 ${n0(ch)}fps 가 됐습니다.</b> 사람 모델 자체가 무겁다는 뜻입니다 — 뼈대가 붙은 메시와 2048×2048 텍스처가 원인이고, 실제 게임에는 이런 사람이 방마다 서너 명씩 들어갑니다. 캐릭터 텍스처 크기를 1024 로 줄이는 쪽을 먼저 검토해야 합니다.`;
+  } else if(e != null && rm != null && ch != null){
+    tone = 'good'; tag = '여기까지 정상';
+    p = `<b>세 단계 모두 정상입니다(${n0(e)} / ${n0(rm)} / ${n0(ch)}fps).</b> 그래픽카드도 제대로 쓰고 있고, 사무실 한 방 정도의 부하는 이 컴퓨터가 넉넉히 감당합니다. 그렇다면 끊김의 원인은 그리는 일이 아니라 <b>게임이 뒤에서 하는 일</b>입니다 — 처음 들어간 뒤 열 개 팀 방을 전부 미리 만들면서 캐릭터 서른 명분의 큰 텍스처를 본체 메모리에 쌓는 구간이 유력합니다. 아래 두 주소를 <b>차례로 열어 30초씩만 걸어 보고</b> 어느 쪽이 끊겼는지 알려 주세요. 그 한 번으로 원인이 갈립니다.<br>
+      ① <a href="office.html?team=cs" target="_blank" rel="noopener">지금과 같은 방</a> &nbsp; ② <a href="office.html?team=cs&amp;pre=0" target="_blank" rel="noopener">미리 받기를 끈 방</a> &nbsp;<span style="color:var(--mute);font-weight:400">— ②만 안 끊기면 범인은 미리 받기입니다.</span>`;
+  } else {
+    tone = ''; tag = '측정 중';
+    p = `측정하고 있습니다. 15초 뒤에 이 자리에 판정이 나옵니다. 그동안 이 창을 그대로 두세요.`;
+  }
+  sum.className = tone; sumTag.textContent = tag; sumP.innerHTML = p;
+  window.__GPUCHK_DONE = true;
+  window.__GPUCHK_R = R;
+}
+
+/* 결과 복사 — 캡처 대신 붙여넣기로 보낼 수 있게 */
+document.getElementById('copy').addEventListener('click', async () => {
+  const L = [];
+  L.push('■ WORK SIM 그래픽 진단  ' + new Date().toLocaleString('ko-KR'));
+  L.push('① 그래픽 경로');
+  L.push('  렌더러       : ' + (I.rendererShown || '(이름 없음)'));
+  L.push('  제조사       : ' + (I.vendorShown || '-') + '   ' + (I.glVersion || ''));
+  L.push('  소프트웨어 렌더링 : ' + (I.soft ? '예 ← 원인' : '아니오'));
+  L.push('  WebGL2       : ' + (I.webgl2 ? '가능' : '불가') + '   하드웨어 가속: ' + (I.accel ? '켜짐' : '꺼짐/확인 안 됨'));
+  L.push('  최대 텍스처   : ' + (I.maxTex || '-') + 'px   이방성: ' + (I.maxAniso || '-'));
+  L.push('  dpr ' + (Math.round(I.dpr*100)/100) + '   화면 ' + I.screenW + '×' + I.screenH +
+         '   창 ' + I.winW + '×' + I.winH + '   그리는 픽셀 ' + I.bufW + '×' + I.bufH);
+  L.push('  메모리 ' + (I.mem != null ? I.mem + 'GB+' : '?') + '   CPU 코어 ' + (I.cores != null ? I.cores : '?'));
+  L.push('  UA: ' + I.ua);
+  L.push('② 성능 측정 (평균 FPS / 최악 프레임 / 드로우콜)');
+  for(const s of STEPS){
+    const r = R[s.k];
+    L.push('  ' + s.t + ' : ' + (r ? `${r.fps.toFixed(1)}fps / ${r.worst.toFixed(0)}ms / ${r.calls}회  → ${judge(r.fps)[0]}`
+                                   : '측정 못 함'));
+  }
+  if(R.charFail) L.push('  캐릭터 로드 실패: ' + R.charFail);
+  if(R.error) L.push('  오류: ' + R.error);
+  L.push('③ 판정');
+  L.push('  ' + sumP.textContent.replace(/\s+/g,' ').trim());
+  const txt = L.join('\n');
+  const btn = document.getElementById('copy');
+  try{ await navigator.clipboard.writeText(txt); }
+  catch(e){
+    const ta = document.createElement('textarea'); ta.value = txt; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch(e2){}
+    document.body.removeChild(ta);
+  }
+  btn.textContent = '복사했습니다'; btn.className = 'btn ok';
+  setTimeout(() => { btn.textContent = '결과 복사'; btn.className = 'btn'; }, 1800);
+});
+</script>
+</body>
+</html>

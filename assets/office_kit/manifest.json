@@ -1,0 +1,325 @@
+{
+ "kit": "staff50-approved17 deliverables_revision6 props (사용자 Blender 사무실 킷)",
+ "generated": "2026-09-29T21:37:33",
+ "coordinate": "glTF(Y up). 소품 앞면 +Z, 벽 부착형은 벽면 z=0 에서 +Z 로 나온다. office_corridor 는 Blender 축 그대로라 게임에서 Y 축 π 회전.",
+ "files": {
+  "desk.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/desk.glb",
+   "sha256": "2391574d9f3436235f4863fc7cb71437c70c4c75ac7eb3462791a35020d04a4c",
+   "bytes": 74152
+  },
+  "chair.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/chair.glb",
+   "sha256": "5e087df6d5828392b4fa4506796bc245812e511de8b703ef8f4ba2484af768f5",
+   "bytes": 203208
+  },
+  "monitor.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/monitor.glb",
+   "sha256": "996339c99921ef25b679dd2b09ac4e1cad19e7283cd39d1cb636d1d5d814cdf5",
+   "bytes": 41732
+  },
+  "keyboard_mouse.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/keyboard_mouse.glb",
+   "sha256": "a421aaed9583dc2385111340a32376959e644a971f2853dab86a595341df8e1d",
+   "bytes": 265116
+  },
+  "laptop.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/laptop.glb",
+   "sha256": "c7c9a4fa01d2aa9ba1fc33556d2060cb90af1950f4778d7059ec22220be1d334",
+   "bytes": 291968
+  },
+  "mug.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/mug.glb",
+   "sha256": "59521ae65408b6ef06f842ab0ccfa78057e3f6d2e06eca217943559b24037088",
+   "bytes": 45988
+  },
+  "redphone.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/redphone.glb",
+   "sha256": "2f9ed562c9f9764bd594d7a5346c855750e49db78e232f50774e9b6fcba2621c",
+   "bytes": 115980
+  },
+  "headphones.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/headphones.glb",
+   "sha256": "61b156bd4d52d9b1dcb2866788bec715d022c1026cc249320ee5d4556fb34e35",
+   "bytes": 115268
+  },
+  "camera.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/camera.glb",
+   "sha256": "6a488454fe456b45024a8c69837a858396f4d63fc0913aafbbee2999a924773b",
+   "bytes": 160280
+  },
+  "smallplant.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/smallplant.glb",
+   "sha256": "e11d3223055b6dbb1f51fc529103c2ddf8b91fa62d61e29f08366451429b4abd",
+   "bytes": 162432
+  },
+  "bigplant.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/bigplant.glb",
+   "sha256": "747d816871838fb68bc8ac052b0769fbed8d54b1f71bb3009c5b4d60edb21d78",
+   "bytes": 239304
+  },
+  "bookshelf.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/bookshelf.glb",
+   "sha256": "f666d9912655388455ccb01ff64544bdb26eee7b9a9805fe35e69fc7b55dafe3",
+   "bytes": 193400
+  },
+  "corkboard.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/corkboard.glb",
+   "sha256": "fe6849eef02a430c8d7643899514881d858212f3aaa541dd0cc46cc8e17429b0",
+   "bytes": 96196
+  },
+  "coathanger.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/coathanger.glb",
+   "sha256": "f4563c1b71bd12ca1636ecbcb96f2323858d6c7d313790322e984ce0220e87d5",
+   "bytes": 170576
+  },
+  "paper_stack.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/paper_stack.glb",
+   "sha256": "01e10dd93d45ca3992a007be6625bbd21808b183ccf808998f722d72e89c667b",
+   "bytes": 257648
+  },
+  "file_folder.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/file_folder.glb",
+   "sha256": "de53bd66f62982463f1ea2204b659cbc94b42f2d8b4e77a7f6c12ec5c114a720",
+   "bytes": 120108
+  },
+  "paper_tray.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/paper_tray.glb",
+   "sha256": "915c94062d48ae18cff7a8397d7923cc81c6c091f96bd2b753b0d067e9e6fac9",
+   "bytes": 325452
+  },
+  "filing_cabinet.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/filing_cabinet.glb",
+   "sha256": "f3dd73bb9a5e4f73c39960b4b4ee4c5645049e71ded2edd02932e07904b85494",
+   "bytes": 312340
+  },
+  "locker.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/locker.glb",
+   "sha256": "5eae60a9b6485c28f8d397d394c376240cb4a7b46a3c70aeaf388ad313359a0d",
+   "bytes": 351492
+  },
+  "sofa.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/sofa.glb",
+   "sha256": "098f775283618fc43eb9ff186e4144e36a06a43ca4820f4eb918a77dd9f6bb05",
+   "bytes": 221808
+  },
+  "rug.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/rug.glb",
+   "sha256": "de4e40cf0dbdf379a496c33cdc44313a3d5ac14501abef93f10ff776b1a29234",
+   "bytes": 183056
+  },
+  "water_dispenser.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/water_dispenser.glb",
+   "sha256": "ad1fe8cd4655b6633096c59e907b0c0588173dd7cb48e7ebb9e270e319771602",
+   "bytes": 189472
+  },
+  "copier.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/copier.glb",
+   "sha256": "badab8b8013a89385233260da790019a291063100a3880282b92bd82d1752085",
+   "bytes": 317380
+  },
+  "storage_box.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/storage_box.glb",
+   "sha256": "b66e3a69cc2c40e36860bff2af3d317ab2f716fe4fad8a7d7efd8c7dd340df5d",
+   "bytes": 157204
+  },
+  "waste_bin.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/waste_bin.glb",
+   "sha256": "af228cff2bfed2171ebd250da88f678589aef42c17077f692db7c85fd5213e2e",
+   "bytes": 174508
+  },
+  "wall_clock.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/wall_clock.glb",
+   "sha256": "aa6d4bfbfb81ed09acb9d164a042fa3a6a521436e5b571f9729596e887298490",
+   "bytes": 209208
+  },
+  "whiteboard.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/whiteboard.glb",
+   "sha256": "b3d9961e7468f181810236c89fb018c9c1049ea5e51eded32e0a9e221311eece",
+   "bytes": 173376
+  },
+  "calendar.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/calendar.glb",
+   "sha256": "318a25a2c073f660123664c97a6b85d927fa474a616463430a246d432fbb4311",
+   "bytes": 1205152
+  },
+  "poster_frame.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/poster_frame.glb",
+   "sha256": "a9fcabae5b8bff7211d01d5a1b9efe524ec55985b435544938c9467d6f0e25e3",
+   "bytes": 193304
+  },
+  "floor_lamp.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/floor_lamp.glb",
+   "sha256": "56326358ac948a3db4be2312384d841ba159501674faff9415df9ad5e4942d92",
+   "bytes": 126732
+  },
+  "ceiling_light.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/ceiling_light.glb",
+   "sha256": "12571c880a42a8d5c00140c66c0030477a093ae357be97db2227707e14acf056",
+   "bytes": 107296
+  },
+  "door.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/door.glb",
+   "sha256": "68cf1d68583298cc572dc68546547c292019e2208ff288b99fad06a1b14414d6",
+   "bytes": 185764
+  },
+  "meeting_table.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/meeting_table.glb",
+   "sha256": "a9d3d291e18820c0c423269a2ef857fc293e0d38624fa33c8f25ec2ed91b01f4",
+   "bytes": 114988
+  },
+  "meeting_stool.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/meeting_stool.glb",
+   "sha256": "5d2abfc200911b8563f042190a496660587e64cdc0edda359f7fa8d65ac28943",
+   "bytes": 97828
+  },
+  "office_corridor.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/office_corridor.glb",
+   "sha256": "eb489e3510f60c80ed68fa27070d6cbb15db0a024e9829d266242020e2c2ccc8",
+   "bytes": 9986024
+  },
+  "chair_acnh_17.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/chair_acnh_17.glb",
+   "sha256": "8307bfe3bc0852211ca65fdce587aa329f95d7b4b8436a64a099d1fffbe4ff6f",
+   "bytes": 206368,
+   "geometry_sha256": "bcdb0f04f0a69d0ec12ae29767bcf9b6f8978f0e3e8ba8a58472e80efb10b8a2",
+   "shared_by": [
+    "acnh_17",
+    "acnh_21",
+    "acnh_33",
+    "acnh_34",
+    "acnh_35",
+    "acnh_44"
+   ],
+   "seat_three": {
+    "front_z": 0.0753,
+    "top_y": 0.2
+   }
+  },
+  "chair_acnh_18.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/chair_acnh_18.glb",
+   "sha256": "c8aa9066565b6e95a075db7ee48d367ac3357b8493d25cb277392272c406b594",
+   "bytes": 206084,
+   "geometry_sha256": "e9d6c5e6bf03adfd6428b25c70769f3a412a925edda502f0898f5116851874ab",
+   "shared_by": [
+    "acnh_18",
+    "acnh_19",
+    "acnh_20",
+    "acnh_22",
+    "acnh_23",
+    "acnh_24",
+    "acnh_26",
+    "acnh_27",
+    "acnh_28",
+    "acnh_29",
+    "acnh_30",
+    "acnh_31",
+    "acnh_36",
+    "acnh_37",
+    "acnh_39",
+    "acnh_41",
+    "acnh_43",
+    "acnh_45",
+    "acnh_47",
+    "acnh_48",
+    "acnh_52",
+    "acnh_53",
+    "acnh_54",
+    "acnh_55",
+    "acnh_56",
+    "acnh_57",
+    "acnh_58",
+    "acnh_59",
+    "acnh_60",
+    "acnh_61",
+    "acnh_62",
+    "acnh_63",
+    "acnh_64",
+    "acnh_65",
+    "acnh_66",
+    "acnh_67",
+    "acnh_68",
+    "acnh_69",
+    "acnh_70"
+   ],
+   "seat_three": {
+    "front_z": 0.116,
+    "top_y": 0.2
+   }
+  },
+  "chair_acnh_32.glb": {
+   "source": "../character-packs/staff50-approved17/deliverables_revision6/props/chair_acnh_32.glb",
+   "sha256": "c20cf100f730ce39d4c23322b6c02bd834da97244052d7e988da26722629b2d1",
+   "bytes": 206084,
+   "geometry_sha256": "e2cee4bf28aefab00c16f08cbd1ab00e5ebc56bbf93d7ac491e34d594f60edbe",
+   "shared_by": [
+    "acnh_32",
+    "acnh_38",
+    "acnh_40",
+    "acnh_42",
+    "acnh_46"
+   ],
+   "seat_three": {
+    "front_z": 0.0796,
+    "top_y": 0.2
+   }
+  }
+ },
+ "chairs": {
+  "acnh_17": "chair_acnh_17.glb",
+  "acnh_21": "chair_acnh_17.glb",
+  "acnh_33": "chair_acnh_17.glb",
+  "acnh_34": "chair_acnh_17.glb",
+  "acnh_35": "chair_acnh_17.glb",
+  "acnh_44": "chair_acnh_17.glb",
+  "acnh_18": "chair_acnh_18.glb",
+  "acnh_19": "chair_acnh_18.glb",
+  "acnh_20": "chair_acnh_18.glb",
+  "acnh_22": "chair_acnh_18.glb",
+  "acnh_23": "chair_acnh_18.glb",
+  "acnh_24": "chair_acnh_18.glb",
+  "acnh_26": "chair_acnh_18.glb",
+  "acnh_27": "chair_acnh_18.glb",
+  "acnh_28": "chair_acnh_18.glb",
+  "acnh_29": "chair_acnh_18.glb",
+  "acnh_30": "chair_acnh_18.glb",
+  "acnh_31": "chair_acnh_18.glb",
+  "acnh_36": "chair_acnh_18.glb",
+  "acnh_37": "chair_acnh_18.glb",
+  "acnh_39": "chair_acnh_18.glb",
+  "acnh_41": "chair_acnh_18.glb",
+  "acnh_43": "chair_acnh_18.glb",
+  "acnh_45": "chair_acnh_18.glb",
+  "acnh_47": "chair_acnh_18.glb",
+  "acnh_48": "chair_acnh_18.glb",
+  "acnh_52": "chair_acnh_18.glb",
+  "acnh_53": "chair_acnh_18.glb",
+  "acnh_54": "chair_acnh_18.glb",
+  "acnh_55": "chair_acnh_18.glb",
+  "acnh_56": "chair_acnh_18.glb",
+  "acnh_57": "chair_acnh_18.glb",
+  "acnh_58": "chair_acnh_18.glb",
+  "acnh_59": "chair_acnh_18.glb",
+  "acnh_60": "chair_acnh_18.glb",
+  "acnh_61": "chair_acnh_18.glb",
+  "acnh_62": "chair_acnh_18.glb",
+  "acnh_63": "chair_acnh_18.glb",
+  "acnh_64": "chair_acnh_18.glb",
+  "acnh_65": "chair_acnh_18.glb",
+  "acnh_66": "chair_acnh_18.glb",
+  "acnh_67": "chair_acnh_18.glb",
+  "acnh_68": "chair_acnh_18.glb",
+  "acnh_69": "chair_acnh_18.glb",
+  "acnh_70": "chair_acnh_18.glb",
+  "acnh_32": "chair_acnh_32.glb",
+  "acnh_38": "chair_acnh_32.glb",
+  "acnh_40": "chair_acnh_32.glb",
+  "acnh_42": "chair_acnh_32.glb",
+  "acnh_46": "chair_acnh_32.glb"
+ },
+ "chair_placement_three": [
+  0,
+  0,
+  -0.1702185496687889
+ ]
+}
