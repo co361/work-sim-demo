@@ -16,7 +16,7 @@
   'use strict';
 
   var URL_ = '';
-  var TIMEOUT       = 8000;   /* check · load · save · issue */
+  var TIMEOUT       = 25000;   /* check · load · save · issue — 데모 사이트: GAS 첫 응답이 8초를 넘으면 링크 입장이 「응답 시간 초과」로 멈춰 25초로(라이브는 8000) */
   var GRADE_TIMEOUT = 8000;   /* AI 첨삭. 자주 시간 초과로 규칙 채점에 떨어지면 configure 로 올린다 */
   var DEBOUNCE      = 2000;   /* 저장 디바운스 */
 
