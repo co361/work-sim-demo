@@ -52,7 +52,7 @@ function persist(immediate = false) {
   const run = () => {
     const snapshot = clone({...data, draft});
     saving = saving.catch(() => {}).then(async () => {
-      try { await dbPut('review', snapshot); storageError = false; saveStatus(apiAvailable ? '브라우저 저장 완료 · Mac 동기화 중' : '이 브라우저에 저장 완료'); }
+      try { await dbPut('review', snapshot); storageError = false; saveStatus(apiAvailable ? (pendingNotes.size || Object.keys(pendingCharacters).length || Object.keys(pendingEmployees).length ? '브라우저 저장 완료 · Mac 동기화 중' : 'Mac 저장 연결됨 · 브라우저 저장 완료') : '이 브라우저에 저장 완료'); }
       catch (e) { storageError = true; saveStatus('브라우저 저장 실패 · 검토 파일을 내보내 주세요'); }
       if (apiAvailable) scheduleSync();
     });
