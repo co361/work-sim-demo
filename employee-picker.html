@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="same-origin">
+  <title>50명 사원 선택 · Work Sim</title>
+  <link rel="icon" href="assets/appicon/favicon-32.png">
+  <link rel="stylesheet" href="employee-picker.css?v=20261003select1">
+  <script src="js/office-roster.js"></script>
+  <script src="employee-picker.js?v=20261003select1" defer></script>
+</head>
+<body>
+  <header class="page-header">
+    <a class="brand" href="./">WORK SIM</a>
+    <h1>우리 팀 사원 고르기</h1>
+    <p>팀마다 여자 1명, 남자 1명을 눌러 주세요. 같은 성별의 다른 얼굴을 누르면 선택이 바뀝니다.</p>
+    <p class="help">팀 구성은 유지됩니다. 지금은 사원으로 배치할 후보를 고르는 단계예요.</p>
+  </header>
+  <div class="selection-bar">
+    <strong id="progress">50명 준비 중</strong>
+    <span id="save-status" role="status" aria-live="polite">저장 연결 확인 중</span>
+  </div>
+  <main id="teams" aria-label="10개 팀의 캐릭터 50명"></main>
+  <footer class="page-footer">
+    <p id="storage-help">각 팀의 남녀를 모두 고르면 자동 저장됩니다.</p>
+    <div class="actions">
+      <button id="export" type="button">선택 내보내기</button>
+      <a href="character-review.html" id="review-link">캐릭터 수정 의견 남기기</a>
+      <button id="finish" class="primary" type="button" disabled>선택 완료</button>
+    </div>
+    <p id="finish-message" role="status" aria-live="polite"></p>
+  </footer>
+</body>
+</html>
