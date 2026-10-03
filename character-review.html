@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>캐릭터 수정 검토 · Work Sim</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="character-review.css">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+  <script src="js/office-roster.js"></script>
+  <script type="module" src="character-review.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div><a class="brand" href="character-review.html">Work Sim</a><h1>캐릭터 수정 검토</h1></div>
+    <div class="file-actions"><button id="export">검토 파일 내보내기</button><button id="import">불러오기</button><input id="import-file" type="file" accept="application/json,.json" hidden></div>
+  </header>
+  <div class="save-strip"><span id="progress">50명 불러오는 중</span><span id="save-status" role="status" aria-live="polite">자동 저장 준비 중</span></div>
+  <main class="workspace">
+    <aside class="roster-panel" aria-label="캐릭터 선택">
+      <label for="search">이름 또는 번호</label><input id="search" type="search" placeholder="예: 47, 민정">
+      <div class="filter-row"><select id="team-filter" aria-label="팀"><option value="">모든 팀</option></select><select id="status-filter" aria-label="검토 상태"><option value="">모든 상태</option><option value="unreviewed">미검토</option><option value="notes">수정 의견 있음</option><option value="reviewed">검토 완료</option></select></div>
+      <div id="character-list" class="character-list"></div>
+    </aside>
+    <section class="viewer-panel" aria-label="캐릭터 큰 화면">
+      <div class="character-heading"><div><p id="character-team"></p><h2 id="character-name">캐릭터 불러오는 중</h2></div><span id="character-number"></span></div>
+      <div class="view-controls"><div class="button-group"><button data-view="front">정면</button><button data-view="left">왼쪽</button><button data-view="right">오른쪽</button><button data-view="back">뒷면</button><button data-view="face">얼굴 확대</button><button id="fit">전체 보기</button></div>
+        <div class="motion-row"><label>동작<select id="motion" disabled><option>불러오는 중</option></select></label><label>표정<select id="expression"><option value="neutral">평상시</option><option value="happy">웃음</option><option value="sad">곤란</option><option value="angry">화남</option><option value="surprised">놀람</option></select></label><button id="pause">동작 멈춤</button><button id="talk">말하기</button></div>
+      </div>
+      <div id="stage" class="stage" tabindex="0" aria-label="3D 캐릭터. 마우스나 한 손가락으로 회전, 휠이나 두 손가락으로 확대">
+        <div id="stage-loading" class="stage-message" role="status">캐릭터를 불러오는 중</div>
+        <div id="snapshot" class="snapshot" hidden><img id="snapshot-image" alt="수정 위치를 표시할 캐릭터 화면"><button id="pin" class="pin" hidden aria-label="수정할 위치"></button></div>
+      </div>
+      <div class="viewer-footer"><p id="view-help">드래그로 회전 · 휠 또는 두 손가락으로 확대</p><div><button id="resume" hidden>3D 보기로 돌아가기</button><button class="primary" id="capture" disabled>이 화면에 수정 위치 표시</button></div></div>
+      <p class="source-note">실제 게임의 캐릭터 파일을 표시합니다. 의견과 사원 후보는 검토 초안으로 저장됩니다.</p>
+    </section>
+    <aside class="notes-panel" aria-label="수정 의견">
+      <div class="section-title"><h2>수정 의견</h2><span id="note-count">0개</span></div>
+      <div id="editor" hidden>
+        <p id="pin-help" class="hint">캐릭터 사진에서 고칠 곳을 누른 뒤 내용을 적어 주세요.</p>
+        <label for="note-text">어떻게 바꾸면 좋을까요?</label><textarea id="note-text" rows="5" maxlength="5000" placeholder="예: 앞머리를 눈썹 아래까지 길게, 머리 옆 볼륨은 줄여 주세요."></textarea>
+        <div class="editor-actions"><select id="note-status" aria-label="의견 상태"><option value="open">수정 요청</option><option value="resolved">수정 확인 완료</option></select><button id="delete-note">이 의견 삭제</button></div>
+      </div>
+      <div id="notes-list" class="notes-list"></div>
+      <div class="review-complete"><label><input type="checkbox" id="reviewed"> 이 캐릭터 검토 완료</label><p>수정 의견을 남긴 뒤에도 완료 표시를 할 수 있어요.</p></div>
+      <section class="employee-draft"><h3>이 팀의 사원 후보</h3><p>같은 팀의 남·여 사원 역할 배치 초안입니다. 팀 구성은 유지하며 실제 적용 전에 함께 확인합니다.</p><label for="employee-male">남자 사원 후보</label><select id="employee-male"></select><label for="employee-female">여자 사원 후보</label><select id="employee-female"></select><label for="employee-note">선택 이유 또는 배치 의견</label><textarea id="employee-note" rows="2" maxlength="2000" placeholder="예: 긴 머리 스타일로 바꿔 사원으로 쓰고 싶어요."></textarea></section>
+      <p class="storage-help" id="storage-help">이 브라우저에 자동 저장됩니다. 다른 기기에서 이어 보려면 검토 파일을 내보내 주세요.</p>
+    </aside>
+  </main>
+  <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

@@ -96,7 +96,7 @@ const OFFICE_KIT=!COZY&&OFFICE_Q!=='legacy';
 /* 2026-09-29 걷기: 옛 GLB walk 는 한 걸음 8.7cm·고유 0.10m/s 라 게임 이동(0.85~1.8m/s)과 맞출 수 없었다(발이 몸 속도의 86% 로 미끄러짐).
    기본 = 새 공용 걷기(data/walk_params.json → js/office-walk.js 가 캐릭터마다 idle 자세 위에 IK 로 만든다) + 실제 이동 속도로 재생 속도 맞춤.
    ?walk=orig 면 옛 클립·옛 재생 속도(비교용) */
-const WALK_Q=(Q.get('walk')||(()=>{ try{ return (Q.get('embed')==='1'&&parent!==window)?new URLSearchParams(parent.location.search).get('walk'):null; }catch(e){ return null; } })());
+const WALK_Q=(Q.get('walk')||(()=>{ try{ return (Q.get('embed')==='1'&&parent!==window)?new URLSearchParams(parent.location.search).get('walk'):null; }catch(e){ return null; } })())||'blend';
 const WALK_NEW=WALK_Q!=='orig';
 /* 2026-10-01 앉아서 일하기(js/office-work.js): 기본 켬. ?work=0 이면 기존 type2 타자 반복(비교·검사용) — play.html 안(embed)에서는 바깥 주소의 work 도 받는다 */
 const WORK_ON=(Q.get('work')||(()=>{ try{ return (Q.get('embed')==='1'&&parent!==window)?new URLSearchParams(parent.location.search).get('work'):null; }catch(e){ return null; } })())!=='0';
@@ -108,7 +108,7 @@ const PLAQUE_BIG=(Q.get('plaque')||(()=>{ try{ return (Q.get('embed')==='1'&&par
    세 안 모두 사람 걸음 빈도(초당 1.6~2걸음)·팔은 몸 옆으로 내려 작게 — 이동 속도를 보폭×빈도(캐릭터 고유 속도)로 낮추고 재생 속도는 pace.max_ts 안에서만.
    A = v3 모양(짧은 걸음) · B = 차분한 사람 걸음 · C = 로컬 모캡 곡선. 기본(주소에 walk 없음)은 v3 그대로 */
 const WALK_VAR=/^[ABC]$/.test(WALK_Q||'')?WALK_Q:null;
-const WALK_PQ=Q.get('walkp')||(()=>{ try{ return (Q.get('embed')==='1'&&parent!==window)?new URLSearchParams(parent.location.search).get('walkp'):null; }catch(e){ return null; } })();   /* play.html 안(embed)에서는 바깥 주소의 walkp 도 받는다 */   /* 검사용: 파라미터 후보 파일(작업 폴더 v2 기준 경로) — ?walk=A 등과 함께 */
+const WALK_PQ=Q.get('walkp')||(()=>{ try{ return (Q.get('embed')==='1'&&parent!==window)?new URLSearchParams(parent.location.search).get('walkp'):null; }catch(e){ return null; } })()||(WALK_Q==='blend'?'workfiles/walk_keyed_20261001/walk_params_keyed50.json':null);   /* play.html 안(embed)에서는 바깥 주소의 walkp 도 받는다 */   /* 검사용: 파라미터 후보 파일(작업 폴더 v2 기준 경로) — ?walk=A 등과 함께 */
 const WALK_P=WALK_NEW?loadWalkParams(WALK_PQ&&/^workfiles\/[\w\/.-]+\.json$/.test(WALK_PQ)?WALK_PQ:WALK_VAR?`data/walk_params_${WALK_VAR}.json?v=20260930abc1`:'data/walk_params.json?v=20260930walk8'):null;
 let PACE=null; if(WALK_P) WALK_P.then(P=>{ PACE=(P&&P.pace)||null; }).catch(()=>{});
 /* 자연 속도: 요청 속도(옛 기준 0.85 = 보통)를 캐릭터 고유 속도의 0.9~max_ts 배로 바꾼다 — 빈도를 올려 속도를 맞추지 않는다 */

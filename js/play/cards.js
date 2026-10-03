@@ -451,7 +451,7 @@ async function doDeliver(id,d,auto){ const c=CARD(id), st=S.cards[id]; const O=o
   st.lastSeat=d.seat; st.lastNpc=who;
   if(ok){ st.delivered=true; st.deliveredAt=S.t; delete st.go; delete st.wrong; S.counts.pass++; S.counts.rightNpc++; evRoute(id); const okBr=(D.branches[id]||{}).ok; if(dl.npc&&!c.pre&&!(okBr&&okBr.trust)) S.trust[dl.npc]=(S.trust[dl.npc]||0)+1; runBranch(id,'ok',{toastOnly:true}); scheduleChain(c);
     /* 배포본은 act 표가 비어 있다 — 이 전달로 카드가 끝나면 정답 코멘트를 서버에서 받아 둔다(로컬과 같은 결과 화면 · D-fixes §5-5) */
-    if(!Grader.local()&&!st.bestComment&&c.best&&!requiredSteps(c).some(s=>s!=='deliver'&&!(st.steps&&st.steps[s]))){ try{ const b=await Grader.run('act',c,{key:c.best}); if(b&&b.bestComment) st.bestComment=b.bestComment; }catch(e){} }
+    if(!Grader.local()&&!st.bestComment&&c.best&&!requiredSteps(c).some(s=>s!=='deliver'&&!(st.steps&&st.steps[s]))){ try{ const b=await Grader.run('act',c,{key:c.best,commentOnly:true}); if(b&&b.bestComment) st.bestComment=b.bestComment; }catch(e){} }
     markStep(id,'deliver',{seat:d.seat,line:r.line||line,score:100}); if(practiceDay()&&stepsLeft(id).length) toast('전달했어요. 고객에게도 안내 회신을 보내야 완료예요.'); }
   else { st.wrong=line; st.tries=(st.tries||0)+1; S.counts.wrongNpc++; if(!sameTeamWrong(c,d,'deliver')) runBranch(id,'wrongNpc',{toastOnly:true}); if(S.cur===id) renderCardActs(id); } }
 /* 전달 흐름이 없는 카드를 넘겼다 — 받은 사람은 받아 두고, 카드는 전달(delegate) act 점수로 끝난다 */
