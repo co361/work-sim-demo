@@ -67,6 +67,7 @@ import {createWallTeamPlaque} from './js/office-wall-plaque.js?v=20260929-plaque
 import * as COZYLIB from './js/office-cozy.js?v=20260929-cozy5';
 import * as KITLIB from './js/office-kit.js?v=20260929kit2';
 import {loadWalkParams,buildWalkClip} from './js/office-walk.js?v=20260929walk13';   /* 공용 걷기(발 미끄러짐·부자연스러움 수정) — ?walk=orig 면 GLB 의 옛 walk */   /* ?office=kit — 사용자 Blender 사무실 킷(소품·맞춤 의자·복도). 기본 화면에서는 쓰지 않는다 */   /* ?look=cozy 가안 전용 — 기본 화면에서는 쓰지 않는다 */
+import {createRunPosture} from './js/office-run-posture.js?v=20261003run1';
 import {createTalkFace,moodOf as faceMoodOf} from './js/office-talkface.js?v=20261002face2';   /* 말할 때 입·표정·깜빡임(GLB 모양키 mouth_open·happy·sad·surprised·angry·blink) — ?talkface=0 이면 옛 동작 */
 import {createWork} from './js/office-work.js?v=20261001work1';   /* 앉아서 일하기 — 앉은 NPC 가 work_* 클립(타자·마우스·화면 읽기·기지개·목)을 무작위로 잇는다. 클립 없는 GLB 는 기존 type2 */
 import {createOfficeFurnishings} from './workfiles/native50_integration/office_furnishings.js?v=white20260929';
@@ -1889,6 +1890,7 @@ async function loadNativeResident(CH){
   const faceMeshes=[]; model.traverse(o=>{if(o.isMesh&&o.morphTargetDictionary&&o.morphTargetInfluences)faceMeshes.push(o)});
   /* 2026-10-02 입·표정(js/office-talkface.js): 대사 음절 박자로 입을 여닫고(글이 끝나면 다문다) 줄의 분위기로 표정, 깜빡임은 클립 곡선 그대로 */
   const FX=TALKFACE_ON?createTalkFace(faceMeshes,gltf.animations,{seed:((parseInt(String(CH).replace(/\D/g,''),10)||1)*2654435761)>>>0}):null;
+  const RUN_POSTURE=createRunPosture(THREE,{model,bones,mixer,animations:gltf.animations});
   const fit=getSeatFit(CH);
   const soles=[];const solePoint=new THREE.Vector3();
   model.traverse(o=>{if(o.isMesh&&/31[_ ]Sole/.test(o.name))soles.push(o)});
@@ -2039,6 +2041,7 @@ async function loadNativeResident(CH){
     s.chair.rotation.y=s.ry;s.chair.visible=true;
   }
   const C={CH,model,H:size.y,bones,head,hips,mixer,actions,P,SIT,native:true,seat:null,
+    get runPosture(){return RUN_POSTURE?.state||null;},
     get mode(){return mode},set mode(v){mode=v},play,
     get clip(){return current?.getClip()?.name||null},get clipKey(){return clipKey},
     get clipTS(){return current?+current.timeScale.toFixed(2):null},get clipRun(){return !!current?.isRunning()},
@@ -2078,10 +2081,10 @@ async function loadNativeResident(CH){
       if(WALK_NEW&&clipKey==='walk'&&!KEY) C._lp=(C._lp||new THREE.Vector3()).copy(model.position); C._po={x:0,z:0};
       if(KEY&&C._gaitWant&&C._loco&&C._loco.state==='cycle'){ const nc=C.nextContact(); if(nc.ttc<=dt*1.02) C.gaitTrans(nc.side,nc.ttc,dt); }
       if(KEY&&C._loco) locoTick(dt);
-      talkLookUndo();   /* 지난 프레임 대화 시선 회전을 걷어낸 뒤 클립을 입힌다(누적 방지) */
+      talkLookUndo(); RUN_POSTURE?.restore();   /* 지난 프레임 대화 시선 회전을 걷어낸 뒤 클립을 입힌다(누적 방지) */
       if(WK&&WK.on) WK.update(dt);   /* 일하기: 끝나 가는 클립이면 다음 클립을 섞어 들인다(믹서 갱신 밖에서) */
       mixer.update(dt);
-      xfadeTick(dt);
+      xfadeTick(dt); RUN_POSTURE?.update();
       if(C._armT>0&&C._armQ){ C._armT-=dt; const k=1-Math.exp(-dt/0.12); for(const n in C._armQ){ const q=C._armQ[n]; q.slerp(bones[n].quaternion,C._armT>0?k:1); bones[n].quaternion.copy(q); } if(C._armT<=0) C._armQ=null; }   /* 팔 전환 평활 */
       if(!KEY||!C._loco||C._loco.state==='cycle') C.lockFeet(true);
       if(KEY&&!PIK_OFF) plantIK(dt);

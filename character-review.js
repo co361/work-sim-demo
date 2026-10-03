@@ -3,6 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { createRunPosture } from './js/office-run-posture.js?v=20261003run1';
 import { createTalkFace } from './js/office-talkface.js';
 
 // A focused review tool in the existing HTML/Three.js application. No game state is changed.
@@ -212,7 +213,9 @@ async function selectCharacter(id) {
     const gltf=await loader.parseAsync(bytes,new URL('assets/native_staff50/characters/',location.href).href);
     const root=new THREE.Group();root.add(gltf.scene);const mixer=new THREE.AnimationMixer(gltf.scene);const faceMeshes=[];
     gltf.scene.traverse(o=>{if(o.isMesh){o.frustumCulled=false;if(o.morphTargetDictionary)faceMeshes.push(o);}});
-    const a={root,gltf,mixer,fx:createTalkFace(faceMeshes,gltf.animations,{seed:parseInt(id.replace(/\D/g,''),10)}),sha};
+    const bones={};root.traverse(o=>{if(o.isBone)bones[o.name]=o;});
+    const runPosture=createRunPosture(THREE,{model:root,bones,mixer,animations:gltf.animations});
+    const a={root,gltf,mixer,runPosture,fx:createTalkFace(faceMeshes,gltf.animations,{seed:parseInt(id.replace(/\D/g,''),10)}),sha};
     if(generation!==loadGeneration){disposeActor(a);return;}
     actor=a;scene.add(root);modelSha=sha;
     const bounds=new THREE.Box3().setFromObject(root);height=bounds.max.y-bounds.min.y;const mid=bounds.getCenter(new THREE.Vector3());root.position.set(-mid.x,-bounds.min.y,-mid.z);
@@ -224,7 +227,7 @@ async function selectCharacter(id) {
   } catch(e) {if(e.name==='AbortError'||generation!==loadGeneration)return;$('stage-loading').textContent=`${e.message} 잠시 뒤 이 캐릭터를 다시 선택해 주세요.`;}
 }
 const resize=()=>{const {width,height}=stage.getBoundingClientRect();renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();placePin();};new ResizeObserver(resize).observe(stage);resize();
-let prev=performance.now();renderer.setAnimationLoop(t=>{const dt=Math.min((t-prev)/1000,.05);prev=t;if(actor&&!snapshotNote){if(!paused)actor.mixer.update(dt);actor.fx?.update(dt,false,currentClip);}controls.update();renderer.render(scene,camera);});
+let prev=performance.now();renderer.setAnimationLoop(t=>{const dt=Math.min((t-prev)/1000,.05);prev=t;if(actor&&!snapshotNote){actor.runPosture?.restore();if(!paused)actor.mixer.update(dt);actor.runPosture?.update();actor.fx?.update(dt,false,currentClip);}controls.update();renderer.render(scene,camera);});
 
 function captureView() {
   commitEditor();if(!actor)return;
@@ -293,4 +296,4 @@ try {
   await selectCharacter(byId.has(data.draft?.characterId)?data.draft.characterId:byId.has(localStorage.getItem(STORE+'-selected'))?localStorage.getItem(STORE+'-selected'):roster[0].character_id);if(apiAvailable)scheduleSync();
 } catch(e){saveStatus('브라우저 저장을 사용할 수 없어요 · 파일 내보내기로 보관해 주세요');storageError=true;await selectCharacter(roster[0].character_id);}
 // Read-only diagnostics used to verify the real controls without exposing game/private data.
-window.CharacterReview=Object.freeze({get state(){return {selected:selected?.character_id,modelSha,loaded:!!actor,count:roster.length,notes:data.notes.filter(n=>!n.deleted).length,snapshot:snapshotNote?.id,apiAvailable,geometryCount:renderer.info.memory.geometries,employeeSelections:clone(data.employeeSelections)};}});
+window.CharacterReview=Object.freeze({get state(){return {selected:selected?.character_id,modelSha,loaded:!!actor,count:roster.length,notes:data.notes.filter(n=>!n.deleted).length,snapshot:snapshotNote?.id,apiAvailable,geometryCount:renderer.info.memory.geometries,runPosture:actor?.runPosture?.state||null,employeeSelections:clone(data.employeeSelections)};}});
