@@ -9,3 +9,20 @@
 footer .ws-brand-logo{width:120px}.ws-teacher-brand{display:flex;align-items:center;gap:12px}
 @media(max-width:760px){.ws-game-brand{padding:4px 5px}.ws-game-brand .ws-brand-logo{width:62px}}
 @media(max-width:560px){.ws-entry-title .ws-brand-logo{width:190px}#topbar .brand.ws-brand-surface{padding:5px 7px}#topbar .brand .ws-brand-logo{width:112px}}
+
+/* Keep all work controls visible when the remaining-time control appears. */
+@media(max-width:1024px){
+#top{height:90px;flex-wrap:wrap;align-content:center;row-gap:6px;padding-block:4px}
+#top .ttl{flex:1 1 0;min-width:0}
+#top #clockBox{order:10;flex:0 0 100%;margin-left:0;justify-content:space-between}
+body #pcHint,body #endbar,body #pcNotis{top:98px}
+body>#card{top:98px}
+body #pc #deskEnv{top:90px}
+}
+@media(max-width:760px){
+#top{height:82px}
+body #pcHint,body #endbar,body #pcNotis{top:90px}
+body>#card{top:90px}
+body #pc #deskEnv{top:82px}
+}
+@media(max-width:360px){.ws-game-brand .ws-brand-logo{width:42px}}
