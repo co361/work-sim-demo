@@ -33,7 +33,7 @@ const CARDS=[
         +'<span class="sep">또는</span><kbd class="k">↑</kbd><kbd class="k">←</kbd><kbd class="k">↓</kbd><kbd class="k">→</kbd>'
         +'<span class="sep">+</span><kbd class="k wide">Shift</kbd>',
     h:'사무실을 걸어 다녀요',
-    p:'<b>WASD</b> 나 <b>방향키</b>로 걷습니다. <b>Shift</b>를 같이 누르고 있으면 빠르게 걸어요.<br>'
+    p:'<b>WASD</b> 나 <b>방향키</b>로 걷습니다. <b>Shift</b>를 함께 누르면 달려요.<br>'
      +'가고 싶은 <b>바닥을 클릭</b>하면 그 자리까지 알아서 걸어갑니다.' },
 
   { keys:'<kbd class="k acc">E</kbd>',

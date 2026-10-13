@@ -18,7 +18,8 @@ var ResultPdf = (function () {
   'use strict';
   var LIB = { key: 'jspdf', src: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js', sri: 'sha384-qovJwSBbRDPP5cEjCp8S0UP66wrvnjaa60XMOGzTNanrThcrGfXfnZkvgY8N1KT3', ok: function () { return !!(window.jspdf && window.jspdf.jsPDF); } };
   var FONT = { key: 'pretendard', src: 'https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/public/static/alternative/Pretendard-Regular.ttf', sri: 'sha384-hE1S62bS/91v3jB92KL8oMJjktzacumT+AX9XpfKn3MfTcQToerzi5x8jO+E8Opo' };
-  var GAME = 'WORK SIM', ORG = '에듀메이커스';
+  var GAME = 'WORKSIM', ORG = '에듀메이커스';
+  var BRAND_SVG = 'assets/brand/worksim-logo-45466ed3220f.svg', BRAND_PNG = 'assets/brand/worksim-logo-66bf7e0f1179.png', logoData = null, logoP = null;
   var TEAM_NAME = { cs: '고객상담팀', logi: '물류팀', acct: '회계팀', ga: '총무팀', rec: '채용팀', plan: '경영기획팀', qc: '품질관리팀', pr: '홍보팀', edu: '교육팀', buy: '구매팀' };
   var DAY_TITLE = { 1: '첫 출근', 2: '사규집', 3: '숫자', 4: '옆 팀', 5: '거절', 6: '위기', 7: '결정' };
   var ACT_DEFAULT = { reply: '회신', hold: '보류', delegate: '전달', confirm: '상신', reject: '거절', approve: '승인', deliver: '직접 전달', ask: '직접 질문', report: '보고', visit: '응대', work: '검산', none: '처리 못 함', timeout: '무응답', pick: '선택' };
@@ -289,7 +290,7 @@ var ResultPdf = (function () {
   /* ── PDF 그리기(jsPDF · pt) ───────────────────────────────────────── */
   var PG = { W: 595.28, H: 841.89, ML: 56, MR: 56, MT: 58, MB: 64 };
   var C = { ink: [27, 36, 48], muted: [91, 102, 117], navy: [20, 55, 102], line: [213, 220, 229], head: [236, 241, 247], group: [246, 248, 251], accent: [31, 78, 140] };
-  function render(m, jsPDF, fontB64) {
+  function render(m, jsPDF, fontB64, logo) {
     var doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'portrait', compress: true });
     doc.addFileToVFS('Pretendard-Regular.ttf', fontB64); doc.addFont('Pretendard-Regular.ttf', 'P', 'normal'); doc.setFont('P', 'normal');
     doc.setProperties({ title: GAME + ' 7일 직무 체험 결과 — ' + (m.name || ''), author: ORG, subject: 'NCS 직업공통능력 점수 · 강점 · 보완점 · 업무 기록', keywords: 'NCS, 직업공통능력, ' + (m.teamName || ''), creator: GAME });
@@ -354,7 +355,7 @@ var ResultPdf = (function () {
     }
 
     blocks(m).forEach(function (b, i, all) {
-      if (b.t === 'title') { put(b.text, X0, y, 18, { bold: true, color: C.navy }); y += 26; hr(X0, X0 + CW, y, C.accent, 1.4); y += 12; return; }
+      if (b.t === 'title') { if (logo || logoData) { doc.addImage(logo || logoData, 'PNG', X0, y, 110, 110 * 599 / 2048, undefined, 'FAST'); y += 43; } put(b.text, X0, y, 18, { bold: true, color: C.navy }); y += 26; hr(X0, X0 + CW, y, C.accent, 1.4); y += 12; return; }
       if (b.t === 'h') { if (y > PG.MT) y += 10; need(18 + 8 + 3 * LH); put(b.text, X0, y, 13, { bold: true, color: C.navy }); y += 19; hr(X0, X0 + CW, y, C.navy, 0.9); y += 9; return; }
       if (b.t === 'h3') { need(LH + 6 + 3 * LH); put(b.text, X0, y + 1, 10.5, { bold: true }); y += LH + 6; return; }
       if (b.t === 'note') { var ls = wrap(b.text, CW, FS - 1); need(ls.length * (LH - 1)); ls.forEach(function (l) { put(l, X0, y, FS - 1, { color: C.muted }); y += LH - 1; }); y += 6; return; }
@@ -367,7 +368,8 @@ var ResultPdf = (function () {
     /* 바닥글 — 게임·이름·쪽 번호 */
     var n = doc.getNumberOfPages();
     for (var p = 1; p <= n; p++) { doc.setPage(p); hr(X0, X0 + CW, PG.H - 44, C.line, 0.5);
-      put(GAME + ' · ' + ORG, X0, PG.H - 38, 8, { color: C.muted }); put([m.name, m.teamName].filter(Boolean).join(' · '), X0 + CW / 2, PG.H - 38, 8, { color: C.muted, align: 'c' }); put(p + ' / ' + n, X0 + CW, PG.H - 38, 8, { color: C.muted, align: 'r' }); }
+      if (logo || logoData) doc.addImage(logo || logoData, 'PNG', X0, PG.H - 40, 44, 44 * 599 / 2048, undefined, 'FAST');
+      put(GAME + ' · ' + ORG, X0 + ((logo || logoData) ? 52 : 0), PG.H - 38, 8, { color: C.muted }); put([m.name, m.teamName].filter(Boolean).join(' · '), X0 + CW / 2, PG.H - 38, 8, { color: C.muted, align: 'c' }); put(p + ' / ' + n, X0 + CW, PG.H - 38, 8, { color: C.muted, align: 'r' }); }
     return doc;
   }
 
@@ -377,6 +379,8 @@ var ResultPdf = (function () {
   /* ── 인쇄 대체(라이브러리·글꼴을 못 받았을 때) — 같은 덩이를 흐르는 HTML 로 ── */
   var CSS = [
     '.rp-root{display:none}',
+    '.rp-brand{display:block;width:180px;max-width:100%;height:auto;margin:0 0 16px}',
+    '@media print{.rp-brand{width:150pt;margin-bottom:12pt}}',
     '@media print{html,body{height:auto!important;overflow:visible!important;background:#fff!important}body>*:not(.rp-print){display:none!important}',
     '.rp-print{display:block!important;position:static!important;font:10pt/1.55 -apple-system,system-ui,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;color:#1b2430;word-break:keep-all;overflow-wrap:anywhere}',
     '.rp-print *{box-sizing:border-box}.rp-print h1{font-size:18pt;color:#143766;margin:0 0 10pt;padding-bottom:6pt;border-bottom:1.4pt solid #1f4e8c}',
@@ -394,6 +398,7 @@ var ResultPdf = (function () {
     var old = document.querySelector('.rp-root'); if (old) old.remove();
     if (!document.getElementById('rpCss')) { var s = el('style'); s.id = 'rpCss'; s.textContent = CSS; document.head.appendChild(s); }
     var root = el('div', 'rp-root'); root.setAttribute('aria-hidden', 'true');
+    var brand = el('img', 'rp-brand'); brand.src = BRAND_SVG; brand.alt = 'WORKSIM'; root.appendChild(brand);
     blocks(m).forEach(function (b) {
       if (b.t === 'title') root.appendChild(el('h1', null, b.text));
       else if (b.t === 'h') root.appendChild(el('h2', null, b.text));
@@ -435,6 +440,12 @@ var ResultPdf = (function () {
     return fontP;
   }
 
+  function loadBrand(timeout) {
+    if (logoP) return logoP;
+    logoP = withTimeout(fetch(BRAND_PNG, { credentials: 'omit' }).then(function (r) { if (!r.ok) throw new Error('로고 ' + r.status); return r.arrayBuffer(); }).then(function (b) { logoData = 'data:image/png;base64,' + b64(b); return logoData; }), timeout || 15000, '로고').catch(function (e) { logoP = null; throw e; });
+    return logoP;
+  }
+
   function overlay(text) {
     var o = document.getElementById('rpBusy');
     if (!o) { o = el('div'); o.id = 'rpBusy'; o.setAttribute('role', 'status'); o.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(245,246,248,.94);display:flex;align-items:center;justify-content:center;font:600 15px/1.5 -apple-system,system-ui,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#1b2430;text-align:center;padding:20px'; document.body.appendChild(o); }
@@ -458,7 +469,7 @@ var ResultPdf = (function () {
       var team = Pg.team || (typeof S !== 'undefined' && S.team) || 'cs';
       overlay('결과 PDF를 만드는 중이에요…');
       var days = Object.keys(Pg.done).map(Number).filter(function (d) { return d >= 1 && d <= 7; });
-      var libs = Promise.all([loadLib(), loadFont()]).then(function (r) { return r[1]; }, function (e) { console.info('PDF 라이브러리·글꼴을 받지 못해 인쇄로 대신해요:', e && e.message); return null; });
+      var libs = Promise.all([loadLib(), loadFont(), loadBrand()]).then(function (r) { return r[1]; }, function (e) { console.info('PDF 라이브러리·글꼴을 받지 못해 인쇄로 대신해요:', e && e.message); return null; });
       /* 화 데이터(제목·팀장 한마디만 읽는다) — 받지 못한 날은 「업무」로 적는다 */
       await Promise.all(days.map(function (d) { if (window.STORY && window.STORY[team + '-ep' + d]) return null; return (typeof loadStory === 'function' ? loadStory(team, d) : Promise.reject(new Error('loadStory 없음'))).catch(function (e) { console.info('결과 PDF: ' + d + '일차 제목을 불러오지 못함', e && e.message); }); }));
       var nm = (typeof S !== 'undefined' && S.name) || Pg.name || '';
@@ -477,7 +488,7 @@ var ResultPdf = (function () {
     b.onclick = function () { download(); }; return b;
   }
 
-  return { model: model, blocks: blocks, lines: lines, render: render, tidy: tidy, covered: covered, download: download, button: button, fileName: fileName, _html: buildHtml, _loadLib: loadLib, _loadFont: loadFont, LIB: LIB, FONT: FONT };
+  return { model: model, blocks: blocks, lines: lines, render: render, tidy: tidy, covered: covered, download: download, button: button, fileName: fileName, _html: buildHtml, _loadLib: loadLib, _loadFont: loadFont, _loadBrand: loadBrand, LIB: LIB, FONT: FONT };
 })();
 if (typeof module !== 'undefined' && module && module.exports) module.exports = ResultPdf;
 if (typeof window !== 'undefined' && window) window.ResultPdf = ResultPdf;

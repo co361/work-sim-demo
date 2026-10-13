@@ -5,15 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <title>캐릭터 수정 검토 · Work Sim</title>
-  <link rel="icon" href="data:,">
+
   <link rel="stylesheet" href="character-review.css">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
   <script src="js/office-roster.js?v=f3f43041e9d7e1ab"></script>
   <script type="module" src="character-review.js"></script>
+<link rel="icon" type="image/svg+xml" href="assets/brand/worksim-logo-45466ed3220f.svg">
+<link rel="stylesheet" href="assets/brand/worksim-brand.css?v=20261013">
 </head>
 <body>
   <header class="topbar">
-    <div><a class="brand" href="character-review.html">Work Sim</a><h1>캐릭터 수정 검토</h1></div>
+    <div><a class="brand ws-brand-surface" href="character-review.html"><img class="ws-brand-logo" src="assets/brand/worksim-logo-45466ed3220f.svg" alt="WORKSIM" width="146"></a><h1>캐릭터 수정 검토</h1></div>
     <div class="file-actions"><button id="export">검토 파일 내보내기</button><button id="import">불러오기</button><input id="import-file" type="file" accept="application/json,.json" hidden></div>
   </header>
   <div class="save-strip"><span id="progress">50명 불러오는 중</span><span id="save-status" role="status" aria-live="polite">자동 저장 준비 중</span></div>
