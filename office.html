@@ -31,6 +31,8 @@
   /* 39차: 다가가면 뜨는 조작 안내. 대표 「대사가 이것 때문에 가려져」 → 머리 위가 아니라 화면 하단 가운데 작은 알약으로 내렸다(말풍선과 자리가 겹치지 않는다) */
   #prompt{position:fixed;left:50%;bottom:54px;z-index:4;transform:translateX(-50%);background:rgba(32,29,34,.62);color:#f0e6d2;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:5px 14px;font-size:13px;font-weight:500;white-space:nowrap;pointer-events:none;display:none}
   #prompt b{color:#ffe9a8;font-weight:700}
+  #touchTalk{display:none;position:fixed;right:18px;bottom:18px;z-index:6;min-width:96px;min-height:48px;padding:10px 16px;border:1px solid #c9a227;border-radius:999px;background:#ffe9a8;color:#2a2422;font:700 14px/1.3 -apple-system,system-ui,sans-serif;touch-action:manipulation}
+  @media(pointer:coarse){#touchTalk:not([hidden]){display:block}#prompt{bottom:78px;max-width:calc(100vw - 32px);box-sizing:border-box;white-space:normal;text-align:center}}
   #hud select{padding:5px 8px;border:1px solid rgba(255,255,255,.25);border-radius:8px;background:rgba(40,36,42,.85);color:#f2ede4;font-size:12px}
   /* 35차: 모바일 가상 조이스틱 (터치 기기에서만 표시, embed 모드에서도 남는다) */
   #pad{position:fixed;left:18px;bottom:18px;width:108px;height:108px;border-radius:50%;background:rgba(40,36,42,.28);border:1px solid rgba(255,255,255,.28);z-index:6;display:none;touch-action:none}
@@ -60,6 +62,7 @@
 <div id="pad"><div id="padk"></div></div>
 <div id="fade"><div id="fadetx"></div></div>
 <div id="prompt"></div>
+<button id="touchTalk" type="button" hidden>말 걸기</button>
 <div id="log"></div>
 <script src="js/office-roster.js?v=430dfbc957c1d2c7"></script>
 <script type="module">
@@ -4688,7 +4691,10 @@ function promptTick(){ const P=PROMPT; P.text=''; P.act=null; P.talk=null;
         if(sl&&Math.hypot(sl.pos[0]-p.x,sl.pos[2]-p.z)<1.3){ eTxt='<b>E</b> · 컴퓨터 켜기'; P.act=SCREEN.cb; P.pos.set(sl.pos[0],sl.pos[1]+sl.size[2]+0.18,sl.pos[2]); } } } }
   P.text=[eTxt,tTxt].filter(Boolean).join(' · ');
   P.on=!!P.text; }
-function promptPos(){ const P=PROMPT; if(!P.on||!P.text){ P.el.style.display='none'; return; }
+const touchTalk=document.getElementById('touchTalk');
+/* Touch uses the same nearby-NPC action as T; E/seat behavior stays separate. */
+touchTalk.addEventListener('click',e=>{ e.preventDefault(); e.stopPropagation(); ctrlTalk(); });
+function promptPos(){ const P=PROMPT; touchTalk.hidden=!(P.on&&P.talk); if(!P.on||!P.text){ P.el.style.display='none'; return; }
   P.el.style.display='block'; if(P.el.dataset.t!==P.text){ P.el.dataset.t=P.text; P.el.innerHTML=P.text; } }
 
 /* ======================================================================
