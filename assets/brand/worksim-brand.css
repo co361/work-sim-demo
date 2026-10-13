@@ -14,6 +14,7 @@ footer .ws-brand-logo{width:120px}.ws-teacher-brand{display:flex;align-items:cen
 @media(max-width:1024px){
 body>div#top{height:90px;flex-wrap:wrap;align-content:center;row-gap:6px;padding-block:4px}
 body>div#top .ttl{flex:1 1 0;min-width:0}
+body>div#top .ttl small,body>div#top #unlocks,body>div#top #cnt,body>div#top #saveStat,body>div#top #lunch{display:none}
 body>div#top #clockBox{order:10;flex:0 0 100%;margin-left:0;justify-content:space-between}
 body #pcHint,body #endbar,body #pcNotis{top:98px}
 body>#card{top:98px}
