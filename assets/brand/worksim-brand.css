@@ -12,15 +12,15 @@ footer .ws-brand-logo{width:120px}.ws-teacher-brand{display:flex;align-items:cen
 
 /* Keep all work controls visible when the remaining-time control appears. */
 @media(max-width:1024px){
-#top{height:90px;flex-wrap:wrap;align-content:center;row-gap:6px;padding-block:4px}
-#top .ttl{flex:1 1 0;min-width:0}
-#top #clockBox{order:10;flex:0 0 100%;margin-left:0;justify-content:space-between}
+body>div#top{height:90px;flex-wrap:wrap;align-content:center;row-gap:6px;padding-block:4px}
+body>div#top .ttl{flex:1 1 0;min-width:0}
+body>div#top #clockBox{order:10;flex:0 0 100%;margin-left:0;justify-content:space-between}
 body #pcHint,body #endbar,body #pcNotis{top:98px}
 body>#card{top:98px}
 body #pc #deskEnv{top:90px}
 }
 @media(max-width:760px){
-#top{height:82px}
+body>div#top{height:82px}
 body #pcHint,body #endbar,body #pcNotis{top:90px}
 body>#card{top:90px}
 body #pc #deskEnv{top:82px}
