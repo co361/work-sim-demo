@@ -1,0 +1,5 @@
+# Private historical screenshots: exclude from future public commits.
+/assets/home/w/_orig_shot_admin.jpg
+/assets/home/w/_prev_shot_admin.jpg
+/assets/home/w/_orig_shot_ncs.jpg
+/assets/home/w/_prev_shot_ncs.jpg
