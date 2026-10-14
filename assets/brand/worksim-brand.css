@@ -1,10 +1,10 @@
 /* Approved WORKSIM vector logo. Preserve its intrinsic aspect ratio and colors. */
 .ws-brand-logo{display:block;width:146px;max-width:100%;height:auto;object-fit:contain;flex-shrink:0}
-.ws-brand-surface{display:inline-flex;align-items:center;justify-content:center;background:#fff;padding:7px 10px;border-radius:5px;line-height:0;flex-shrink:0}
+.ws-brand-surface{display:inline-flex;align-items:center;justify-content:center;background:transparent;padding:7px 10px;border-radius:5px;line-height:0;flex-shrink:0}
 .ws-entry-title{display:flex;flex-direction:column;align-items:flex-start;gap:14px}
 .ws-entry-title .ws-brand-logo{width:220px}.ws-entry-subtitle{display:block}
 .ws-game-brand{padding:4px 7px;text-decoration:none}.ws-game-brand .ws-brand-logo{width:102px}
-.ws-result-logo{background:#fff;padding:8px 10px;box-sizing:content-box;border-radius:5px;margin-bottom:12px}
+.ws-result-logo{background:transparent;padding:8px 10px;box-sizing:content-box;border-radius:5px;margin-bottom:12px}
 .ws-office-brand{align-self:flex-start;padding:5px 8px}.ws-office-brand .ws-brand-logo{width:112px}
 footer .ws-brand-logo{width:120px}.ws-teacher-brand{display:flex;align-items:center;gap:12px}
 @media(max-width:760px){.ws-game-brand{padding:4px 5px}.ws-game-brand .ws-brand-logo{width:62px}}
@@ -27,3 +27,10 @@ body>#card{top:90px}
 body #pc #deskEnv{top:82px}
 }
 @media(max-width:360px){.ws-game-brand .ws-brand-logo{width:42px}}
+
+/* 새 PNG의 투명 여백만 표시 영역에서 제외. 원본 픽셀과 색을 보존한다. */
+.ws-game-brand,.ws-office-brand{position:relative;overflow:hidden;padding:0;width:102px;aspect-ratio:310/95;border:0;border-radius:0;background:transparent;box-shadow:none}
+.ws-office-brand{width:112px}
+.ws-game-brand .ws-brand-logo,.ws-office-brand .ws-brand-logo{position:absolute;width:133.548387%;max-width:none;height:auto;left:-20.645161%;top:-24.210526%}
+@media(max-width:760px){.ws-game-brand{width:62px}}
+@media(max-width:360px){.ws-game-brand{width:42px}}

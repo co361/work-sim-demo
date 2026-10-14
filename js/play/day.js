@@ -135,7 +135,7 @@ async function stageUp(){ if(NO_STAGE){ $('stage').style.display='none'; return;
   let oldO=null; try{ oldO=($('stage').contentWindow&&$('stage').contentWindow.__office)||null; }catch(e){}
   /* 고른 성별을 3D 로 넘긴다 — 대표 "여자로 설정해도 남자로 나온다".
      정본은 `?player=`(39차 제공). `&me=` 는 그 전 이름이라 함께 붙여 둔다. */
-  $('stage').src=`office.html?v=20261013talk1&embed=1&team=${S.team}${extra?'&extra='+extra:''}${seats?'&seats='+seats:''}&player=${me}&me=${me}`;
+  $('stage').src=`office.html?v=20261014logo1&embed=1&team=${S.team}${extra?'&extra='+extra:''}${seats?'&seats='+seats:''}&player=${me}&me=${me}`;
   await new Promise(res=>{ const t0=Date.now(); const iv=setInterval(()=>{ let O=null; try{ O=$('stage').contentWindow&&$('stage').contentWindow.__office; }catch(e){} if(O===oldO) O=null; if(O){ /* 3D 쪽 진행 문구(「NPC 불러오는 중…」)는 화면에 옮기지 않는다 — 로딩은 「로딩 중」 한 줄이다 */
         try{ for(const [n,v] of Object.entries(D.npcs||{})) if(v.seat) O.setLabel(v.seat,n); const doc=$('stage').contentDocument; const st=doc&&doc.getElementById('status'); if(st) console.info('[사무실]',st.textContent); }catch(e){} if(O.ready&&O.ready()){ clearInterval(iv); res(); } } if(Date.now()-t0>150000){ clearInterval(iv); toast('사무실을 불러오지 못해 글로 진행해요'); res(); } },250); });
   await warmWait(oldO);
@@ -630,7 +630,7 @@ function sayRow(host,who,text,cls){ if(!text) return; const d=h('div','rsSay'); 
   d.appendChild(w2); d.appendChild(h('div','tx',fillName(text))); host.appendChild(d); }
 /* 하루 마무리(1~6일차) — 제목 → 팀장 한마디 → 오늘 드러난 역량(막대 · 잘한 점 · 다음엔) → 오늘 한 일(숫자 · 업무 표) → 오늘의 실수 → 들은 말 → 내일로 이어지는 것 → 단추 */
 function renderDebrief(r){ rsFont(); const w=$('dbWrap'); w.innerHTML=''; w.className='wrap rs';
-  const hd=h('header','rsHead'); hd.appendChild(Object.assign(h('img','ws-brand-logo ws-result-logo'),{src:'assets/brand/worksim-logo-45466ed3220f.svg',alt:'WORKSIM'})); hd.appendChild(h('h1',null,`${D.ep}일차 「${D.title}」 끝`)); hd.appendChild(h('p','rsMeta',`${D.teamName} · ${fmtClock(D.minutes)} 퇴근`)); w.appendChild(hd);
+  const hd=h('header','rsHead'); hd.appendChild(Object.assign(h('img','ws-brand-logo ws-result-logo'),{src:'assets/brand/worksim-logo-45436337f281.png',alt:'WORKSIM'})); hd.appendChild(h('h1',null,`${D.ep}일차 「${D.title}」 끝`)); hd.appendChild(h('p','rsMeta',`${D.teamName} · ${fmtClock(D.minutes)} 퇴근`)); w.appendChild(hd);
   const lead=(D.dests.find(x=>x.seat==='lead')||{}).name||'팀장'; const t0=h('div','rsTalk'); sayRow(t0,lead,r.leadLine); if(t0.childNodes.length) w.appendChild(t0);
   const s1=rsSec(w,'오늘 드러난 역량','NCS 직업공통능력'); ncsDaily(s1);
   const s2=rsSec(w,'오늘 한 일');

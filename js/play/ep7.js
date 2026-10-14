@@ -153,7 +153,7 @@ window.EP7=(function(){
     let m=null; try{ if(window.ResultPdf) m=ResultPdf.model(P,window.STORY||{},{team:S.team,name:nm,fill:(t)=>fillName(t)}); }catch(e){ console.info('결과 자료 건너뜀',e&&e.message); m=null; }
     /* 섹션 하나 + 목차 한 줄 */
     const secs=[]; const sec=(title,navLabel)=>{ const s=rsSec(body,title); secs.push([s,navLabel||title]); return s; };
-    const hd=h('header','rsHead'); hd.appendChild(Object.assign(h('img','ws-brand-logo ws-result-logo'),{src:'assets/brand/worksim-logo-45466ed3220f.svg',alt:'WORKSIM'})); hd.appendChild(h('h1',null,nm?`${nm}님의 7일 결과`:'7일 결과'));
+    const hd=h('header','rsHead'); hd.appendChild(Object.assign(h('img','ws-brand-logo ws-result-logo'),{src:'assets/brand/worksim-logo-45436337f281.png',alt:'WORKSIM'})); hd.appendChild(h('h1',null,nm?`${nm}님의 7일 결과`:'7일 결과'));
     const per=m&&m.period&&m.period.from?(m.period.from===m.period.to?m.period.from:`${m.period.from} ~ ${m.period.to}`):'';
     const nDone=m?m.daysDone.length:Object.keys(P.done||{}).length;
     hd.appendChild(h('p','rsMeta',[D.teamName,per,nDone?`${nDone}일 완료`:''].filter(Boolean).join(' · '))); body.appendChild(hd); secs.push([hd,'요약']);

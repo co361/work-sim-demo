@@ -19,7 +19,7 @@ var ResultPdf = (function () {
   var LIB = { key: 'jspdf', src: 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/4.2.1/jspdf.umd.min.js', sri: 'sha384-qovJwSBbRDPP5cEjCp8S0UP66wrvnjaa60XMOGzTNanrThcrGfXfnZkvgY8N1KT3', ok: function () { return !!(window.jspdf && window.jspdf.jsPDF); } };
   var FONT = { key: 'pretendard', src: 'https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/public/static/alternative/Pretendard-Regular.ttf', sri: 'sha384-hE1S62bS/91v3jB92KL8oMJjktzacumT+AX9XpfKn3MfTcQToerzi5x8jO+E8Opo' };
   var GAME = 'WORKSIM', ORG = '에듀메이커스';
-  var BRAND_SVG = 'assets/brand/worksim-logo-45466ed3220f.svg', BRAND_PNG = 'assets/brand/worksim-logo-66bf7e0f1179.png', logoData = null, logoP = null;
+  var BRAND_SVG = 'assets/brand/worksim-logo-45436337f281.png', BRAND_PNG = 'assets/brand/worksim-logo-45436337f281.png', logoData = null, logoP = null;
   var TEAM_NAME = { cs: '고객상담팀', logi: '물류팀', acct: '회계팀', ga: '총무팀', rec: '채용팀', plan: '경영기획팀', qc: '품질관리팀', pr: '홍보팀', edu: '교육팀', buy: '구매팀' };
   var DAY_TITLE = { 1: '첫 출근', 2: '사규집', 3: '숫자', 4: '옆 팀', 5: '거절', 6: '위기', 7: '결정' };
   var ACT_DEFAULT = { reply: '회신', hold: '보류', delegate: '전달', confirm: '상신', reject: '거절', approve: '승인', deliver: '직접 전달', ask: '직접 질문', report: '보고', visit: '응대', work: '검산', none: '처리 못 함', timeout: '무응답', pick: '선택' };
@@ -355,7 +355,7 @@ var ResultPdf = (function () {
     }
 
     blocks(m).forEach(function (b, i, all) {
-      if (b.t === 'title') { if (logo || logoData) { doc.addImage(logo || logoData, 'PNG', X0, y, 110, 110 * 599 / 2048, undefined, 'FAST'); y += 43; } put(b.text, X0, y, 18, { bold: true, color: C.navy }); y += 26; hr(X0, X0 + CW, y, C.accent, 1.4); y += 12; return; }
+      if (b.t === 'title') { if (logo || logoData) { doc.addImage(logo || logoData, 'PNG', X0, y, 110, 110 * 172 / 414, undefined, 'FAST'); y += 110 * 172 / 414 + 11; } put(b.text, X0, y, 18, { bold: true, color: C.navy }); y += 26; hr(X0, X0 + CW, y, C.accent, 1.4); y += 12; return; }
       if (b.t === 'h') { if (y > PG.MT) y += 10; need(18 + 8 + 3 * LH); put(b.text, X0, y, 13, { bold: true, color: C.navy }); y += 19; hr(X0, X0 + CW, y, C.navy, 0.9); y += 9; return; }
       if (b.t === 'h3') { need(LH + 6 + 3 * LH); put(b.text, X0, y + 1, 10.5, { bold: true }); y += LH + 6; return; }
       if (b.t === 'note') { var ls = wrap(b.text, CW, FS - 1); need(ls.length * (LH - 1)); ls.forEach(function (l) { put(l, X0, y, FS - 1, { color: C.muted }); y += LH - 1; }); y += 6; return; }
@@ -368,7 +368,7 @@ var ResultPdf = (function () {
     /* 바닥글 — 게임·이름·쪽 번호 */
     var n = doc.getNumberOfPages();
     for (var p = 1; p <= n; p++) { doc.setPage(p); hr(X0, X0 + CW, PG.H - 44, C.line, 0.5);
-      if (logo || logoData) doc.addImage(logo || logoData, 'PNG', X0, PG.H - 40, 44, 44 * 599 / 2048, undefined, 'FAST');
+      if (logo || logoData) doc.addImage(logo || logoData, 'PNG', X0, PG.H - 40, 44, 44 * 172 / 414, undefined, 'FAST');
       put(GAME + ' · ' + ORG, X0 + ((logo || logoData) ? 52 : 0), PG.H - 38, 8, { color: C.muted }); put([m.name, m.teamName].filter(Boolean).join(' · '), X0 + CW / 2, PG.H - 38, 8, { color: C.muted, align: 'c' }); put(p + ' / ' + n, X0 + CW, PG.H - 38, 8, { color: C.muted, align: 'r' }); }
     return doc;
   }
