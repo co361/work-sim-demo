@@ -381,7 +381,7 @@
           return rtdbSet('ws7/users/' + u.uid, {name: nm, code: info.code, team: info.team, day: info.day})
             .then(function (a) {
               return rtdbSet('ws7/tokens/' + info.code, {
-                team: info.team, status: 'active', usedBy: u.uid, usedAt: now
+                usedBy: u.uid, usedAt: now
               }, false).then(function (b) {
                 var mirrored = !!(a && a.ok) && !!(b && b.ok);
                 saveLocal({uid: u.uid, code: info.code, team: info.team, day: info.day});
