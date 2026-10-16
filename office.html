@@ -67,6 +67,7 @@
 <script src="js/office-roster.js?v=430dfbc957c1d2c7"></script>
 <script type="module">
 import * as THREE from 'three';
+import {createArmPosture,fitLaptopHeight} from './js/office-arm-posture.js?v=c203bb18194df6c3';
 import {getSeatFit,createFittedWorkChair} from './js/office-seat-fit.js?v=20260929-hairback1';   /* 2026-09-29: 긴 머리 인물 등받이(backrestHeight·backrestZ) */
 import {createWallTeamPlaque} from './js/office-wall-plaque.js?v=20260929-plaque2';
 import * as COZYLIB from './js/office-cozy.js?v=20260929-cozy5';
@@ -955,8 +956,8 @@ for(const c of WorkSimRoster.team(teamCode)){
 /* 옛 엔진의 'me'(플레이어 자리)·'staff'(다른 사원 자리) 별칭은 동선 그래프를 다 지은 뒤 정한다(아래 「여성 선택 자리 이름」).
    여기서 SEATS.me 를 바꾸면 STATIONS·EDGES 가 남자 사원 책상 기준 이름으로 반대편 책상에 붙어 동선 52개가 책상을 관통했다(2026-09-29). */
 
-function deskProps(seat,list){ for(const [type,lx,lz,lry,size,note] of list){ const p=seat.wp(lx,seat.desk.h,lz); placeSlot(type,p.x,p.y+0.004,p.z,seat.ry+Math.PI+lry,size,seat.label+' '+(note||type)); } }   /* 39차: 상판보다 4mm 띄운다(z-파이팅) */   /* 책상 소품은 앉은 사람 쪽(-z)을 본다 */
-const KB_Z=ZF+0.0645;   /* 46차(대표 「타자를 손이 위쪽으로 올라간 상태로 친다」): 키보드를 책상 앞선에서 12cm 안쪽으로(예전 7.5cm) — 짧은 팔이 자연스럽게 닿는 자리. 손 IK(typeHands)가 seat.kb 로 이 자리를 쓴다 */
+function deskProps(seat,list){ for(const [type,lx,lz,lry,size,note] of list){ const p=seat.wp(lx,seat.desk.h,lz); const prop=placeSlot(type,p.x,p.y+0.004,p.z,seat.ry+Math.PI+lry,size,seat.label+' '+(note||type));if(type==='laptop'&&seat.id==='lead'){seat.laptop=prop;fitLaptopHeight(prop);} } }   /* 39차: 상판보다 4mm 띄운다(z-파이팅) */   /* 책상 소품은 앉은 사람 쪽(-z)을 본다 */
+const KB_Z=ZF+0.0945;   /* 46차(대표 「타자를 손이 위쪽으로 올라간 상태로 친다」): 키보드를 책상 앞선에서 12cm 안쪽으로(예전 7.5cm) — 짧은 팔이 자연스럽게 닿는 자리. 손 IK(typeHands)가 seat.kb 로 이 자리를 쓴다 */
 const kbAt=(seat,lx=0)=>{ if(OFFICE_KIT){ const k=KIT.clone('keyboard_mouse'); k.position.set(lx,DESK.h,KB_Z); k.scale.y=0.76;   /* 높이만 0.76배: 타자 클립 손바닥(최저 0.369)·손끝(0.3702)이 킷 키보드 받침(윗면 0.371)·키(0.3745)를 2~4mm 누르던 것 → 받침 0.3672·키 0.3698 로 닿기만(50명 좌석 검사) */ k.rotation.y=Math.PI; seat.group.add(k); seat.kitKb=k; return; }   /* 킷 키보드·마우스(윗면 0.371 = 킷 규격) — 좌석 그룹에 붙인다 */
   const p=seat.wp(lx,DESK.h,KB_Z); const k=rbox(0.26,0.012,0.08,M.white,0.004); k.position.set(p.x,p.y+0.01865,p.z); k.rotation.y=seat.ry; furn.add(k); };
 const paperAt=(seat,lx,lz,ry=0,mat=M.paper,lift=0)=>{ if(OFFICE_KIT) return;   /* 킷: 코드 종이는 쓰지 않는다 */ const p=seat.wp(lx,DESK.h,lz); const s=box(0.14,0.006,0.19,mat); s.position.set(p.x,p.y+0.009+lift,p.z);   /* 46차: lift = 다른 종이 위에 겹쳐 놓을 때(같은 높이면 윗면끼리 z-파이팅) */ s.rotation.y=seat.ry+ry; furn.add(s); };   /* 39차: 상판(0.42)에서 9mm — 대표 지적 「지지직」의 원인은 종이와 상판이 같은 높이였던 것 */
@@ -966,7 +967,7 @@ const paperAt=(seat,lx,lz,ry=0,mat=M.paper,lift=0)=>{ if(OFFICE_KIT) return;   /
   deskProps(S.staff,[['monitor',0,ZF+0.27,0,[0.32,0.12,0.27],'모니터'],['camera',0.26,ZF+0.24,-0.4,[0.09,0.06,0.06],'카메라'],['mug',-0.3,ZF+0.1,0,[0.05,0.05,0.06],'머그']]); kbAt(S.staff); paperAt(S.staff,-0.22,ZF+0.29,0.3);   /* 46차(z-파이팅): 머그가 종이 모서리에 걸쳐 머그 바닥 테와 종이 윗면이 같은 높이로 깜빡였다 → 종이 밖 앞쪽으로 */
   deskProps(S.staff2,[['monitor',0,ZF+0.29,0,[0.32,0.12,0.27],'모니터'],['headphones',-0.26,ZF+0.18,-0.5,[0.12,0.06,0.12],'헤드폰']]); kbAt(S.staff2); paperAt(S.staff2,0.24,ZF+0.26,-0.2); paperAt(S.staff2,0.26,ZF+0.24,0.1,M.red,0.0065);   /* 46차(대표 「테이블에 있는거 계속 깨져있어」): 빨간 서류철이 흰 종이와 같은 높이(윗면 0.432)라 톱니 줄무늬 → 흰 종이 윗면 위 0.5mm 에 얹는다(윗면끼리 6.5mm) */
   deskProps(S.senior,[['monitor',-0.17,ZF+0.27,0.3,[0.32,0.12,0.27],'모니터'],['phone_red',0.27,ZF+0.22,-0.4,[0.12,0.12,0.06],'전화'],['mug',0.3,ZF+0.09,0,[0.05,0.05,0.06],'머그'],['camera',0.2,ZF+0.3,0.3,[0.09,0.06,0.06],'카메라']]); kbAt(S.senior); paperAt(S.senior,0.05,ZF+0.3,0.1);
-  if(OFFICE_KIT) deskProps(S.lead,KITLIB.KIT_LEAD_DESK.map(([t,lx,lz,ry])=>[t,lx,ZF+lz,ry,[0.19,0.14,0.14],{laptop:'노트북',phone_red:'전화',mug:'머그',plant_small:'책상 화분'}[t]])); else
+  if(OFFICE_KIT) deskProps(S.lead,KITLIB.KIT_LEAD_DESK.map(([t,lx,lz,ry])=>[t,t==='laptop'?0:lx,ZF+lz-(t==='laptop'?.12:0),ry,[0.19,0.14,0.14],{laptop:'노트북',phone_red:'전화',mug:'머그',plant_small:'책상 화분'}[t]])); else
   deskProps(S.lead,[['laptop',0.03,ZF+0.2,0,[0.19,0.14,0.14],'노트북'],['phone_red',-0.36,ZF+0.3,0.3,[0.12,0.12,0.06],'전화'],['mug',0.36,ZF+0.14,0,[0.05,0.05,0.06],'머그'],['plant_small',0.4,ZF+0.36,0,[0.10,0.10,0.14],'책상 화분']]); paperAt(S.lead,-0.2,ZF+0.18,-0.1); paperAt(S.lead,0.28,ZF+0.34,0.25);
   /* 46차(대표 「컴퓨터 없는데 타자 치는애도 보이네」): 좌석마다 손 앞 0.6m 안에 모니터·노트북이 있는지 — 없으면(원탁 스툴 staff3·4) 타자 대신 앉아 쉬는 자세.
      seat.kb = 손이 얹힐 면(좌석 로컬 z·윗면 높이): 모니터 자리는 코드 키보드, 노트북 자리는 노트북 받침(GLB 실측: 슬롯 원점 +2.9cm, 가운데 z = 슬롯 −1.5cm) */
@@ -974,7 +975,7 @@ const paperAt=(seat,lx,lz,ry=0,mat=M.paper,lift=0)=>{ if(OFFICE_KIT) return;   /
     for(const q of R.PROP_SLOTS){ if(q.type!=='monitor'&&q.type!=='laptop') continue; const d=Math.hypot(q.pos[0]-h.x,q.pos[2]-h.z); if(d<bd){ bd=d; best=q; } }
     s.pc=!!best; s.kb=null;
     if(best){ if(best.type==='monitor') s.kb={top:+(DESK.h+0.018).toFixed(3),z:KB_Z,kind:'keyboard'};
-      else { const dx=best.pos[0]-s.x, dz=best.pos[2]-s.z, c=Math.cos(-s.ry), sn=Math.sin(-s.ry); s.kb={top:+(best.pos[1]+0.029).toFixed(3),z:+(-dx*sn+dz*c-0.015).toFixed(3),kind:'laptop'}; } } }
+      else { const dx=best.pos[0]-s.x, dz=best.pos[2]-s.z, c=Math.cos(-s.ry), sn=Math.sin(-s.ry); s.kb={top:+(best.pos[1]+0.029-(best.node?.userData.workstationHeightDrop||0)).toFixed(3),z:+(-dx*sn+dz*c-0.015).toFixed(3),kind:'laptop'}; } } }
   /* 서류 트레이(팀장·선임) */ if(!OFFICE_KIT) for(const s of [S.lead]){ const p=s.wp(-0.38,DESK.h,ZF+0.1); const tr=rbox(0.21,0.02,0.15,M.dark,0.004); tr.position.set(p.x,p.y+0.015,p.z); tr.rotation.y=s.ry; furn.add(tr); const pp=box(0.19,0.02,0.13,M.paper); pp.position.set(p.x,p.y+0.036,p.z); pp.rotation.y=s.ry; furn.add(pp); } }
 
 yield;
@@ -1858,7 +1859,7 @@ const _tlV1=new THREE.Vector3(), _tlV2=new THREE.Vector3(), _tlV3=new THREE.Vect
 const _wkA=new THREE.Vector3(), _wkB=new THREE.Vector3(), _wkQ1=new THREE.Quaternion(), _wkQ2=new THREE.Quaternion(), _wkQ3=new THREE.Quaternion();
 async function loadNativeResident(CH){
   const started=performance.now();
-  const url=WorkSimRoster.byId(CH).model_url;
+  const url=CH==='acnh_53'?'./assets/native_staff50/characters/acnh_53.glb?v=d5c66e9397154d3c':WorkSimRoster.byId(CH).model_url;
   const gltf=await gltfLoad(url);
   const model=new THREE.Group(); model.name=CH+'-resident-root'; model.visible=false;
   model.add(gltf.scene); scene.add(model);
@@ -1896,6 +1897,7 @@ async function loadNativeResident(CH){
   /* 2026-10-02 입·표정(js/office-talkface.js): 대사 음절 박자로 입을 여닫고(글이 끝나면 다문다) 줄의 분위기로 표정, 깜빡임은 클립 곡선 그대로 */
   const FX=TALKFACE_ON?createTalkFace(faceMeshes,gltf.animations,{seed:((parseInt(String(CH).replace(/\D/g,''),10)||1)*2654435761)>>>0}):null;
   const RUN_POSTURE=WorkSimRoster.byId(CH)?.run_posture===true?createRunPosture(THREE,{model,bones,mixer,animations:gltf.animations}):null;
+  const ARM_POSTURE=createArmPosture(THREE,{model,bones,mixer,animations:gltf.animations,getSeat:()=>C.seat});
   const fit=getSeatFit(CH);
   const soles=[];const solePoint=new THREE.Vector3();
   model.traverse(o=>{if(o.isMesh&&/31[_ ]Sole/.test(o.name))soles.push(o)});
@@ -2029,7 +2031,7 @@ async function loadNativeResident(CH){
     next.play(); current=next; clipKey=key;
   };
   const showIfHere=()=>{ model.visible=(C===PLAYER)||(C.isVisitor&&CUR!==CORRIDOR&&(!C.visitRoom||C.visitRoom===CUR))||!CUR||!!(CUR.chars&&CUR.chars.includes(C)); };
-  const seatPosition=(s)=>{ s.group.updateMatrixWorld(true); return s.group.localToWorld(new THREE.Vector3(0,0,0)); };
+  const seatPosition=(s)=>{ s.group.updateMatrixWorld(true); return s.group.localToWorld(new THREE.Vector3(0,0,ARM_POSTURE.seatAdvance(s))); };
   function seatFit(s){
     if(OFFICE_KIT&&s.nativeChair&&s.nativeChairFor!==CH){ s.nativeChair.parent?.remove(s.nativeChair); s.nativeChair=null; }   /* 킷: 의자는 앉는 사람 것(다른 사람이 앉으면 그 사람 맞춤 의자로) */
     if(!s.nativeChair){
@@ -2047,6 +2049,8 @@ async function loadNativeResident(CH){
   }
   const C={CH,model,H:size.y,bones,head,hips,mixer,actions,P,SIT,native:true,seat:null,
     get runPosture(){return RUN_POSTURE?.state||null;},
+    get armPosture(){return ARM_POSTURE.state;},
+    armPostureEnable:v=>{ARM_POSTURE.setEnabled(v);if(C.seat){model.position.copy(seatPosition(C.seat));seatFit(C.seat);}},
     get mode(){return mode},set mode(v){mode=v},play,
     get clip(){return current?.getClip()?.name||null},get clipKey(){return clipKey},
     get clipTS(){return current?+current.timeScale.toFixed(2):null},get clipRun(){return !!current?.isRunning()},
@@ -2086,11 +2090,12 @@ async function loadNativeResident(CH){
       if(WALK_NEW&&clipKey==='walk'&&!KEY) C._lp=(C._lp||new THREE.Vector3()).copy(model.position); C._po={x:0,z:0};
       if(KEY&&C._gaitWant&&C._loco&&C._loco.state==='cycle'){ const nc=C.nextContact(); if(nc.ttc<=dt*1.02) C.gaitTrans(nc.side,nc.ttc,dt); }
       if(KEY&&C._loco) locoTick(dt);
-      talkLookUndo(); RUN_POSTURE?.restore();   /* 지난 프레임 대화 시선 회전을 걷어낸 뒤 클립을 입힌다(누적 방지) */
+      talkLookUndo(); RUN_POSTURE?.restore(); ARM_POSTURE.restore();   /* 지난 프레임 대화 시선 회전을 걷어낸 뒤 클립을 입힌다(누적 방지) */
       if(WK&&WK.on) WK.update(dt);   /* 일하기: 끝나 가는 클립이면 다음 클립을 섞어 들인다(믹서 갱신 밖에서) */
       mixer.update(dt);
       xfadeTick(dt); RUN_POSTURE?.update();
       if(C._armT>0&&C._armQ){ C._armT-=dt; const k=1-Math.exp(-dt/0.12); for(const n in C._armQ){ const q=C._armQ[n]; q.slerp(bones[n].quaternion,C._armT>0?k:1); bones[n].quaternion.copy(q); } if(C._armT<=0) C._armQ=null; }   /* 팔 전환 평활 */
+      ARM_POSTURE.update();
       if(!KEY||!C._loco||C._loco.state==='cycle') C.lockFeet(true);
       if(KEY&&!PIK_OFF) plantIK(dt);
       if(WALK_BLEND&&PACE) leanTick(dt);
@@ -2154,7 +2159,7 @@ async function loadNativeResident(CH){
       const to=seatPosition(s);C.seat=s;s.occupant=C;seatTurn=null;
       model.position.copy(to);model.rotation.y=s.ry;showIfHere();seatFit(s);
       if(anim){
-        const offset=fit.transitionRetreat??.067;
+        const offset=(fit.transitionRetreat??.067)+ARM_POSTURE.seatAdvance(s);
         model.position.x-=Math.sin(s.ry)*offset;model.position.z-=Math.cos(s.ry)*offset;
         s.chair.position.copy(model.position);mode='sit';play('sitdown',{loop:false});
         mixer.addEventListener('finished',C.once(()=>{
@@ -2173,7 +2178,7 @@ async function loadNativeResident(CH){
       // Return to the desk's authored orientation before the measured retreat.
       model.position.copy(seatPosition(s));model.rotation.y=s.ry;seatFit(s);
       if(WK&&s.pc!==false&&C!==PLAYER){ mode='type'; play('type2',{fade:0.25}); } else C.seatPose(s);   /* 일하기 중이면 의자를 빼는 0.4초 동안 집 자세(type2)로 섞은 뒤 일어선다 — 기지개 중에 일어서도 팔이 한 번에 떨어지지 않게 */
-      const to=model.position.clone(),offset=fit.transitionRetreat??.067;
+      const to=model.position.clone(),offset=(fit.transitionRetreat??.067)+ARM_POSTURE.seatAdvance(s);
       to.x-=Math.sin(s.ry)*offset;to.z-=Math.cos(s.ry)*offset;
       await new Promise(done=>{transition={from:model.position.clone(),to,t:0,dur:.4,chair:s.chair,done}});
       s.occupant=null;C.seat=null;mode='standup';play('standup',{loop:false});
