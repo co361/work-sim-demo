@@ -73,7 +73,8 @@ function createArmRestShape(T,model){
 
 /* Seated arm IK: rotate the authored bones; never change a bone's length or scale. */
 export function createArmPosture(T,{model,bones,mixer,animations,getSeat}){
- const cuffs=createArmSkinning(T,model),restShape=createArmRestShape(T,model);
+ const male53=model.name==='acnh_53-resident-root';
+ const cuffs=male53?{setEnabled(){},report:[{bakedWeights:true,character:'acnh_53'}]}:createArmSkinning(T,model),restShape=createArmRestShape(T,model);
  const clips=animations.filter(c=>/^(sit$|sit_down$|stand_up$|type2$|work_)/.test(c.name));
  const arms=['L','R'].map(side=>({side,upper:bones['UpperArm_'+side],fore:bones['Forearm_'+side],hand:bones['Hand_'+side]})).filter(a=>a.upper&&a.fore&&a.hand);
  // Read the authored endpoints on an independent hierarchy. The transition
