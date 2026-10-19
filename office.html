@@ -64,7 +64,7 @@
 <div id="prompt"></div>
 <button id="touchTalk" type="button" hidden>말 걸기</button>
 <div id="log"></div>
-<script src="js/office-roster.js?v=430dfbc957c1d2c7"></script>
+<script src="js/office-roster.js?v=a3531a402d8d877c"></script>
 <script type="module">
 import * as THREE from 'three';
 import {createArmPosture,fitLaptopHeight} from './js/office-arm-posture.js?v=9fa657b84507a137';
@@ -1859,7 +1859,7 @@ const _tlV1=new THREE.Vector3(), _tlV2=new THREE.Vector3(), _tlV3=new THREE.Vect
 const _wkA=new THREE.Vector3(), _wkB=new THREE.Vector3(), _wkQ1=new THREE.Quaternion(), _wkQ2=new THREE.Quaternion(), _wkQ3=new THREE.Quaternion();
 async function loadNativeResident(CH){
   const started=performance.now();
-  const url=CH==='acnh_53'?'./assets/native_staff50/characters/acnh_53.glb?v=6432ba048d6c695e':WorkSimRoster.byId(CH).model_url;
+  const url=CH==='acnh_53'?'./assets/native_staff50/characters/acnh_53.glb?v=281471ac92bfc565':WorkSimRoster.byId(CH).model_url;
   const gltf=await gltfLoad(url);
   const model=new THREE.Group(); model.name=CH+'-resident-root'; model.visible=false;
   model.add(gltf.scene); scene.add(model);
