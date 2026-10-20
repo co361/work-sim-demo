@@ -18,7 +18,7 @@
 /* 색·레이아웃을 바꿀 때마다 올린다. 올리지 않으면 대표 화면에 옛 금색 판이 그대로 남는다.
    40차(하루 시계·대화 모드·메일/메신저/전화 분리·디브리프 색)에서 v5 로 올렸다.
    화면에 싣는 CSS·JS 에는 ?v=20260907g 도 함께 붙어 있다. */
-var CACHE = 'worksim-characters-928655a3f1e9c76f';   /* 데모 사이트(co361/work-sim-demo) — 라이브 캐시와 이름이 겹치지 않게 ws7demo- 로 시작 */ /* 원래: 'ws7-v20-pdftext-20260928';   /* 59차 결과 PDF 글자 PDF(jsPDF + Pretendard 서브셋 · 구성 재편 — js/play/result_pdf.js) · 옛 판 ws7-v19-pdf-20260928 */
+var CACHE = 'worksim-characters-viewer-9866c752f0caf158';   /* 데모 사이트(co361/work-sim-demo) — 라이브 캐시와 이름이 겹치지 않게 ws7demo- 로 시작 */ /* 원래: 'ws7-v20-pdftext-20260928';   /* 59차 결과 PDF 글자 PDF(jsPDF + Pretendard 서브셋 · 구성 재편 — js/play/result_pdf.js) · 옛 판 ws7-v19-pdf-20260928 */
 /* 옛 판 v19 = 내 결과 PDF(js/play/result_pdf.js · js/ncs_report.js 싣기 · day.js·ep7.js 단추) · 옛 판 ws7-v18-ncs57-20260927 */
 /* 옛 판 v18 = 57차 NCS 전환 배포 + 관리자 화면(admin.html·js/admin.js) 제거 — networkFirst 가 404 를 캐시로 폴백하므로 올린다 · 옛 판 ws7-v17-gate-20260921 */
 

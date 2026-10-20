@@ -5478,7 +5478,7 @@ if(Q.get('inspect')==='1') (()=>{
   /* ── 인물 목록: CAST 서른한 명 + 플레이어(남) 25 = acnh_17~48 ── */
   const ROSTER=[]; { const seen=new Set();
     for(const [t,list] of Object.entries(CAST)) for(const [ch,name] of list){ if(seen.has(ch)) continue; seen.add(ch); ROSTER.push({ch,name,team:TEAM_NAMES[t]||t}); }
-    if(!seen.has('acnh_25')) ROSTER.push({ch:'acnh_25',name:'플레이어(남)',team:'신입사원'});
+    if(!window.WorkSimRoster&&!seen.has('acnh_25')) ROSTER.push({ch:'acnh_25',name:'플레이어(남)',team:'신입사원'});
     ROSTER.sort((a,b)=>parseInt(a.ch.slice(5),10)-parseInt(b.ch.slice(5),10)); }
   const numOf=(ch)=>parseInt(String(ch).replace(/\D/g,''),10);
   const entryOf=(ch)=>ROSTER.find(r=>r.ch===ch)||{ch,name:ch,team:''};
@@ -5492,7 +5492,10 @@ if(Q.get('inspect')==='1') (()=>{
   INS.variant='orig'; INS.faceY=null; INS.vmap=null; INS.fyFor=null; INS.standHead={}; INS.varMissing=null; INS.loadedVariant='orig';
   const F0=window.fetch.bind(window);
   const addV=(u)=>(INS.v&&!/[?&]v=/.test(u))?u+(u.includes('?')?'&':'?')+'v='+INS.v:u;
-  const rewrite=(u)=>{ if(typeof u!=='string'||!u.startsWith('assets/')) return u;
+  const rewrite=(u)=>{ if(typeof u!=='string') return u;
+    // Native model URLs already carry a content hash; retain it and add a fresh request key.
+    if(/(?:^|\/)assets\/native_staff50\//.test(u)) return INS.v ? u+(u.includes('?')?'&':'?')+'reviewFresh='+encodeURIComponent(INS.v) : u;
+    if(!u.startsWith('assets/')) return u;
     if(INS.vmap){ const q=u.indexOf('?'), base=q<0?u:u.slice(0,q), hit=INS.vmap.get(base.slice(7)); if(hit) return addV(hit+(q<0?'':u.slice(q))); }
     return addV(u); };
   THREE.DefaultLoadingManager.setURLModifier(rewrite);
@@ -5624,14 +5627,18 @@ if(Q.get('inspect')==='1') (()=>{
     syncUI(); }
 
   /* ── 카메라 프리셋 ── */
-  const CAMS={front:'정면',top:'위에서',l30:'좌 30°',r30:'우 30°',l45:'좌 45°',r45:'우 45°',talk:'선 대화',talksit:'앉은 대화'};
-  const CAM_ALIAS={front:'front',f:'front',top:'top',l30:'l30',r30:'r30',l45:'l45',r45:'r45',talk:'talk',talkstand:'talk',stand:'talk',talksit:'talksit',sit:'talksit'};
+  const CAMS={front:'정면',top:'위에서',l30:'좌 30°',r30:'우 30°',l45:'좌 45°',r45:'우 45°',hands:'손 확대',talk:'선 대화',talksit:'앉은 대화'};
+  const CAM_ALIAS={front:'front',f:'front',top:'top',l30:'l30',r30:'r30',l45:'l45',r45:'r45',hands:'hands',talk:'talk',talkstand:'talk',stand:'talk',talksit:'talksit',sit:'talksit'};
   async function camPreset(name,{fromPose=false}={}){ const c=INS.c; if(!c||!CAMS[name]) return;
     if(!fromPose){ if(name==='talk'&&c.seat){ await setPose('idle',{keepCam:true}); if(c!==INS.c) return; }
       if(name==='talksit'&&!c.seat){ await setPose('type',{keepCam:true}); if(c!==INS.c) return; } }
     INS.cam=name; c.look(null); c.lookUp=false; c.model.updateMatrixWorld(true);
     const ry=c.model.rotation.y, eye=eyeOf(c), head=headOf(c).getWorldPosition(new V3());
-    if(name==='talk'){
+    if(name==='hands'){
+      const axis=new V3(0,1,0), target=c.bones.Hand_L.getWorldPosition(new V3()).add(c.bones.Hand_R.getWorldPosition(new V3())).multiplyScalar(.5).add(new V3(0,-.008,.032).applyAxisAngle(axis,ry));
+      place(target.clone().add(new V3(-.32,.065,.025).applyAxisAngle(axis,ry)),target);
+    }
+    else if(name==='talk'){
       /* talkShot 선 상대 「얼굴 앞 호」 기본 후보: 키(skinTopY−발)×1.2 거리, 몸 정면에서 0.45rad, 높이 = 머리 뼈+TALK_EYE, 조준 = 눈높이 → aimLift(얼굴 위에서 35%). 인물은 카메라를 본다(talkLookAt) */
       const HT=Math.max(0.6,skinTopY(c)-c.model.position.y), dist=HT*1.2, ang=0.45, fx=Math.sin(ry), fz=Math.cos(ry), ca=Math.cos(ang), sa=Math.sin(ang);
       const pos=new V3(head.x+(fx*ca-fz*sa)*dist, head.y+TALK_EYE, head.z+(fx*sa+fz*ca)*dist), aim=new V3(head.x,head.y+TALK_EYE,head.z);
@@ -5650,7 +5657,7 @@ if(Q.get('inspect')==='1') (()=>{
 
   /* ── 인물 불러오기·바꾸기 ── */
   function detach(c){ if(!c) return; c.look(null); c.lookUp=false; c.model.visible=false; const i=CHARS.indexOf(c); if(i>=0) CHARS.splice(i,1); if(SEAT.occupant===c) SEAT.occupant=null; c.seat=null; }
-  function disposeChar(c){ if(!c) return; detach(c); try{ c.mixer.stopAllAction(); c.mixer.uncacheRoot(c.model); }catch(e){}
+  function disposeChar(c){ if(!c) return; if(NATIVE_LOADED.get(c.CH)?.character===c){NATIVE_LOADED.delete(c.CH);NATIVE_ACTORS.delete(c.CH);} detach(c); try{ c.mixer.stopAllAction(); c.mixer.uncacheRoot(c.model); }catch(e){}
     const mats=new Set(), texs=new Set();
     c.model.traverse(o=>{ if(o.isSkinnedMesh&&o.skeleton) o.skeleton.dispose(); if(o.geometry) o.geometry.dispose(); for(const m of [].concat(o.userData.insMat||[],o.material||[])) if(m&&m!==GRAY) mats.add(m); });
     for(const m of mats){ for(const k in m){ const v=m[k]; if(v&&v.isTexture) texs.add(v); } m.dispose(); }
@@ -5693,9 +5700,11 @@ if(Q.get('inspect')==='1') (()=>{
     if(!delay){ show(ch); return; } INS.ch=ch; syncUI(true); INS.timer=setTimeout(()=>show(ch),delay); }
   function stepChar(d){ const i=ROSTER.findIndex(r=>r.ch===INS.ch); const n=ROSTER.length; requestShow(ROSTER[((i<0?0:i)+d+n)%n].ch,220); }
   async function refresh(){ INS.v=Date.now().toString(36); ASSET_SET=null; ASSET_P=null; gltfLoader.__slim=null; VARS.clear();
+    const refreshedId=INS.ch, priorNative=NATIVE_ACTORS.get(refreshedId); NATIVE_ACTORS.delete(refreshedId);
     const cur=INS.c; for(const c of [...INS.cache.values()]) if(c!==cur) disposeChar(c); INS.cache.clear();
     const ok=await show(INS.ch,{fresh:true});
     if(cur&&cur!==INS.c) disposeChar(cur); else if(cur&&!ok&&cur.__key) INS.cache.set(cur.__key,cur);
+    if(!ok&&priorNative) NATIVE_ACTORS.set(refreshedId,priorNative);
     return ok; }
 
   /* ── UI ── */
@@ -5733,8 +5742,8 @@ if(Q.get('inspect')==='1') (()=>{
     <div><h4>안 (사본 비교)</h4><div class="g g4" id="insVarBtns"></div>
       <div class="vrow"><span class="lb">faceY</span><input id="insFy" type="range" min="0.02" max="0.05" step="0.005" value="0.05" title="얼굴 데칼 눈선 높이 후보 — 놓으면 다시 만든다"><span id="insFyV">기본</span><button data-fy="reset" title="게임 값으로">기본</button></div>
       <div class="st" id="insVarSt"></div></div>
-    ${sec('카메라','g3',Object.entries(CAMS).slice(0,6).map(([k,l])=>`<button data-cam="${k}" title="${k==='l30'||k==='l45'?'인물의 왼쪽 얼굴이 보이는 쪽':k==='r30'||k==='r45'?'인물의 오른쪽 얼굴이 보이는 쪽':''}">${l}</button>`).join(''))}
-    <div class="g g2" style="margin-top:-8px">${Object.entries(CAMS).slice(6).map(([k,l])=>`<button data-cam="${k}" title="${k==='talk'?'게임 대화 카메라: 선 상대(인물이 카메라를 본다)':'게임 대화 카메라: 앉은 상대, 옆에 선 사람 어깨 너머'}">${l} 구도</button>`).join('')}</div>
+    ${sec('카메라','g3',Object.entries(CAMS).slice(0,7).map(([k,l])=>`<button data-cam="${k}" title="${k==='l30'||k==='l45'?'인물의 왼쪽 얼굴이 보이는 쪽':k==='r30'||k==='r45'?'인물의 오른쪽 얼굴이 보이는 쪽':''}">${l}</button>`).join(''))}
+    <div class="g g2" style="margin-top:-8px">${Object.entries(CAMS).slice(7).map(([k,l])=>`<button data-cam="${k}" title="${k==='talk'?'게임 대화 카메라: 선 상대(인물이 카메라를 본다)':'게임 대화 카메라: 앉은 상대, 옆에 선 사람 어깨 너머'}">${l} 구도</button>`).join('')}</div>
     ${sec('자세','g4',Object.entries(POSES).map(([k,l])=>`<button data-pose="${k}">${l}</button>`).join(''))}
     ${sec('표정','g4',FACES.map(f=>`<button data-face="${f}">${FACE_KO[f]||f}</button>`).join(''))}
     ${sec('보기','g2',Object.entries(TOG).map(([k,l])=>`<button data-tog="${k}">${l}</button>`).join(''))}
