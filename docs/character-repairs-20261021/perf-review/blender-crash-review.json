@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-10-21",
+  "activeBlenderProcesses": 0,
+  "recentBlenderCrashReports": [
+    "Blender-2026-10-21-103133.ips"
+  ],
+  "crashTimeLocal": "2026-10-21 10:31:33 +0900",
+  "signal": "SIGSEGV",
+  "termination": "Segmentation fault:11",
+  "reportedFaultThreadFrames": [
+    "semaphore_wait_trap",
+    "_dispatch_semaphore_wait_slow",
+    "IlmThread_3_4::DefaultThreadPoolProvider::threadLoop"
+  ],
+  "interpretation": "Existing crash report from earlier execution; stack alone does not establish the root cause or explain repeated notification display. No Blender launched in this follow-up. No user process killed or global settings changed.",
+  "safari": "Real Safari UI validation deferred by latest no-foreground instruction."
+}

@@ -4,9 +4,9 @@
     {
       "id": 18,
       "baselineSha256": "d487712ef6c1a80926022d542c5a889d44a9c149b100d9154b1bd73cfff68b0e",
-      "sha256": "83dea4b56a06dc2081f076e9d956ce5fad292686c70bb84204ccc59c4ab5913b",
+      "sha256": "7a64c17de2920514eef125e91b3cc48d860e0248afdeb0f4d090d0fb52983738",
       "baselineBytes": 12668944,
-      "bytes": 30461932,
+      "bytes": 29163196,
       "vertices": 167451,
       "triangles": 313125,
       "unchangedMeshes": 31,
@@ -125,9 +125,9 @@
     {
       "id": 41,
       "baselineSha256": "c652dc75699c343327a39d08f74270583eaf5494c5c2064ce45ca93b1519eaea",
-      "sha256": "a88edf9b722a3a07112b259bc25b9989f850170b0b2c3ce229a4f4ad5352e26c",
+      "sha256": "c759d90ee0bee4b27d60b8690c76fb078d424184b31034a7cdafa82cb03db64b",
       "baselineBytes": 37611728,
-      "bytes": 45270968,
+      "bytes": 42583416,
       "vertices": 244584,
       "triangles": 482433,
       "unchangedMeshes": 30,

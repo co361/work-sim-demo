@@ -5,6 +5,11 @@ export function prepareGarmentMotion(THREE, model, animations) {
   const entries = [];
   model.traverse(mesh => {
     if (!mesh.isSkinnedMesh || mesh.userData?.worksimGarmentMotion !== 1) return;
+    if (mesh.workSimGarmentSamples) {
+      entries.push({mesh, basePosition: mesh.geometry.attributes.position.array.slice(), baseNormal: mesh.geometry.attributes.normal.array.slice(), shapes: mesh.workSimGarmentSamples, previous: null});
+      delete mesh.workSimGarmentSamples;
+      return;
+    }
     const dictionary = mesh.morphTargetDictionary;
     const names = Object.keys(dictionary).sort((a, b) => dictionary[a] - dictionary[b]);
     const selected = names.map((name, index) => name.startsWith('contact_envelope_') ? index : -1).filter(i => i >= 0);

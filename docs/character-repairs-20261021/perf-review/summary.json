@@ -1,0 +1,558 @@
+{
+  "status": "headless-chrome-regression-checks-passed",
+  "environment": {
+    "machine": "Apple M5, 10 CPU cores, 16 GB RAM",
+    "macOS": "26.5.1",
+    "browser": "Chrome/155.0.8059.85",
+    "headless": true,
+    "viewport": [
+      800,
+      650
+    ],
+    "dpr": 1,
+    "lowEndHardware": false
+  },
+  "method": "Same native office character-inspection renderer, camera, lighting, viewport and idle/walk/jog sequence. Local HTTP; model responses no-store; shared JS/CDN warmed. Variant order rotated across 3 rounds. 400 ms pose warmup then 2 s rAF sampling; JS heap snapshot after explicit GC. Separate synthetic CDP 4x CPU throttle, 2 rounds. No heavy concurrent task from this agent; unrelated user activity remains uncontrolled.",
+  "native": [
+    {
+      "model": 18,
+      "variant": "baseline",
+      "repeats": 3,
+      "loadMedianMs": 439,
+      "loadRangeMs": [
+        424,
+        753
+      ],
+      "heapMedianBytes": 104373139,
+      "heapRangeBytes": [
+        93531653,
+        110851699
+      ],
+      "helperPrepareMedianMs": 0,
+      "geometryAndAnimationBytes": 21608500,
+      "helperCpuBytes": 0,
+      "poses": {
+        "idle": {
+          "frameP95Ms": 16.799999999999727,
+          "characterUpdateMeanMs": 0.17272727351543332,
+          "characterUpdateP95Ms": 0.30000001192092896,
+          "helperMeanMs": 0,
+          "helperP95Ms": 0
+        },
+        "walk": {
+          "frameP95Ms": 16.799999999999272,
+          "characterUpdateMeanMs": 0.9264462777405731,
+          "characterUpdateP95Ms": 1.399999976158142,
+          "helperMeanMs": 0,
+          "helperP95Ms": 0
+        },
+        "jog": {
+          "frameP95Ms": 16.799999999999272,
+          "characterUpdateMeanMs": 0.9669421487603306,
+          "characterUpdateP95Ms": 1.4000000357627869,
+          "helperMeanMs": 0,
+          "helperP95Ms": 0
+        }
+      }
+    },
+    {
+      "model": 18,
+      "variant": "initial",
+      "repeats": 3,
+      "loadMedianMs": 639,
+      "loadRangeMs": [
+        628,
+        681
+      ],
+      "heapMedianBytes": 340829112,
+      "heapRangeBytes": [
+        329088564,
+        358420576
+      ],
+      "helperPrepareMedianMs": 44.19999998807907,
+      "geometryAndAnimationBytes": 24091924,
+      "helperCpuBytes": 22908388,
+      "poses": {
+        "idle": {
+          "frameP95Ms": 16.799999999999727,
+          "characterUpdateMeanMs": 0.21983471192604254,
+          "characterUpdateP95Ms": 0.30000001192092896,
+          "helperMeanMs": 0.012396692244474553,
+          "helperP95Ms": 0.10000002384185791
+        },
+        "walk": {
+          "frameP95Ms": 16.799999999999272,
+          "characterUpdateMeanMs": 1.2181818184773785,
+          "characterUpdateP95Ms": 1.899999976158142,
+          "helperMeanMs": 0.3033057840402461,
+          "helperP95Ms": 0.5
+        },
+        "jog": {
+          "frameP95Ms": 16.700000000000728,
+          "characterUpdateMeanMs": 1.3438016530896022,
+          "characterUpdateP95Ms": 1.800000011920929,
+          "helperMeanMs": 0.26528925491758615,
+          "helperP95Ms": 0.40000003576278687
+        }
+      }
+    },
+    {
+      "model": 18,
+      "variant": "candidate",
+      "repeats": 3,
+      "loadMedianMs": 503,
+      "loadRangeMs": [
+        392,
+        626
+      ],
+      "heapMedianBytes": 154862814,
+      "heapRangeBytes": [
+        143726983,
+        216439249
+      ],
+      "helperPrepareMedianMs": 0.10000002384185791,
+      "geometryAndAnimationBytes": 23925364,
+      "helperCpuBytes": 21490720,
+      "poses": {
+        "idle": {
+          "frameP95Ms": 16.799999999999727,
+          "characterUpdateMeanMs": 0.1917355415249659,
+          "characterUpdateP95Ms": 0.30000001192092896,
+          "helperMeanMs": 0.009917355765981123,
+          "helperP95Ms": 0.10000002384185791
+        },
+        "walk": {
+          "frameP95Ms": 16.799999999999272,
+          "characterUpdateMeanMs": 1.290082649751143,
+          "characterUpdateP95Ms": 1.899999976158142,
+          "helperMeanMs": 0.3107438003721316,
+          "helperP95Ms": 0.5
+        },
+        "jog": {
+          "frameP95Ms": 16.799999999999272,
+          "characterUpdateMeanMs": 1.264462807946954,
+          "characterUpdateP95Ms": 1.899999976158142,
+          "helperMeanMs": 0.2495867757757833,
+          "helperP95Ms": 0.40000003576278687
+        }
+      }
+    },
+    {
+      "model": 41,
+      "variant": "baseline",
+      "repeats": 3,
+      "loadMedianMs": 704,
+      "loadRangeMs": [
+        689,
+        987
+      ],
+      "heapMedianBytes": 201388595,
+      "heapRangeBytes": [
+        183712270,
+        212386364
+      ],
+      "helperPrepareMedianMs": 0,
+      "geometryAndAnimationBytes": 67671188,
+      "helperCpuBytes": 0,
+      "poses": {
+        "idle": {
+          "frameP95Ms": 16.799999999999727,
+          "characterUpdateMeanMs": 0.1942148770182586,
+          "characterUpdateP95Ms": 0.30000001192092896,
+          "helperMeanMs": 0,
+          "helperP95Ms": 0
+        },
+        "walk": {
+          "frameP95Ms": 16.700000000000728,
+          "characterUpdateMeanMs": 1.011570250199846,
+          "characterUpdateP95Ms": 1.5999999642372131,
+          "helperMeanMs": 0,
+          "helperP95Ms": 0
+        },
+        "jog": {
+          "frameP95Ms": 16.700000000000728,
+          "characterUpdateMeanMs": 1.2466666668653488,
+          "characterUpdateP95Ms": 1.7000000476837158,
+          "helperMeanMs": 0,
+          "helperP95Ms": 0
+        }
+      }
+    },
+    {
+      "model": 41,
+      "variant": "initial",
+      "repeats": 3,
+      "loadMedianMs": 953,
+      "loadRangeMs": [
+        903,
+        1002
+      ],
+      "heapMedianBytes": 420421603,
+      "heapRangeBytes": [
+        409389100,
+        438017729
+      ],
+      "helperPrepareMedianMs": 57.89999997615814,
+      "geometryAndAnimationBytes": 34376128,
+      "helperCpuBytes": 33325648,
+      "poses": {
+        "idle": {
+          "frameP95Ms": 16.799999999999727,
+          "characterUpdateMeanMs": 0.22396694283840085,
+          "characterUpdateP95Ms": 0.30000001192092896,
+          "helperMeanMs": 0.006611570346453958,
+          "helperP95Ms": 0.09999996423721313
+        },
+        "walk": {
+          "frameP95Ms": 16.800000000000182,
+          "characterUpdateMeanMs": 1.6355371908708052,
+          "characterUpdateP95Ms": 2.300000011920929,
+          "helperMeanMs": 0.49090908972685005,
+          "helperP95Ms": 0.7000000476837158
+        },
+        "jog": {
+          "frameP95Ms": 16.700000000000728,
+          "characterUpdateMeanMs": 1.9297520671009032,
+          "characterUpdateP95Ms": 2.5,
+          "helperMeanMs": 0.5586776851622526,
+          "helperP95Ms": 0.7000000476837158
+        }
+      }
+    },
+    {
+      "model": 41,
+      "variant": "candidate",
+      "repeats": 3,
+      "loadMedianMs": 571,
+      "loadRangeMs": [
+        563,
+        688
+      ],
+      "heapMedianBytes": 196370131,
+      "heapRangeBytes": [
+        185364883,
+        241616670
+      ],
+      "helperPrepareMedianMs": 0,
+      "geometryAndAnimationBytes": 32720792,
+      "helperCpuBytes": 31292092,
+      "poses": {
+        "idle": {
+          "frameP95Ms": 16.700000000000273,
+          "characterUpdateMeanMs": 0.22479338636083052,
+          "characterUpdateP95Ms": 0.30000001192092896,
+          "helperMeanMs": 0.009917354780780383,
+          "helperP95Ms": 0.10000002384185791
+        },
+        "walk": {
+          "frameP95Ms": 16.799999999999272,
+          "characterUpdateMeanMs": 1.6314049624214488,
+          "characterUpdateP95Ms": 2.300000011920929,
+          "helperMeanMs": 0.5115702477368441,
+          "helperP95Ms": 0.800000011920929
+        },
+        "jog": {
+          "frameP95Ms": 16.700000000000728,
+          "characterUpdateMeanMs": 1.8719008249684799,
+          "characterUpdateP95Ms": 2.5,
+          "helperMeanMs": 0.5363636381369977,
+          "helperP95Ms": 0.7000000476837158
+        }
+      }
+    }
+  ],
+  "syntheticCpu4": [
+    {
+      "model": 18,
+      "variant": "baseline",
+      "repeats": 2,
+      "loadMedianMs": 1521.0,
+      "loadRangeMs": [
+        1453,
+        1589
+      ],
+      "heapMedianBytes": 91511691.5,
+      "heapRangeBytes": [
+        86164606,
+        96858777
+      ],
+      "helperPrepareMedianMs": 0.0,
+      "geometryAndAnimationBytes": 21608500.0,
+      "helperCpuBytes": 0.0,
+      "poses": {
+        "idle": {
+          "frameP95Ms": 25.050000000000182,
+          "characterUpdateMeanMs": 0.21107454082527227,
+          "characterUpdateP95Ms": 0.7000000178813934,
+          "helperMeanMs": 0.0,
+          "helperP95Ms": 0.0
+        },
+        "walk": {
+          "frameP95Ms": 33.30000000000018,
+          "characterUpdateMeanMs": 0.9460155602193678,
+          "characterUpdateP95Ms": 1.5,
+          "helperMeanMs": 0.0,
+          "helperP95Ms": 0.0
+        },
+        "jog": {
+          "frameP95Ms": 33.30000000000018,
+          "characterUpdateMeanMs": 0.921875,
+          "characterUpdateP95Ms": 1.5,
+          "helperMeanMs": 0.0,
+          "helperP95Ms": 0.0
+        }
+      }
+    },
+    {
+      "model": 18,
+      "variant": "candidate",
+      "repeats": 2,
+      "loadMedianMs": 1671.0,
+      "loadRangeMs": [
+        1547,
+        1795
+      ],
+      "heapMedianBytes": 155668770.5,
+      "heapRangeBytes": [
+        148909094,
+        162428447
+      ],
+      "helperPrepareMedianMs": 0.75,
+      "geometryAndAnimationBytes": 23925364.0,
+      "helperCpuBytes": 21490720.0,
+      "poses": {
+        "idle": {
+          "frameP95Ms": 25.09999999999991,
+          "characterUpdateMeanMs": 0.23986374442464053,
+          "characterUpdateP95Ms": 0.75,
+          "helperMeanMs": 0.012146893585389854,
+          "helperP95Ms": 0.04999998211860657
+        },
+        "walk": {
+          "frameP95Ms": 33.399999999999636,
+          "characterUpdateMeanMs": 1.4360933035845602,
+          "characterUpdateP95Ms": 2.0499999821186066,
+          "helperMeanMs": 0.3574430179965292,
+          "helperP95Ms": 1.0
+        },
+        "jog": {
+          "frameP95Ms": 33.350000000000364,
+          "characterUpdateMeanMs": 1.3392391282093266,
+          "characterUpdateP95Ms": 2.0000000298023224,
+          "helperMeanMs": 0.22090126843718083,
+          "helperP95Ms": 0.8500000238418579
+        }
+      }
+    },
+    {
+      "model": 41,
+      "variant": "baseline",
+      "repeats": 2,
+      "loadMedianMs": 2257.0,
+      "loadRangeMs": [
+        1837,
+        2677
+      ],
+      "heapMedianBytes": 186475988.0,
+      "heapRangeBytes": [
+        180949131,
+        192002845
+      ],
+      "helperPrepareMedianMs": 0.0,
+      "geometryAndAnimationBytes": 67671188.0,
+      "helperCpuBytes": 0.0,
+      "poses": {
+        "idle": {
+          "frameP95Ms": 33.34999999999991,
+          "characterUpdateMeanMs": 0.2661469391909693,
+          "characterUpdateP95Ms": 0.8500000238418579,
+          "helperMeanMs": 0.0,
+          "helperP95Ms": 0.0
+        },
+        "walk": {
+          "frameP95Ms": 33.399999999999636,
+          "characterUpdateMeanMs": 1.2496898279111677,
+          "characterUpdateP95Ms": 1.800000011920929,
+          "helperMeanMs": 0.0,
+          "helperP95Ms": 0.0
+        },
+        "jog": {
+          "frameP95Ms": 33.399999999999636,
+          "characterUpdateMeanMs": 1.8391518635533877,
+          "characterUpdateP95Ms": 2.5500000417232513,
+          "helperMeanMs": 0.0,
+          "helperP95Ms": 0.0
+        }
+      }
+    },
+    {
+      "model": 41,
+      "variant": "candidate",
+      "repeats": 2,
+      "loadMedianMs": 2189.5,
+      "loadRangeMs": [
+        1818,
+        2561
+      ],
+      "heapMedianBytes": 200791386.5,
+      "heapRangeBytes": [
+        180369038,
+        221213735
+      ],
+      "helperPrepareMedianMs": 0.6500000059604645,
+      "geometryAndAnimationBytes": 32720792.0,
+      "helperCpuBytes": 31292092.0,
+      "poses": {
+        "idle": {
+          "frameP95Ms": 33.34999999999991,
+          "characterUpdateMeanMs": 0.3334013264985306,
+          "characterUpdateP95Ms": 0.949999988079071,
+          "helperMeanMs": 0.018357981457994763,
+          "helperP95Ms": 0.050000011920928955
+        },
+        "walk": {
+          "frameP95Ms": 33.35000000000082,
+          "characterUpdateMeanMs": 2.4073660716503147,
+          "characterUpdateP95Ms": 3.2000000178813934,
+          "helperMeanMs": 0.7296130988480789,
+          "helperP95Ms": 1.25
+        },
+        "jog": {
+          "frameP95Ms": 33.350000000000364,
+          "characterUpdateMeanMs": 2.331010678437414,
+          "characterUpdateP95Ms": 3.5000000298023224,
+          "helperMeanMs": 0.6231958770710256,
+          "helperP95Ms": 1.25
+        }
+      }
+    }
+  ],
+  "assets": [
+    {
+      "model": 18,
+      "baselineBytes": 12668944,
+      "candidateBytes": 29163196,
+      "increaseBytes": 16494252
+    },
+    {
+      "model": 21,
+      "baselineBytes": 21888456,
+      "candidateBytes": 21873100,
+      "increaseBytes": -15356
+    },
+    {
+      "model": 38,
+      "baselineBytes": 19266904,
+      "candidateBytes": 19252260,
+      "increaseBytes": -14644
+    },
+    {
+      "model": 40,
+      "baselineBytes": 18554668,
+      "candidateBytes": 18552424,
+      "increaseBytes": -2244
+    },
+    {
+      "model": 41,
+      "baselineBytes": 37611728,
+      "candidateBytes": 42583416,
+      "increaseBytes": 4971688
+    },
+    {
+      "model": 52,
+      "baselineBytes": 20905668,
+      "candidateBytes": 20890672,
+      "increaseBytes": -14996
+    },
+    {
+      "model": 54,
+      "baselineBytes": 19033752,
+      "candidateBytes": 19037304,
+      "increaseBytes": 3552
+    }
+  ],
+  "initialIncreaseBytes": 25408540,
+  "finalIncreaseBytes": 21422252,
+  "savedBytes": 3986288,
+  "reduction": "Each garment had 12 bit-identical redundant targets. Character41 also had2 legacy targets whose coefficients were zero at every key and default. Keep exact float32 shape bytes, sum duplicate coefficients, remove zero-only targets. Compress sparse index sequences with lossless meshopt INDICES; no quantization, mesh or texture reduction. Each now has166 pose correctives plus1 seated target.",
+  "loader": "The explicitly tagged 18/41 garment reads sparse corrective samples before GLTFLoader requests full dense target accessors. Other models and unsupported layouts retain the previous path. Runtime helper evaluates active shapes as before; only1 seated target per garment reaches the GPU.",
+  "equivalence": {
+    "samples": 366,
+    "allBoneTransformsExact": true,
+    "maxPositionDifferenceMetres": 1.4901161193847656e-08,
+    "maxNormalComponentDifference": 5.960464477539063e-08,
+    "pageErrors": [],
+    "visuallyReviewed": [
+      "equivalence-18-idle_breath.png",
+      "equivalence-18-walk.png",
+      "equivalence-18-jog.png",
+      "equivalence-18-sit.png",
+      "equivalence-41-idle_breath.png",
+      "equivalence-41-walk.png",
+      "equivalence-41-jog.png",
+      "equivalence-41-sit.png"
+    ]
+  },
+  "limits": [
+    "Real Safari game and viewer validation is deferred by the latest explicit no-foreground instruction; it was not attempted or denied. No local headless WebKit runtime was available.",
+    "M5 is not low-end hardware. CDP CPU throttling does not emulate a weak GPU, low RAM, memory bandwidth, thermal throttling or mobile Safari.",
+    "Load measurements use local HTTP and warmed shared dependencies, not cold WAN delivery. The remaining21.4 MB asset increase still increases download cost.",
+    "Heap is a post-GC browser JS snapshot, not peak memory, OS RSS or VRAM. Individual measurements vary; both medians and ranges are retained.",
+    "Character18 still uses more heap than the original. Both garments add per-frame CPU work while walking/running. Similar rAF frame intervals in this test are not proof of zero regression on low-end machines.",
+    "Full office performance, all possible animation blends, and exhaustive triangle collision checks are outside these measurements.",
+    "No push or public deployment. Parent coordination remains required."
+  ],
+  "assetsSha256": {
+    "18": {
+      "modelSha256": "7a64c17de2920514eef125e91b3cc48d860e0248afdeb0f4d090d0fb52983738",
+      "portraitSha256": "3763a613d3708f3d707ca5a1f891daf357d0c6e947ec2886b8582bccea85c12f"
+    },
+    "21": {
+      "modelSha256": "13b35a70280941f75dde83151fd9090010c6aec8c854ea0395d7a6e185c3f57f",
+      "portraitSha256": "9d071aad9d3d8377b7194bce047f0d01273782a6149b8ce4de8295ca87737a3f"
+    },
+    "38": {
+      "modelSha256": "4ec7b06ff3c3e8aa2f90e4705e25ed5e7aa61dfd0d874403889e607dfa28675c",
+      "portraitSha256": "be6365b913003288890cd5fe12cc3a721ab784d06c9c542680cdc3cc3f036599"
+    },
+    "40": {
+      "modelSha256": "b72b9de3f5b89bff5d9e834788b691e39c467427cf04c61c9876210f8b438d2a",
+      "portraitSha256": "bdce879cf96ec27ff1e054cb4727d720c112c8753f4f9f8fa49a0440bbf34350"
+    },
+    "41": {
+      "modelSha256": "c759d90ee0bee4b27d60b8690c76fb078d424184b31034a7cdafa82cb03db64b",
+      "portraitSha256": "edb948515336b963fcd8e0a548486202bba90b6b7c3839a5f59082f4ed8b1f43"
+    },
+    "52": {
+      "modelSha256": "9e095afc2313970e2653d8878af1421064afac214f133dee3f6e413651ca8988",
+      "portraitSha256": "61b8d3b7eb0beeed752ae8492f090a49538d827d7bdd64354f5e135ee9efc31b"
+    },
+    "54": {
+      "modelSha256": "80a2b5bba6b5e858d39bc06442ba670e9829dbba3afd34af81045fc7a4bba691",
+      "portraitSha256": "b8819830a2dd157e6d0ede23704c7cd64e907e89585217ab677ba314cd45073c"
+    }
+  },
+  "gameSmoke": {
+    "status": "passed",
+    "paths": 4,
+    "movementFrames": 720,
+    "pageErrors": [],
+    "firstAttempt": "120 second initialization wait timeout. Same product code passed all4 paths with diagnostics on rerun; initial cause not established."
+  },
+  "viewerSmoke": {
+    "status": "passed",
+    "modelRoutes": 11,
+    "viewerModels": [
+      52,
+      18,
+      41,
+      40
+    ],
+    "poseButtons": [
+      "walk",
+      "jog",
+      "idle"
+    ],
+    "pageErrors": []
+  }
+}

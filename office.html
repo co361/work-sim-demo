@@ -64,7 +64,7 @@
 <div id="prompt"></div>
 <button id="touchTalk" type="button" hidden>말 걸기</button>
 <div id="log"></div>
-<script src="js/office-roster.js?v=61a84f2e856c2763"></script>
+<script src="js/office-roster.js?v=6ee8dceca125a81f"></script>
 <script type="module">
 import * as THREE from 'three';
 import {createArmPosture,fitLaptopHeight} from './js/office-arm-posture.js?v=c866d354626bf6f4';
@@ -73,7 +73,8 @@ import {createWallTeamPlaque} from './js/office-wall-plaque.js?v=20260929-plaque
 import * as COZYLIB from './js/office-cozy.js?v=20260929-cozy5';
 import * as KITLIB from './js/office-kit.js?v=20260929kit2';
 import {loadWalkParams,buildWalkClip} from './js/office-walk.js?v=20260929walk13';   /* 공용 걷기(발 미끄러짐·부자연스러움 수정) — ?walk=orig 면 GLB 의 옛 walk */   /* ?office=kit — 사용자 Blender 사무실 킷(소품·맞춤 의자·복도). 기본 화면에서는 쓰지 않는다 */   /* ?look=cozy 가안 전용 — 기본 화면에서는 쓰지 않는다 */
-import {prepareGarmentMotion} from './js/office-garment-motion.js?v=ce372aa7b1bc9db7';
+import {prepareGarmentMotion} from './js/office-garment-motion.js?v=ba277a21c1265b54';
+import {registerGarmentMotion} from './js/office-garment-loader.js?v=e693112c70a6bf7c';
 import {createRunPosture} from './js/office-run-posture.js?v=193dd7ec492338a3';
 import {createTalkFace,moodOf as faceMoodOf} from './js/office-talkface.js?v=20261002face2';   /* 말할 때 입·표정·깜빡임(GLB 모양키 mouth_open·happy·sad·surprised·angry·blink) — ?talkface=0 이면 옛 동작 */
 import {createWork} from './js/office-work.js?v=20261001work1';   /* 앉아서 일하기 — 앉은 NPC 가 work_* 클립(타자·마우스·화면 읽기·기지개·목)을 무작위로 잇는다. 클립 없는 GLB 는 기존 type2 */
@@ -1830,7 +1831,7 @@ const ANIMS_ALL={ idle:'idle', walk:'walk', walk2:'walking', sit:'sit', sitdown:
    선 자세 그대로 stepWalk 이 좌표만 밀어 미끄러진 것이다. 39차에 NPC 자율 행동을 넣으며 걷기 클립을 같이 넣었어야 했다.
    (34차에 로드 시간 때문에 walk 을 뺐지만, 이제 방 전환이 로딩 화면 뒤에 숨으므로 넣어도 된다) */
 const ANIMS_NPC={ idle:'idle', walk:'walk', sit:'sit', chat:'chat', type2:'type2' };
-const gltfLoader=new GLTFLoader().setMeshoptDecoder(MeshoptDecoder); const gltfLoad=(u)=>new Promise((res,rej)=>gltfLoader.load(u,res,undefined,rej));
+const gltfLoader=registerGarmentMotion(THREE,new GLTFLoader().setMeshoptDecoder(MeshoptDecoder)); const gltfLoad=(u)=>new Promise((res,rej)=>gltfLoader.load(u,res,undefined,rej));
 const texLoader=new THREE.TextureLoader();
 let ASSET_SET=null;   /* assets/ 목록(serve.py 디렉토리 인덱스)을 한 번만 읽어 존재 여부를 판단 — 파일마다 HEAD 를 쏘면 404 가 콘솔 오류로 남는다 */
 /* 42차: 정적 호스팅(GitHub Pages)에는 디렉터리 목록이 없다.

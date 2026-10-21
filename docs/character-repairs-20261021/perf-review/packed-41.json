@@ -1,0 +1,9 @@
+{
+  "id": "41",
+  "sourceBytes": 47593004,
+  "outputBytes": 42583416,
+  "accessorsExactlyVerified": 5652,
+  "newLosslessBuffers": 368,
+  "quantization": false,
+  "sha256": "c759d90ee0bee4b27d60b8690c76fb078d424184b31034a7cdafa82cb03db64b"
+}

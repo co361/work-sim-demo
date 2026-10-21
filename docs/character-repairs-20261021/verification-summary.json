@@ -20,14 +20,40 @@
     "7 final rendered portrait PNGs"
   ],
   "unitTests": {
-    "passed": 2,
+    "passed": 4,
     "failed": 0
   },
-  "glbSizeIncreaseBytes": 25408540,
+  "glbSizeIncreaseBytes": 21422252,
   "limits": [
-    "Projected contact samples are not exhaustive triangle collision proofs.",
-    "Run additive correction is enabled only on verified reference character40.",
-    "Full office FPS and Safari were not benchmarked; separate performance scope.",
-    "Not deployed or pushed; parent release coordination pending."
-  ]
+    "Real Safari game and viewer validation is deferred by the latest explicit no-foreground instruction; it was not attempted or denied. No local headless WebKit runtime was available.",
+    "M5 is not low-end hardware. CDP CPU throttling does not emulate a weak GPU, low RAM, memory bandwidth, thermal throttling or mobile Safari.",
+    "Load measurements use local HTTP and warmed shared dependencies, not cold WAN delivery. The remaining21.4 MB asset increase still increases download cost.",
+    "Heap is a post-GC browser JS snapshot, not peak memory, OS RSS or VRAM. Individual measurements vary; both medians and ranges are retained.",
+    "Character18 still uses more heap than the original. Both garments add per-frame CPU work while walking/running. Similar rAF frame intervals in this test are not proof of zero regression on low-end machines.",
+    "Full office performance, all possible animation blends, and exhaustive triangle collision checks are outside these measurements.",
+    "No push or public deployment. Parent coordination remains required.",
+    "Projected front-surface samples on lower garment; 9 phases in each of 12 locomotion and transition clips. This is not exhaustive triangle collision testing.",
+    "Run additive correction is enabled only on verified reference character40."
+  ],
+  "savedFromInitialRepairBytes": 3986288,
+  "performanceReview": "perf-review/summary.json",
+  "compactionEquivalence": {
+    "samples": 366,
+    "allBoneTransformsExact": true,
+    "maxPositionDifferenceMetres": 1.4901161193847656e-08,
+    "maxNormalComponentDifference": 5.960464477539063e-08,
+    "pageErrors": [],
+    "visuallyReviewed": [
+      "equivalence-18-idle_breath.png",
+      "equivalence-18-walk.png",
+      "equivalence-18-jog.png",
+      "equivalence-18-sit.png",
+      "equivalence-41-idle_breath.png",
+      "equivalence-41-walk.png",
+      "equivalence-41-jog.png",
+      "equivalence-41-sit.png"
+    ]
+  },
+  "integratedBrowserSmoke": "final-smoke.json",
+  "realOfficeSmoke": "perf-review/game-smoke.json"
 }

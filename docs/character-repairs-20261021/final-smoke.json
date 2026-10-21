@@ -1,0 +1,330 @@
+{
+  "status": "passed",
+  "results": [
+    {
+      "route": "v2/office.html",
+      "id": "acnh_18",
+      "ready": true,
+      "keyed": true,
+      "mode": "walk",
+      "garment": [
+        {
+          "mesh": "Wardrobe_|_Knit_continuous_shell",
+          "poseTargets": 166,
+          "gpuTargets": 1
+        }
+      ],
+      "finite": true
+    },
+    {
+      "route": "v2/office.html",
+      "id": "acnh_21",
+      "ready": true,
+      "keyed": true,
+      "mode": "walk",
+      "garment": [],
+      "finite": true
+    },
+    {
+      "route": "v2/office.html",
+      "id": "acnh_38",
+      "ready": true,
+      "keyed": true,
+      "mode": "walk",
+      "garment": [],
+      "finite": true
+    },
+    {
+      "route": "v2/office.html",
+      "id": "acnh_40",
+      "ready": true,
+      "keyed": true,
+      "mode": "walk",
+      "garment": [],
+      "finite": true
+    },
+    {
+      "route": "v2/office.html",
+      "id": "acnh_41",
+      "ready": true,
+      "keyed": true,
+      "mode": "walk",
+      "garment": [
+        {
+          "mesh": "Wardrobe_|_Shirt_continuous_shell",
+          "poseTargets": 166,
+          "gpuTargets": 1
+        }
+      ],
+      "finite": true
+    },
+    {
+      "route": "v2/office.html",
+      "id": "acnh_52",
+      "ready": true,
+      "keyed": true,
+      "mode": "walk",
+      "garment": [],
+      "finite": true
+    },
+    {
+      "route": "v2/office.html",
+      "id": "acnh_54",
+      "ready": true,
+      "keyed": true,
+      "mode": "walk",
+      "garment": [],
+      "finite": true
+    },
+    {
+      "route": "v2/try-office.html",
+      "id": "acnh_18",
+      "ready": true,
+      "keyed": true,
+      "mode": "walk",
+      "garment": [
+        {
+          "mesh": "Wardrobe_|_Knit_continuous_shell",
+          "poseTargets": 166,
+          "gpuTargets": 1
+        }
+      ],
+      "finite": true
+    },
+    {
+      "route": "v2/try-office.html",
+      "id": "acnh_41",
+      "ready": true,
+      "keyed": true,
+      "mode": "walk",
+      "garment": [
+        {
+          "mesh": "Wardrobe_|_Shirt_continuous_shell",
+          "poseTargets": 166,
+          "gpuTargets": 1
+        }
+      ],
+      "finite": true
+    },
+    {
+      "route": "demo/office.html",
+      "id": "acnh_18",
+      "ready": true,
+      "keyed": true,
+      "mode": "walk",
+      "garment": [
+        {
+          "mesh": "Wardrobe_|_Knit_continuous_shell",
+          "poseTargets": 166,
+          "gpuTargets": 1
+        }
+      ],
+      "finite": true
+    },
+    {
+      "route": "demo/office.html",
+      "id": "acnh_41",
+      "ready": true,
+      "keyed": true,
+      "mode": "walk",
+      "garment": [
+        {
+          "mesh": "Wardrobe_|_Shirt_continuous_shell",
+          "poseTargets": 166,
+          "gpuTargets": 1
+        }
+      ],
+      "finite": true
+    },
+    {
+      "route": "demo/character-viewer.html",
+      "id": 52,
+      "walkRunIdleButtons": true,
+      "poses": [
+        {
+          "pose": "walk",
+          "selected": "true",
+          "mode": "walk",
+          "gait": "walk",
+          "active": [
+            {
+              "clip": "walk",
+              "weight": 1,
+              "time": 0.7869999940395357
+            }
+          ]
+        },
+        {
+          "pose": "jog",
+          "selected": "true",
+          "mode": "walk",
+          "gait": "jog",
+          "active": [
+            {
+              "clip": "jog",
+              "weight": 1,
+              "time": 0.569766656756401
+            }
+          ]
+        },
+        {
+          "pose": "idle",
+          "selected": "true",
+          "mode": "idle",
+          "gait": "jog",
+          "active": [
+            {
+              "clip": "idle_breath",
+              "weight": 1,
+              "time": 0.8899022372238492
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "demo/character-viewer.html",
+      "id": 18,
+      "walkRunIdleButtons": true,
+      "poses": [
+        {
+          "pose": "walk",
+          "selected": "true",
+          "mode": "walk",
+          "gait": "walk",
+          "active": [
+            {
+              "clip": "idle_breath",
+              "weight": 0.21944434940814972,
+              "time": 1.0579353897642376
+            },
+            {
+              "clip": "walk",
+              "weight": 0.7805556654930115,
+              "time": 0.6154999940395356
+            }
+          ]
+        },
+        {
+          "pose": "jog",
+          "selected": "true",
+          "mode": "walk",
+          "gait": "jog",
+          "active": [
+            {
+              "clip": "jog",
+              "weight": 1,
+              "time": 0.052233337283134576
+            }
+          ]
+        },
+        {
+          "pose": "idle",
+          "selected": "true",
+          "mode": "idle",
+          "gait": "jog",
+          "active": [
+            {
+              "clip": "idle_breath",
+              "weight": 1,
+              "time": 0.9461353898119212
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "demo/character-viewer.html",
+      "id": 41,
+      "walkRunIdleButtons": true,
+      "poses": [
+        {
+          "pose": "walk",
+          "selected": "true",
+          "mode": "walk",
+          "gait": "walk",
+          "active": [
+            {
+              "clip": "walk",
+              "weight": 1,
+              "time": 0.7700999940633776
+            }
+          ]
+        },
+        {
+          "pose": "jog",
+          "selected": "true",
+          "mode": "walk",
+          "gait": "jog",
+          "active": [
+            {
+              "clip": "jog",
+              "weight": 1,
+              "time": 0.16433333736658104
+            }
+          ]
+        },
+        {
+          "pose": "idle",
+          "selected": "true",
+          "mode": "idle",
+          "gait": "jog",
+          "active": [
+            {
+              "clip": "idle_breath",
+              "weight": 1,
+              "time": 1.6130806101357666
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "route": "demo/character-viewer.html",
+      "id": 40,
+      "walkRunIdleButtons": true,
+      "poses": [
+        {
+          "pose": "walk",
+          "selected": "true",
+          "mode": "walk",
+          "gait": "walk",
+          "active": [
+            {
+              "clip": "walk",
+              "weight": 1,
+              "time": 0.6915999940633776
+            }
+          ]
+        },
+        {
+          "pose": "jog",
+          "selected": "true",
+          "mode": "walk",
+          "gait": "jog",
+          "active": [
+            {
+              "clip": "jog",
+              "weight": 1,
+              "time": 0.07303334325551998
+            }
+          ]
+        },
+        {
+          "pose": "idle",
+          "selected": "true",
+          "mode": "idle",
+          "gait": "jog",
+          "active": [
+            {
+              "clip": "idle_breath",
+              "weight": 1,
+              "time": 2.6291786440238476
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

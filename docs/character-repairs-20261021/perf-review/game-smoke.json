@@ -1,0 +1,232 @@
+{
+  "status": "passed",
+  "rows": [
+    {
+      "route": "v2/office.html",
+      "team": "logi",
+      "id": 18,
+      "loaded": {
+        "targetLoaded": true,
+        "actors": [
+          "acnh_23",
+          "acnh_45",
+          "acnh_18",
+          "acnh_54",
+          "acnh_52"
+        ],
+        "player": "acnh_23",
+        "targetMode": "type",
+        "garment": [
+          {
+            "mesh": "Wardrobe_|_Knit_continuous_shell",
+            "poseTargets": 166,
+            "gpuTargets": 1
+          }
+        ],
+        "quality": {
+          "q": "high",
+          "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+          "weak": false,
+          "auto": false,
+          "pixelRatio": 1,
+          "calls": 479,
+          "tris": 2000750,
+          "textures": 205,
+          "geometries": 638
+        },
+        "warmup": {
+          "ready": true,
+          "done": 30,
+          "total": 30,
+          "stage": "준비 완료",
+          "timedOut": false,
+          "ms": 2007,
+          "room": null,
+          "props": true
+        }
+      },
+      "motion": {
+        "finite": true,
+        "active": [
+          "walk"
+        ],
+        "maxActiveWeight": 1,
+        "probeError": null,
+        "frames": 180,
+        "returnedToSeat": true,
+        "targetMode": "type"
+      }
+    },
+    {
+      "route": "v2/office.html",
+      "team": "plan",
+      "id": 41,
+      "loaded": {
+        "targetLoaded": true,
+        "actors": [
+          "acnh_61",
+          "acnh_41",
+          "acnh_62",
+          "acnh_38",
+          "acnh_40"
+        ],
+        "player": "acnh_61",
+        "targetMode": "type",
+        "garment": [
+          {
+            "mesh": "Wardrobe_|_Shirt_continuous_shell",
+            "poseTargets": 166,
+            "gpuTargets": 1
+          }
+        ],
+        "quality": {
+          "q": "high",
+          "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+          "weak": false,
+          "auto": false,
+          "pixelRatio": 1,
+          "calls": 487,
+          "tris": 1999307,
+          "textures": 214,
+          "geometries": 646
+        },
+        "warmup": {
+          "ready": true,
+          "done": 30,
+          "total": 30,
+          "stage": "준비 완료",
+          "timedOut": false,
+          "ms": 1991,
+          "room": null,
+          "props": true
+        }
+      },
+      "motion": {
+        "finite": true,
+        "active": [
+          "walk"
+        ],
+        "maxActiveWeight": 1,
+        "probeError": null,
+        "frames": 180,
+        "returnedToSeat": true,
+        "targetMode": "type"
+      }
+    },
+    {
+      "route": "v2/try-office.html",
+      "team": "logi",
+      "id": 18,
+      "loaded": {
+        "targetLoaded": true,
+        "actors": [
+          "acnh_23",
+          "acnh_45",
+          "acnh_18",
+          "acnh_54",
+          "acnh_52"
+        ],
+        "player": "acnh_23",
+        "targetMode": "type",
+        "garment": [
+          {
+            "mesh": "Wardrobe_|_Knit_continuous_shell",
+            "poseTargets": 166,
+            "gpuTargets": 1
+          }
+        ],
+        "quality": {
+          "q": "high",
+          "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+          "weak": false,
+          "auto": false,
+          "pixelRatio": 1,
+          "calls": 479,
+          "tris": 2000750,
+          "textures": 205,
+          "geometries": 638
+        },
+        "warmup": {
+          "ready": true,
+          "done": 30,
+          "total": 30,
+          "stage": "준비 완료",
+          "timedOut": false,
+          "ms": 3396,
+          "room": null,
+          "props": true
+        }
+      },
+      "motion": {
+        "finite": true,
+        "active": [
+          "walk"
+        ],
+        "maxActiveWeight": 1,
+        "probeError": null,
+        "frames": 180,
+        "returnedToSeat": true,
+        "targetMode": "type"
+      }
+    },
+    {
+      "route": "demo/office.html",
+      "team": "plan",
+      "id": 41,
+      "loaded": {
+        "targetLoaded": true,
+        "actors": [
+          "acnh_61",
+          "acnh_41",
+          "acnh_40",
+          "acnh_38",
+          "acnh_62"
+        ],
+        "player": "acnh_61",
+        "targetMode": "type",
+        "garment": [
+          {
+            "mesh": "Wardrobe_|_Shirt_continuous_shell",
+            "poseTargets": 166,
+            "gpuTargets": 1
+          }
+        ],
+        "quality": {
+          "q": "high",
+          "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M5, Unspecified Version)",
+          "weak": false,
+          "auto": false,
+          "pixelRatio": 1,
+          "calls": 487,
+          "tris": 1999307,
+          "textures": 214,
+          "geometries": 646
+        },
+        "warmup": {
+          "ready": true,
+          "done": 30,
+          "total": 30,
+          "stage": "준비 완료",
+          "timedOut": false,
+          "ms": 2150,
+          "room": null,
+          "props": true
+        }
+      },
+      "motion": {
+        "finite": true,
+        "active": [
+          "walk"
+        ],
+        "maxActiveWeight": 1,
+        "probeError": null,
+        "frames": 180,
+        "returnedToSeat": true,
+        "targetMode": "type"
+      }
+    }
+  ],
+  "errors": [],
+  "browser": "Chrome/155.0.8059.85",
+  "scope": "Real office runtime with default kit, player and four residents. Only optional guests and unrelated room prefetch disabled. Loaded seated scene and existing player/NPC movement diagnostic, then restored seat. Headless, not Safari or a full office performance benchmark."
+}

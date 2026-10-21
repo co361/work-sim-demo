@@ -1,0 +1,14 @@
+{
+  "first": {
+    "status": "timeout",
+    "route": "v2/office.html?team=logi&gender=male&pre=0&guests=0",
+    "error": "Waiting failed:120000ms exceeded",
+    "rootCause": "Not established; no diagnostic state was saved before the first browser closed."
+  },
+  "second": {
+    "status": "passed",
+    "report": "game-smoke.json",
+    "productCodeChangedBetweenAttempts": false,
+    "diagnosticChanges": "Capture page/console/network errors and browser state on failure; use window.__office guard."
+  }
+}
