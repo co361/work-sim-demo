@@ -158,7 +158,10 @@ export function createArmPosture(T,{model,bones,mixer,animations,getSeat}){
  const referenceMixer=new T.AnimationMixer(reference),endpoints={};
  for(const name of ['idle','type2']){
   const clip=animations.find(c=>c.name===name);if(!clip)continue;
-  referenceMixer.stopAllAction();referenceMixer.clipAction(clip).reset().play();referenceMixer.update(0);reference.updateMatrixWorld(true);
+  // Endpoints only depend on transforms. A reference clone has no live cloth
+  // weights, and must not bind or modify the actor's corrective/morph tracks.
+  const poseClip=new T.AnimationClip(clip.name,clip.duration,clip.tracks.filter(t=>/\.(position|quaternion|scale)$/.test(t.name)),clip.blendMode);
+  referenceMixer.stopAllAction();referenceMixer.clipAction(poseClip).reset().play();referenceMixer.update(0);reference.updateMatrixWorld(true);
   endpoints[name]={};for(const a of arms){const [s,e,w]=['UpperArm_','Forearm_','Hand_'].map(n=>referenceBones[n+a.side].getWorldPosition(new T.Vector3()));endpoints[name][a.side]={delta:w.clone().sub(s),upper:e.clone().sub(s),hand:referenceBones['Hand_'+a.side].getWorldQuaternion(new T.Quaternion())};}
  }
  referenceMixer.stopAllAction();referenceMixer.uncacheRoot(reference);

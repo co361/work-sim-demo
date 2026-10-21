@@ -67,7 +67,7 @@
 <script src="js/office-roster.js?v=6ee8dceca125a81f"></script>
 <script type="module">
 import * as THREE from 'three';
-import {createArmPosture,fitLaptopHeight} from './js/office-arm-posture.js?v=c866d354626bf6f4';
+import {createArmPosture,fitLaptopHeight} from './js/office-arm-posture.js?v=5e1945fe1761666b';
 import {getSeatFit,createFittedWorkChair} from './js/office-seat-fit.js?v=20260929-hairback1';   /* 2026-09-29: 긴 머리 인물 등받이(backrestHeight·backrestZ) */
 import {createWallTeamPlaque} from './js/office-wall-plaque.js?v=20260929-plaque2';
 import * as COZYLIB from './js/office-cozy.js?v=20260929-cozy5';
@@ -652,6 +652,10 @@ const markerTex=canvasTex(128,128,(g)=>{ g.clearRect(0,0,128,128); g.strokeStyle
 scene.add(COZY?new THREE.HemisphereLight('#fff7ea','#d8c6aa',1.2):new THREE.HemisphereLight('#ffffff','#bbc3c8',1.15));   /* 28차: 화이트 톤 — 반구광 주광, 펜던트는 장식(1.2), 창 햇빛 1.2 로 부드러운 그림자 */   /* 펜던트 점광원이 세면 머리카락 결마다 흰 줄이 서서(28차 실측) 점광 5 + 반구광 0.95 로 균형 */
 const sun=new THREE.DirectionalLight(COZY?'#fff0d8':'#fffaf3',1.35); sun.position.set(0.8,3.2,-4.5); sun.target.position.set(0.3,0,0.5); scene.add(sun); scene.add(sun.target);
 sun.castShadow=true; sun.shadow.mapSize.set(2048,2048); sun.shadow.camera.left=-7; sun.shadow.camera.right=7; sun.shadow.camera.top=5; sun.shadow.camera.bottom=-5; sun.shadow.camera.near=0.5; sun.shadow.camera.far=14; sun.shadow.bias=-0.0008; sun.shadow.radius=6;
+// Keep the 2048px shadow and all character detail; reuse it for one display
+// frame between refreshes. shadowstep=1 is the full-rate comparison override.
+const SUN_SHADOW_STEP=Q.get('shadowstep')==='1'?1:2;
+sun.shadow.autoUpdate=false; sun.shadow.needsUpdate=true;
 const DOORS=[];   /* 모든 문의 {hinge,want} — doorTick 이 한꺼번에 보간 */
 let BUILD=null;   /* buildRoom 진행 중인 방(slot/placeSlot 이 소품 자리를 여기에 적는다) */
 /* ── 44차 성능: 프레임 예산 ──────────────────────────────────────────
@@ -1319,7 +1323,7 @@ const ROOMS={};   /* CUR 는 카메라 리그가 먼저 참조하므로 위(§2)
 function setRoom(R){ if(CUR===R) return; if(CUR){ CUR.group.visible=false; for(const c of CUR.chars) c.model.visible=false; } CUR=R; R.group.visible=true;
   for(const k in ROOMS){ if(ROOMS[k]!==R) for(const c of ROOMS[k].chars) c.model.visible=false; }   /* 45차: 떠나는 방만이 아니라 **다른 모든 방** 사람을 숨긴다(새어 나온 사람 정리) */
   for(const c of R.chars) c.model.visible=!c.trip;   /* 45차: 왕래 중인 사람은 trafficOnRoom 이 정한다 */
-  if(R.LIGHTS) for(const l of R.LIGHTS) l.shadow.needsUpdate=true;   /* 44차 성능: 새 방은 첫 프레임에 그림자를 전부 채운다 */
+  sun.shadow.needsUpdate=true; if(R.LIGHTS) for(const l of R.LIGHTS) l.shadow.needsUpdate=true;   /* 44차 성능: 새 방은 첫 프레임에 그림자를 전부 채운다 */
   document.getElementById('team').textContent=R.team==='corridor'?'복도 (7층)':(R.name+' 사무실'+(R.team===HOME?'':' · 방문 중'));
   if(SCREEN.glow) SCREEN.glow.visible=false; SCREEN.node=(R.screenSlot&&R.screenSlot.node)||null; SCREEN.glow=R.screenGlow||null;   /* 35차: 모니터 클릭 대상은 지금 방 것 */
   if(RIG.on){ rigPreset(R.team==='corridor'?'corridor':'room'); RIG.follow=true; }
@@ -5157,7 +5161,7 @@ function applyQuality(){
      바뀔 때 한 번만 씬 전체 재질에 needsUpdate 를 걸어 준다(그 프레임만 살짝 무겁고 그 뒤로는 공짜) */
   if(renderer.shadowMap.enabled!==shadow){ renderer.shadowMap.enabled=shadow;
     scene.traverse(o=>{ const m=o.material; if(!m) return; for(const x of (Array.isArray(m)?m:[m])) if(x) x.needsUpdate=true; }); }
-  if(typeof sun!=='undefined'&&sun){ sun.castShadow=shadow; const ms=(q==='high')?2048:1024;
+  if(typeof sun!=='undefined'&&sun){ sun.castShadow=shadow; sun.shadow.needsUpdate=true; const ms=(q==='high')?2048:1024;
     if(sun.shadow.mapSize.x!==ms){ sun.shadow.mapSize.set(ms,ms); if(sun.shadow.map){ sun.shadow.map.dispose(); sun.shadow.map=null; } } }
   for(const l of QLIGHTS.pend){ const on=(q==='high')&&PEND_SHADOW; if(l.castShadow!==on){ l.castShadow=on; if(!on&&l.shadow&&l.shadow.map){ l.shadow.map.dispose(); l.shadow.map=null; } } l.shadow.needsUpdate=true; }
   /* 44차: 화질 단계마다 환경맵·사각광을 껐다 켰다 하면 자동 조절이 내려갈 때 방이 눈에 띄게
@@ -5204,7 +5208,9 @@ const clock=new THREE.Clock(); let FROZEN=false;
    CPU 4배 느린 기기에서 30fps → 40fps (실측, 드로우콜 1642 → 546).
    그림자 자체는 그대로 남고 5프레임(약 83ms)마다 새로 그려진다. */
 let SHADOW_K=0;
-function shadowTick(){ const L=CUR&&CUR.LIGHTS; if(!L||!L.length) return; L[SHADOW_K++%L.length].shadow.needsUpdate=true; }
+let SUN_SHADOW_K=0;
+function shadowTick(){ if(SUN_SHADOW_K++%SUN_SHADOW_STEP===0) sun.shadow.needsUpdate=true;
+  const L=CUR&&CUR.LIGHTS; if(!L||!L.length) return; L[SHADOW_K++%L.length].shadow.needsUpdate=true; }
 let LAST_MS=16;
 /* ══ 45차: 워밍업 — 대표 「렉 걸리지 않도록 렉 다 풀릴 때까지 로딩창 띄워. 게임 캐릭터가 보일 때는 렉이 걸리지 않도록」 ══
    원인(이전 조사): 입장 직후 **셰이더 컴파일 + 텍스처 GPU 업로드**가 게임 도중에 일어나 처음 수십 초가 끊긴다
@@ -5239,8 +5245,8 @@ function warmupMain(){ if(WARM_MAIN) return WARM_MAIN; WARM_MAIN=(async()=>{ con
     WARM.stage='그래픽 준비 중'; await warmTextures(scene); await compileNow(); WARM.done++;
     /* 복도 조명(점광 없음 · 사각광 14)으로 한 번 더 — 조명 개수가 다르면 셰이더가 새로 만들어진다 */
     if(CORRIDOR&&CUR!==CORRIDOR){ const g=CUR.group; g.visible=false; CORRIDOR.group.visible=true;
-      await compileNow(); try{ renderer.render(scene,camera); }catch(e){}
-      CORRIDOR.group.visible=false; g.visible=true; for(const l of (CUR.LIGHTS||[])) l.shadow.needsUpdate=true; }
+      await compileNow(); sun.shadow.needsUpdate=true; try{ renderer.render(scene,camera); }catch(e){}
+      CORRIDOR.group.visible=false; g.visible=true; sun.shadow.needsUpdate=true; for(const l of (CUR.LIGHTS||[])) l.shadow.needsUpdate=true; }
     WARM.done++;
     WARM.stage='마무리 중'; WARM.total=30; WARM.done=0;
     const ok=await waitStable(30,40000); WARM.timedOut=!ok;
@@ -5450,7 +5456,7 @@ window.__office={ roster:WorkSimRoster,actor:id=>CHARS.find(c=>c.CH===id)||null,
     else if(down&&code==='KeyT') ctrlTalk(); },
   /* 34차 */ goToTeam, roomOf, ensureRoom, rooms:()=>Object.fromEntries(Object.entries(ROOMS).map(([k,R])=>[k,{loaded:R.loaded,loadMs:R.loadMs,chars:R.chars.map(c=>c.CH)}])), corridor:()=>CORRIDOR, cur:()=>CUR, get curSEATS(){ return SEATS; }, get curSTATIONS(){ return STATIONS; }, get fade(){ return FADE.a; },
   get walking(){ return walkOf(PLAYER)||null; }, get busy(){ return BUSY; }, get simT(){ return SIM_T; }, freeze:(b)=>{ FROZEN=!!b; }, camFollow:(b)=>{ CAM.enabled=!!b; if(!b){ CAM.follow=false; CAM.restore=null; CAM.saved=null; } },
-  snap(q=0.85){ cullWalls(); if(CUR&&CUR.LIGHTS) for(const l of CUR.LIGHTS) l.shadow.needsUpdate=true;   /* 44차: 순번 갱신 때문에 찍는 순간 그림자가 낡을 수 있어 전부 새로 그린다 */
+  snap(q=0.85){ cullWalls(); sun.shadow.needsUpdate=true; if(CUR&&CUR.LIGHTS) for(const l of CUR.LIGHTS) l.shadow.needsUpdate=true;   /* 44차: 순번 갱신 때문에 찍는 순간 그림자가 낡을 수 있어 전부 새로 그린다 */
     renderer.render(scene,camera); mipCapTick(true); renderer.render(scene,camera); return renderer.domElement.toDataURL('image/jpeg',q); },   /* 39차 후속 6: 상한이 걸린 뒤 찍히게 강제 적용 후 한 번 더 그린다 */
   mipInfo:()=>({isl:ISLMIP.slice(),cap:MIPCAP,on:MIP_ON,pending:MIPQ.length,done:MIPDONE.slice(),pendingNames:MIPQ.map(t=>(t.image&&t.image.src||'').split('/').pop()||'tex')}),
   view(name){ setView(name); controls.update(); }, ready:()=>!!window.__officeReady, full:()=>!!HOME_ROOM.loaded, npcsReady:()=>NPC_LOAD||Promise.resolve(),   /* 43차 ②: ready = 나만 준비(입장 가능) · full = 동료까지 앉음 */  step(sec,dt=1/30){ for(let t=0;t<sec;t+=dt) simTick(dt); },
