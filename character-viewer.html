@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="same-origin">
+  <title>캐릭터 한 명씩 보기 · WORK SIM</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="character-viewer.css?v=20261021a">
+  <script defer src="character-viewer.js?v=20261021a"></script>
+</head>
+<body>
+  <header class="header"><div><p class="eyebrow">WORK SIM · 캐릭터 검수</p><h1>한 명씩 자세히 보기</h1></div><button id="share" type="button">이 캐릭터 링크 복사</button></header>
+  <main>
+    <section class="stage-panel" aria-label="선택한 캐릭터">
+      <div class="identity"><div><p id="team">현재 게임 명단 연결 중</p><h2 id="name">캐릭터 준비 중</h2></div><span id="number"></span></div>
+      <div class="stage" id="stage">
+        <iframe id="viewer" title="현재 게임 모델로 보는 3D 캐릭터" allow="fullscreen"></iframe>
+        <div class="loading" id="loading" role="status"><span class="loader" aria-hidden="true"></span><p id="load-message">캐릭터 검수 화면을 준비하고 있습니다.</p><button type="button" id="retry" hidden>다시 불러오기</button></div>
+      </div>
+      <div class="stage-footer"><p>드래그로 회전 · 휠 또는 두 손가락으로 확대</p><div><button type="button" data-turn="-45" aria-label="왼쪽으로 45도 회전">↶</button><button type="button" data-turn="45" aria-label="오른쪽으로 45도 회전">↷</button><button type="button" data-zoom="0.8" aria-label="확대">＋</button><button type="button" data-zoom="1.25" aria-label="축소">−</button></div></div>
+    </section>
+    <aside class="controls-panel" aria-label="캐릭터 선택과 보기 설정">
+      <section><h3>캐릭터 선택 <span id="count">50명</span></h3>
+        <label for="search">이름·직급·팀·번호 검색</label><input type="search" id="search" placeholder="예: 조민서, 장주임, 물류, 52" autocomplete="off">
+        <label class="sr-only" for="character">캐릭터 이름</label><select id="character" disabled><option>명단을 불러오는 중</option></select>
+        <div class="navigation"><button type="button" id="previous">← 이전</button><span id="position">— / 50</span><button type="button" id="next">다음 →</button></div>
+        <div class="quick-picks" aria-label="의견을 받은 캐릭터 바로 선택"><button type="button" data-character="acnh_52">조민서 사원</button><button type="button" data-character="acnh_54">장 주임</button><button type="button" data-character="acnh_18">오 대리</button></div>
+      </section>
+      <section><h3>가까이 보기</h3><div class="grid four"><button type="button" data-view="full" aria-pressed="true">전신</button><button type="button" data-view="head" aria-pressed="false">머리</button><button type="button" data-view="top" aria-pressed="false">상의</button><button type="button" data-view="hands" aria-pressed="false">손</button></div>
+        <div class="grid four secondary"><button type="button" data-angle="0">정면</button><button type="button" data-angle="90">왼쪽</button><button type="button" data-angle="-90">오른쪽</button><button type="button" data-angle="180">뒷면</button></div>
+      </section>
+      <section><h3>자세와 동작</h3><div class="grid three"><button type="button" data-pose="idle" aria-pressed="true">서기</button><button type="button" data-pose="sit" aria-pressed="false">앉기</button><button type="button" data-pose="type" aria-pressed="false">타자</button><button type="button" data-pose="walk" aria-pressed="false">걷기</button><button type="button" data-pose="jog" aria-pressed="false">달리기</button><button type="button" id="pause" aria-pressed="false">일시 정지</button></div><p class="hint">걷기와 달리기는 제자리에서 동작을 확인합니다.</p></section>
+      <section class="feedback" id="feedback" hidden><h3>접수된 수정 의견</h3><p id="feedback-text"></p><p class="hint">모델 수정 전 검수 중</p></section>
+      <p class="source-note">현재 게임의 이름·직급과 모델을 표시합니다.<br>이 화면에서는 게임 진행도와 캐릭터 파일이 바뀌지 않습니다.</p>
+      <div id="share-fallback" hidden><label for="share-url">현재 캐릭터 링크</label><input id="share-url" readonly></div>
+      <p id="notice" role="status" aria-live="polite"></p>
+    </aside>
+  </main>
+</body>
+</html>
