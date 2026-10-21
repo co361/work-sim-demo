@@ -1,0 +1,244 @@
+{
+  "status": "passed",
+  "reports": [
+    {
+      "id": 18,
+      "baselineSha256": "d487712ef6c1a80926022d542c5a889d44a9c149b100d9154b1bd73cfff68b0e",
+      "sha256": "83dea4b56a06dc2081f076e9d956ce5fad292686c70bb84204ccc59c4ab5913b",
+      "baselineBytes": 12668944,
+      "bytes": 30461932,
+      "vertices": 167451,
+      "triangles": 313125,
+      "unchangedMeshes": 31,
+      "unchangedAnimationChannels": 6624,
+      "scope": [
+        "Hair | reference fitted 18",
+        "Wardrobe | Knit continuous shell"
+      ],
+      "changedBaseAttributes": [
+        {
+          "mesh": "Hair | reference fitted 18",
+          "attribute": "POSITION"
+        },
+        {
+          "mesh": "Hair | reference fitted 18",
+          "attribute": "NORMAL"
+        },
+        {
+          "mesh": "Wardrobe | Knit continuous shell",
+          "attribute": "POSITION"
+        },
+        {
+          "mesh": "Wardrobe | Knit continuous shell",
+          "attribute": "NORMAL"
+        }
+      ],
+      "allBodyFaceEarMeshesUnchanged": true,
+      "allBoneChannelsUnchanged": true,
+      "allIndicesUvColorsAndTextureBytesUnchanged": true,
+      "finiteNormalizedSkinWeights": true
+    },
+    {
+      "id": 21,
+      "baselineSha256": "89db805c5210d39fc01820d0669ab72f55850f14a670db81e327c01b95dcf73c",
+      "sha256": "13b35a70280941f75dde83151fd9090010c6aec8c854ea0395d7a6e185c3f57f",
+      "baselineBytes": 21888456,
+      "bytes": 21873100,
+      "vertices": 139899,
+      "triangles": 277877,
+      "unchangedMeshes": 38,
+      "unchangedAnimationChannels": 6912,
+      "scope": [
+        "Hair | reference fitted 21"
+      ],
+      "changedBaseAttributes": [
+        {
+          "mesh": "Hair | reference fitted 21",
+          "attribute": "POSITION"
+        },
+        {
+          "mesh": "Hair | reference fitted 21",
+          "attribute": "NORMAL"
+        }
+      ],
+      "allBodyFaceEarMeshesUnchanged": true,
+      "allBoneChannelsUnchanged": true,
+      "allIndicesUvColorsAndTextureBytesUnchanged": true,
+      "finiteNormalizedSkinWeights": true
+    },
+    {
+      "id": 38,
+      "baselineSha256": "9c8e89ec5f39e19fa7c4c1fdd2d9706402bbe230248894f1ca67df84c96b9a20",
+      "sha256": "4ec7b06ff3c3e8aa2f90e4705e25ed5e7aa61dfd0d874403889e607dfa28675c",
+      "baselineBytes": 19266904,
+      "bytes": 19252260,
+      "vertices": 150432,
+      "triangles": 298467,
+      "unchangedMeshes": 38,
+      "unchangedAnimationChannels": 6912,
+      "scope": [
+        "Hair | reference fitted 38"
+      ],
+      "changedBaseAttributes": [
+        {
+          "mesh": "Hair | reference fitted 38",
+          "attribute": "POSITION"
+        },
+        {
+          "mesh": "Hair | reference fitted 38",
+          "attribute": "NORMAL"
+        }
+      ],
+      "allBodyFaceEarMeshesUnchanged": true,
+      "allBoneChannelsUnchanged": true,
+      "allIndicesUvColorsAndTextureBytesUnchanged": true,
+      "finiteNormalizedSkinWeights": true
+    },
+    {
+      "id": 40,
+      "baselineSha256": "77b4b9b2ade6b6db2effcb5209be9aa6d3bc6ac59fd00e75e0482374c3fde1c0",
+      "sha256": "b72b9de3f5b89bff5d9e834788b691e39c467427cf04c61c9876210f8b438d2a",
+      "baselineBytes": 18554668,
+      "bytes": 18552424,
+      "vertices": 153774,
+      "triangles": 304630,
+      "unchangedMeshes": 33,
+      "unchangedAnimationChannels": 6732,
+      "scope": [
+        "Hair | 40 one continuous swept scalp"
+      ],
+      "changedBaseAttributes": [
+        {
+          "mesh": "Hair | 40 one continuous swept scalp",
+          "attribute": "POSITION"
+        },
+        {
+          "mesh": "Hair | 40 one continuous swept scalp",
+          "attribute": "NORMAL"
+        }
+      ],
+      "allBodyFaceEarMeshesUnchanged": true,
+      "allBoneChannelsUnchanged": true,
+      "allIndicesUvColorsAndTextureBytesUnchanged": true,
+      "finiteNormalizedSkinWeights": true
+    },
+    {
+      "id": 41,
+      "baselineSha256": "c652dc75699c343327a39d08f74270583eaf5494c5c2064ce45ca93b1519eaea",
+      "sha256": "a88edf9b722a3a07112b259bc25b9989f850170b0b2c3ce229a4f4ad5352e26c",
+      "baselineBytes": 37611728,
+      "bytes": 45270968,
+      "vertices": 244584,
+      "triangles": 482433,
+      "unchangedMeshes": 30,
+      "unchangedAnimationChannels": 6588,
+      "scope": [
+        "Wardrobe | Shirt continuous shell"
+      ],
+      "changedBaseAttributes": [
+        {
+          "mesh": "Wardrobe | Shirt continuous shell",
+          "attribute": "POSITION"
+        },
+        {
+          "mesh": "Wardrobe | Shirt continuous shell",
+          "attribute": "NORMAL"
+        }
+      ],
+      "allBodyFaceEarMeshesUnchanged": true,
+      "allBoneChannelsUnchanged": true,
+      "allIndicesUvColorsAndTextureBytesUnchanged": true,
+      "finiteNormalizedSkinWeights": true
+    },
+    {
+      "id": 52,
+      "baselineSha256": "703678fb91b6f53e3ce97daf2b9553628792bb56fe256118876c375e73ee9810",
+      "sha256": "9e095afc2313970e2653d8878af1421064afac214f133dee3f6e413651ca8988",
+      "baselineBytes": 20905668,
+      "bytes": 20890672,
+      "vertices": 146817,
+      "triangles": 290838,
+      "unchangedMeshes": 39,
+      "unchangedAnimationChannels": 6984,
+      "scope": [
+        "Wardrobe | White shirt collar 1",
+        "Wardrobe | White shirt collar -1"
+      ],
+      "changedBaseAttributes": [
+        {
+          "mesh": "Wardrobe | White shirt collar 1",
+          "attribute": "POSITION"
+        },
+        {
+          "mesh": "Wardrobe | White shirt collar 1",
+          "attribute": "NORMAL"
+        },
+        {
+          "mesh": "Wardrobe | White shirt collar 1",
+          "attribute": "JOINTS_0"
+        },
+        {
+          "mesh": "Wardrobe | White shirt collar 1",
+          "attribute": "WEIGHTS_0"
+        },
+        {
+          "mesh": "Wardrobe | White shirt collar -1",
+          "attribute": "POSITION"
+        },
+        {
+          "mesh": "Wardrobe | White shirt collar -1",
+          "attribute": "NORMAL"
+        },
+        {
+          "mesh": "Wardrobe | White shirt collar -1",
+          "attribute": "JOINTS_0"
+        },
+        {
+          "mesh": "Wardrobe | White shirt collar -1",
+          "attribute": "WEIGHTS_0"
+        }
+      ],
+      "allBodyFaceEarMeshesUnchanged": true,
+      "allBoneChannelsUnchanged": true,
+      "allIndicesUvColorsAndTextureBytesUnchanged": true,
+      "finiteNormalizedSkinWeights": true
+    },
+    {
+      "id": 54,
+      "baselineSha256": "555c7e626a8089ca43bfba4f11ce77211f3b75829f4f6f907fccbdef9d0f54a3",
+      "sha256": "80a2b5bba6b5e858d39bc06442ba670e9829dbba3afd34af81045fc7a4bba691",
+      "baselineBytes": 19033752,
+      "bytes": 19037304,
+      "vertices": 144723,
+      "triangles": 286739,
+      "unchangedMeshes": 37,
+      "unchangedAnimationChannels": 6912,
+      "scope": [
+        "Hair | reference fitted 54",
+        "Wardrobe | Blazer continuous shell"
+      ],
+      "changedBaseAttributes": [
+        {
+          "mesh": "Hair | reference fitted 54",
+          "attribute": "POSITION"
+        },
+        {
+          "mesh": "Hair | reference fitted 54",
+          "attribute": "NORMAL"
+        },
+        {
+          "mesh": "Wardrobe | Blazer continuous shell",
+          "attribute": "POSITION"
+        },
+        {
+          "mesh": "Wardrobe | Blazer continuous shell",
+          "attribute": "NORMAL"
+        }
+      ],
+      "allBodyFaceEarMeshesUnchanged": true,
+      "allBoneChannelsUnchanged": true,
+      "allIndicesUvColorsAndTextureBytesUnchanged": true,
+      "finiteNormalizedSkinWeights": true
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "status": "passed",
+  "modelAudit": "passed",
+  "matchedCameraPairs": {
+    "static": 56,
+    "motion": 140,
+    "detail": 80
+  },
+  "maxCameraOrTargetComponentErrorMetres": 1.1102230246251565e-16,
+  "transitionFrames": 216,
+  "transitionPageErrors": [],
+  "frontGarmentPenetrationOver1mm": 0,
+  "minProjectedClearanceMetres": 0.002542046071041776,
+  "transitionScope": "Projected front-surface samples on lower garment; 9 phases in each of 12 locomotion and transition clips. This is not exhaustive triangle collision testing.",
+  "visualReview": [
+    "7 FINAL-compare sheets",
+    "7 FINAL-motion sheets (idle, walk, jog, sit, type; 4 phases)",
+    "8 FINAL-detail sheets (front/left; 2 phases; 4 clothing edits)",
+    "2 FINAL-transitions sheets (12 clips each)",
+    "7 final rendered portrait PNGs"
+  ],
+  "unitTests": {
+    "passed": 2,
+    "failed": 0
+  },
+  "glbSizeIncreaseBytes": 25408540,
+  "limits": [
+    "Projected contact samples are not exhaustive triangle collision proofs.",
+    "Run additive correction is enabled only on verified reference character40.",
+    "Full office FPS and Safari were not benchmarked; separate performance scope.",
+    "Not deployed or pushed; parent release coordination pending."
+  ]
+}

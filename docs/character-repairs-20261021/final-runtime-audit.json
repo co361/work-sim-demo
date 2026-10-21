@@ -1,0 +1,28 @@
+{
+  "motionPairs": 140,
+  "sameCameraAndTarget": true,
+  "character40IdleAndWalkAllBoneTransformsExact": true,
+  "character40HipsAndAllLegFootTransformsExact": true,
+  "runPitch": [
+    {
+      "phase": 0,
+      "beforePitchDegrees": 13.519158267388207,
+      "afterPitchDegrees": 7.806944497976931
+    },
+    {
+      "phase": 0.25,
+      "beforePitchDegrees": 13.839667007044437,
+      "afterPitchDegrees": 8.202809416034002
+    },
+    {
+      "phase": 0.5,
+      "beforePitchDegrees": 13.520817444430675,
+      "afterPitchDegrees": 7.809924040091324
+    },
+    {
+      "phase": 0.75,
+      "beforePitchDegrees": 13.839846140796485,
+      "afterPitchDegrees": 8.202848966702216
+    }
+  ]
+}

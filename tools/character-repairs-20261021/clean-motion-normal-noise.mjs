@@ -1,0 +1,7 @@
+// Remove only float roundoff introduced by normalized corrective normals.
+// Maximum possible vector change is sqrt(3)*1e-7; no base normal/position changes.
+import fs from 'node:fs';import{editGlb}from './glb-edit.mjs';
+for(const id of process.argv.slice(2)){const file=`candidate/acnh_${id}.glb`,e=editGlb(file),g=e.g,m=g.meshes[g.nodes.find(n=>/Wardrobe \| (Knit|Shirt) continuous shell/.test(n.name)).mesh],pr=m.primitives[0];let removed=0,maxVector=0;
+function view(data,type){const ai=g.accessors.length;g.accessors.push({componentType:type,type:'SCALAR',count:data.length});e.put(ai,data,type);return g.accessors.pop().bufferView;}
+for(let t=0;t<pr.targets.length;t++){if(!m.extras.targetNames[t].startsWith('contact_envelope_'))continue;const ai=pr.targets[t].NORMAL,d=e.values(ai),indices=[],values=[];for(let i=0;i<d.length;i+=3){let error=0;for(let k=0;k<3;k++)if(Math.abs(d[i+k])<1e-7){error+=d[i+k]**2;if(d[i+k])removed++;d[i+k]=0;}maxVector=Math.max(maxVector,Math.sqrt(error));if(d[i]||d[i+1]||d[i+2]){indices.push(i/3);values.push(d[i],d[i+1],d[i+2]);}}g.accessors[ai]={componentType:5126,type:'VEC3',count:d.length/3};if(indices.length)g.accessors[ai].sparse={count:indices.length,indices:{bufferView:view(indices,5123),componentType:5123},values:{bufferView:view(values,5126)}};}
+e.save(file);fs.writeFileSync(`evidence/normal-noise-${id}.json`,JSON.stringify({id,removedFloatRoundoffComponents:removed,maximumNormalVectorDifference:maxVector,basePositionsAndNormalsUnchanged:true},null,2));console.log({id,removed,maxVector});}

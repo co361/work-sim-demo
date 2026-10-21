@@ -1,0 +1,9 @@
+export function surface(p,ix){
+ const faces=Array.from({length:ix.length/3},(_,i)=>i*3);
+ function build(faces){const min=[Infinity,Infinity,Infinity],max=[-Infinity,-Infinity,-Infinity];for(const f of faces)for(let j=0;j<3;j++)for(let k=0;k<3;k++){const v=p[ix[f+j]*3+k];min[k]=Math.min(min[k],v);max[k]=Math.max(max[k],v)}if(faces.length<24)return{min,max,faces};const axis=[0,1,2].sort((a,b)=>(max[b]-min[b])-(max[a]-min[a]))[0];faces.sort((a,b)=>[0,1,2].reduce((sum,k)=>sum+p[ix[a+k]*3+axis]-p[ix[b+k]*3+axis],0));const n=faces.length>>1;return{min,max,a:build(faces.slice(0,n)),b:build(faces.slice(n))}}
+ const tree=build(faces),defaultOrigin=[.006,.768,.006];
+ return (v,rayOrigin=defaultOrigin)=>{const origin=rayOrigin,dir=v.map((x,k)=>x-origin[k]),len=Math.hypot(...dir);for(let k=0;k<3;k++)dir[k]/=len;let far=0,triangle=null,bary=null;
+  function visit(n){let lo=0,hi=1;for(let k=0;k<3;k++){if(Math.abs(dir[k])<1e-12){if(origin[k]<n.min[k]||origin[k]>n.max[k])return;continue}let a=(n.min[k]-origin[k])/dir[k],b=(n.max[k]-origin[k])/dir[k];if(a>b)[a,b]=[b,a];lo=Math.max(lo,a);hi=Math.min(hi,b);if(lo>hi)return}if(!n.faces){visit(n.a);visit(n.b);return}for(const f of n.faces){const ai=ix[f]*3,bi=ix[f+1]*3,ci=ix[f+2]*3,u=[0,1,2].map(k=>p[bi+k]-p[ai+k]),w=[0,1,2].map(k=>p[ci+k]-p[ai+k]),h=[dir[1]*w[2]-dir[2]*w[1],dir[2]*w[0]-dir[0]*w[2],dir[0]*w[1]-dir[1]*w[0]],det=u.reduce((s,x,k)=>s+x*h[k],0);if(Math.abs(det)<1e-12)continue;const s=origin.map((x,k)=>x-p[ai+k]),a=s.reduce((v,x,k)=>v+x*h[k],0)/det;if(a<0||a>1)continue;const q=[s[1]*u[2]-s[2]*u[1],s[2]*u[0]-s[0]*u[2],s[0]*u[1]-s[1]*u[0]],b=dir.reduce((v,x,k)=>v+x*q[k],0)/det;if(b<0||a+b>1)continue;const t=w.reduce((v,x,k)=>v+x*q[k],0)/det;if(t>far){far=t;triangle=Array.from(ix.slice(f,f+3));bary=[1-a-b,a,b]}}}
+  visit(tree);return{dir,len,far,origin,triangle,bary};
+ };
+}
