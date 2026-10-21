@@ -71,7 +71,7 @@ import {createArmPosture,fitLaptopHeight} from './js/office-arm-posture.js?v=c86
 import {getSeatFit,createFittedWorkChair} from './js/office-seat-fit.js?v=20260929-hairback1';   /* 2026-09-29: 긴 머리 인물 등받이(backrestHeight·backrestZ) */
 import {createWallTeamPlaque} from './js/office-wall-plaque.js?v=20260929-plaque2';
 import * as COZYLIB from './js/office-cozy.js?v=20260929-cozy5';
-import * as KITLIB from './js/office-kit.js?v=20260929kit2';
+import * as KITLIB from './js/office-kit.js?v=20261021perf1';
 import {loadWalkParams,buildWalkClip} from './js/office-walk.js?v=20260929walk13';   /* 공용 걷기(발 미끄러짐·부자연스러움 수정) — ?walk=orig 면 GLB 의 옛 walk */   /* ?office=kit — 사용자 Blender 사무실 킷(소품·맞춤 의자·복도). 기본 화면에서는 쓰지 않는다 */   /* ?look=cozy 가안 전용 — 기본 화면에서는 쓰지 않는다 */
 import {prepareGarmentMotion} from './js/office-garment-motion.js?v=ba277a21c1265b54';
 import {registerGarmentMotion} from './js/office-garment-loader.js?v=e693112c70a6bf7c';
@@ -292,6 +292,7 @@ renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.toneMapping=THREE.ACESF
 document.body.appendChild(renderer.domElement);
 RectAreaLightUniformsLib.init();
 const scene=new THREE.Scene(); scene.background=new THREE.Color(BG_COL);
+scene.updateMatrix(); scene.matrixAutoUpdate=false; // Scene origin is fixed; children keep their own animation flags.
 /* 39차(대표 지적 「겉면 노출」): 어떤 각도에서도 허공·벽 단면이 보이지 않게 씬 전체를 감싼다.
    방·복도가 모두 원점에 겹쳐 있으므로 한 벌이면 된다. 배경 상자는 씬 배경과 같은 색이라 눈에는 「빈 배경」으로 읽힌다 */
 { const shell=new THREE.Mesh(new THREE.BoxGeometry(120,72,120),new THREE.MeshBasicMaterial({color:BG_COL,side:THREE.BackSide,fog:false})); shell.position.y=24; shell.renderOrder=-2; shell.frustumCulled=false; scene.add(shell);
@@ -348,7 +349,7 @@ if(RIG.on){ controls.enabled=false; camera.fov=RIG.fov; camera.updateProjectionM
 let CUR=null;   /* 지금 보이는 방(또는 복도) — setRoom 이 갈아 끼운다. setView·rigPreset 이 초기화 때 참조한다 */
 const CTRL={on:true,keys:{f:0,b:0,l:0,r:0},pad:{x:0,y:0},goal:null,sitReq:null,rising:false,fast:false,speed:1.2};   /* 39차: 걷기 0.85 → 1.2 (1.41배, 대표 「너무 느려 답답」). walk 클립 재생속도도 같은 비율로 올린다 */
 const SCREEN={cb:null,node:null,glow:null}; const SITCB={fn:null}; const STANDCB={fn:null};   /* 39차: onSit/onStand — 착석·기립을 엔진(PC 화면)에 알린다 */
-const ENVMAP=(()=>{ const pm=new THREE.PMREMGenerator(renderer); const t=pm.fromScene(new RoomEnvironment(),0.04).texture; scene.environment=t; scene.environmentIntensity=0.3; return t; })();
+const ENVMAP=(()=>{ const pm=new THREE.PMREMGenerator(renderer), env=new RoomEnvironment(); const t=pm.fromScene(env,0.04).texture; env.dispose(); pm.dispose(); scene.environment=t; scene.environmentIntensity=0.3; return t; })();
 addEventListener('resize',()=>{ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight); });
 
 /* 카메라 프리셋: 3/4 부감 낮은 편(약 30°), 화각 넓게, 인물이 화면 1/3 높이 */
@@ -1151,7 +1152,7 @@ function buildCorridorKit(){
   R.kitLoad=()=>R.kitReady||(R.kitReady=KIT.corridor().then(src=>{ const m=src; m.rotation.y=KITLIB.KIT_CORRIDOR.rotY; m.position.y=KITLIB.KIT_CORRIDOR.y; m.name='kit:office_corridor'; g.add(m); m.updateMatrixWorld(true);
     for(const t of TEAM_ORDER){ const h=m.getObjectByName(t+'_hinge'); if(!h){ log(`[복도] ${t}_hinge 없음`); continue; }
       const ang=h.userData&&h.userData.open_angle_radians, sign=(ang!=null?ang:(DOORBACK[t]?-1.35:1.35))<0?-1:1, base=h.rotation.y;
-      R.doors[t].hinge={rotation:{get y(){ return (h.rotation.y-base)*sign; }, set y(v){ h.rotation.y=base+v*sign; }}}; R.doors[t].kitNode=h; }
+      h.userData.noMerge=true; R.doors[t].hinge={rotation:{get y(){ return (h.rotation.y-base)*sign; }, set y(v){ h.rotation.y=base+v*sign; }}}; R.doors[t].kitNode=h; }
     const ends={neg:new THREE.Group(),pos:new THREE.Group()}; g.add(ends.neg,ends.pos);
     const endMeshes=[]; m.traverse(o=>{ if(o.isMesh&&/^END_WALLS/.test(o.name)) endMeshes.push(o); });
     for(const o of endMeshes){ const sp=KITLIB.splitByX(THREE,o); o.updateMatrixWorld(true);
@@ -1159,6 +1160,7 @@ function buildCorridorKit(){
     /* π 회전 → 모델 로컬 x<0(neg) 이 게임 +x 끝 */
     R.WALLS.push({mesh:ends.neg,n:new THREE.Vector3(1,0,0),c:new THREE.Vector3(X1c,0,0),extra:[]},{mesh:ends.pos,n:new THREE.Vector3(-1,0,0),c:new THREE.Vector3(X0c,0,0),extra:[]});
     if(CUR===R) WALLS=R.WALLS;
+    KIT.compact(m); KIT.compact(ends.neg); KIT.compact(ends.pos);
     R.kitLoaded=true; log('[복도] 킷 복도 모델 연결'); return R; }).catch(e=>{ console.error(e); log('[복도] 킷 복도 모델 실패 '+e.message); return R; }));   /* 받기는 내 방 워밍업이 끝난 뒤(warmupMain) — 캐릭터 받기와 겹치지 않게 */
   /* 걷기 그래프 + 문 앞 진입 구역(기존 복도와 같은 규칙) — 엘리베이터는 킷 모델의 +x 끝, 화장실은 −x 끝 */
   const STATIONS={};

@@ -7,6 +7,8 @@
    · 불러올 때만 맞춘다(원본 GLB 불변): 의자 높이·등받이 위치는 게임 실측 좌석 프로필에 맞춰 노드 변환만 바꾼다
    좌표: 킷 GLB 는 glTF(Y 위) · 소품 앞면 +Z · 벽 부착형은 벽면 z=0 에서 +Z 로 나온다.
    ====================================================================== */
+import {compactStaticSiblings, freezeStaticDescendants} from './office-static-batching.js?v=20261021perf1';
+const STATIC_BATCH = new URLSearchParams(globalThis.location?.search || '').get('staticbatch') !== '0';
 export const KIT_DIR = 'assets/office_kit/';
 const KIT_VER = '20260929kit2';
 
@@ -74,6 +76,11 @@ export async function loadOfficeKit(THREE, GLTFLoader, { onProgress } = {}) {
   await Promise.all(names.map(async f => {
     const g = await loader.loadAsync(url(f));
     g.scene.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    // Chair part names/transforms are needed by fittedChair below. Other kit
+    // props are static; compact once before their geometry is shared by clones.
+    if (STATIC_BATCH && !/^chair(?:_|\.)/.test(f)) {
+      compactStaticSiblings(THREE, g.scene); freezeStaticDescendants(g.scene);
+    }
     g.scene.userData.kitFile = f; g.scene.userData.kitExtras = extrasOf(g.scene);
     proto[f.replace(/\.glb$/, '')] = g.scene; bytes += man.files[f]?.bytes || 0; done++;
     onProgress?.(done, names.length);
@@ -85,6 +92,7 @@ export async function loadOfficeKit(THREE, GLTFLoader, { onProgress } = {}) {
     /* 같은 형상·재질을 공유하는 복제본 */
     clone(n) { const p = proto[n]; if (!p) throw new Error('office_kit: 없는 소품 ' + n); const c = p.clone(true); c.name = 'kit:' + n; c.userData.kit = n; return c; },
     extras: (n) => proto[n]?.userData.kitExtras || {},
+    compact: root => STATIC_BATCH ? compactStaticSiblings(THREE, root) : root,
     chairFileFor: (id) => (man.chairs[id] || 'chair.glb').replace(/\.glb$/, ''),
     corridor() { if (!corridorP) corridorP = loader.loadAsync(url('office_corridor.glb')).then(g => { g.scene.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } }); return g.scene; }); return corridorP; },
     chairFor: (id, fit, over) => fittedChair(THREE, KIT, id, fit, over || {}),
@@ -232,6 +240,7 @@ function fittedChair(THREE, KIT, id, fit, over = {}) {
     rep.backShift = +dz.toFixed(4); rep.backScale = +k.toFixed(3);
   }
   g.userData.kitFit = rep;
+  if (STATIC_BATCH) {compactStaticSiblings(THREE, g); freezeStaticDescendants(g);}
   return g;
 }
 
