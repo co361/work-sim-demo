@@ -109,8 +109,10 @@
       await sleep(200);
       try{
         frameStyle();
-        if(inspect()&&controls()&&frame.contentWindow.WorkSimRoster){
-          S.roster=frame.contentWindow.WorkSimRoster.data.characters.slice().sort((a,b)=>a.team_name.localeCompare(b.team_name,'ko')||Number(a.character_id.replace('acnh_',''))-Number(b.character_id.replace('acnh_','')));
+        if(inspect()&&controls()&&window.WorkSimRoster){
+          // The game may apply authored dialogue aliases to its own roster.
+          // Review labels use the canonical roster, without mutating game NPCs.
+          S.roster=window.WorkSimRoster.data.characters.slice().sort((a,b)=>a.team_name.localeCompare(b.team_name,'ko')||Number(a.character_id.replace('acnh_',''))-Number(b.character_id.replace('acnh_','')));
           if(S.roster.length!==50||new Set(S.roster.map(r=>r.character_id)).size!==50)throw Error('현재 게임의 50명 명단을 확인하지 못했습니다.');
           if(!S.roster.some(r=>r.character_id===S.id))S.id='acnh_52';
           filter();identity();
