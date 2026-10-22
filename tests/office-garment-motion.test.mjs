@@ -59,7 +59,7 @@ test('sparse loader preserves interpolated cloth and never expands pose accessor
   const json = {
     nodes: [{mesh: 0, extras: {worksimGarmentMotion: 1}}],
     meshes: [{extras: {targetNames: ['seated_proportion_reset', 'contact_envelope_walk_00', 'contact_envelope_walk_01']}, weights: [0, 0, 0], primitives: [{targets: [{POSITION: 0, NORMAL: 0}, {POSITION: 1, NORMAL: 2}, {POSITION: 3, NORMAL: 2}]}]}],
-    accessors: [{...vec, bufferView: 3}, sparse(1), {...vec}, sparse(2), {componentType: 5126, type: 'SCALAR', count: 2}, {componentType: 5126, type: 'SCALAR', count: 6}],
+    accessors: [{...vec, bufferView: 3, min: [0,0,0], max: [0,0,0]}, sparse(1), {...vec}, sparse(2), {componentType: 5126, type: 'SCALAR', count: 2}, {componentType: 5126, type: 'SCALAR', count: 6}],
     animations: [{channels: [{sampler: 0, target: {node: 0, path: 'weights'}}], samplers: [{input: 4, output: 5, interpolation: 'LINEAR'}]}]
   };
   const views = [new Uint16Array([0, 1]).buffer, new Float32Array([0, 0, 1, 0, 0, 2]).buffer, new Float32Array([0, 0, 3, 0, 0, 4]).buffer];
@@ -90,4 +90,25 @@ test('sparse loader leaves untagged assets and unsupported dense targets untouch
     const plugin = factory({json, cache: {remove() {throw Error('unexpected cache change')}}, getDependency() {throw Error('unexpected load')}});
     await plugin.beforeRoot();await plugin.afterRoot({});assert.deepEqual(json, before);
   }
+});
+
+test('retained sparse morph bounds include implicit zeros without expanding accessors', async () => {
+  const vec = {componentType:5126,type:'VEC3',count:3};
+  const sparse = (count,view) => ({...vec,sparse:{count,indices:{bufferView:0,componentType:5123},values:{bufferView:view}}});
+  const json = {nodes:[{mesh:0,extras:{worksimGarmentMotion:1}}],meshes:[{extras:{targetNames:['partial','full','contact_envelope_test']},primitives:[{targets:[{POSITION:0,NORMAL:1},{POSITION:3,NORMAL:1},{POSITION:2,NORMAL:1}]}]}],accessors:[sparse(1,1),{...vec},sparse(3,2),sparse(3,3)],animations:[]};
+  const views = [new Uint16Array([0,1,2]).buffer,new Float32Array([-2,3,-4]).buffer,new Float32Array([1,2,3,-1,-2,-3,0,0,0]).buffer,new Float32Array([1,2,3,4,5,6,2,3,4]).buffer];
+  const bytes = views.map(v => Array.from(new Uint8Array(v)));let factory;
+  registerGarmentMotion(T,{register(fn){factory=fn;}});
+  await factory({json,async getDependency(type,index){assert.equal(type,'bufferView');return views[index];}}).beforeRoot();
+  assert.deepEqual(json.accessors[0].min,[-2,0,-4]);assert.deepEqual(json.accessors[0].max,[0,3,0]);
+  assert.deepEqual(json.accessors[3].min,[1,2,3]);assert.deepEqual(json.accessors[3].max,[4,5,6]);
+  assert.equal(json.accessors[2].min,undefined);assert.deepEqual(views.map(v=>Array.from(new Uint8Array(v))),bytes);
+});
+
+test('retained dense button bounds reuse the renderer accessor', async () => {
+  const vec={componentType:5126,type:'VEC3',count:2};
+  const json={nodes:[{mesh:0,extras:{worksimGarmentMotion:1}}],meshes:[{extras:{targetNames:['neutral','contact_envelope_test']},primitives:[{targets:[{POSITION:0,NORMAL:0},{POSITION:1,NORMAL:1}]}]},{primitives:[{targets:[{POSITION:2}]}]}],accessors:[{...vec,min:[0,0,0],max:[0,0,0]},{...vec},{...vec,bufferView:0}],animations:[]};
+  let factory,loads=0;registerGarmentMotion(T,{register(fn){factory=fn;}});
+  await factory({json,async getDependency(type,index){assert.equal(type,'accessor');assert.equal(index,2);loads++;return new T.Float32BufferAttribute([-2,3,4,1,5,-6],3);}}).beforeRoot();
+  assert.equal(loads,1);assert.deepEqual(json.accessors[2].min,[-2,3,-6]);assert.deepEqual(json.accessors[2].max,[1,5,4]);
 });
