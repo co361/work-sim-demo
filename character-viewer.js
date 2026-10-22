@@ -22,7 +22,7 @@
     $('position').textContent=(S.filtered.findIndex(r=>r.character_id===S.id)+1)+' / '+S.filtered.length;
     $('character').value=S.id; $('count').textContent=S.roster.length+'명';
     $('feedback').hidden=!feedback[S.id]; $('feedback-text').textContent=feedback[S.id]||'';
-    document.querySelectorAll('[data-character]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.character===S.id)));
+    document.querySelectorAll('[data-character]').forEach(b=>{b.setAttribute('aria-pressed',String(b.dataset.character===S.id));const entry=S.roster.find(r=>r.character_id===b.dataset.character);if(entry)b.textContent=entry.display_name;});
     document.querySelectorAll('[data-pose]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.pose===S.pose)));
     document.querySelectorAll('[data-view]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===S.view)));
     $('pause').setAttribute('aria-pressed',String(S.paused)); $('pause').textContent=S.paused?'계속 재생':'일시 정지';
@@ -103,7 +103,7 @@
     // Both existing projects live on the same GitHub Pages origin. Use the formal
     // game's read-only inspector so selected seats and runtime posture stay exact.
     const url=new URL('../work-sim-v2/office.html',location.href);
-    url.search=new URLSearchParams({inspect:'1',office:'legacy',ch:S.id,pose:'idle',v:'3ee3b668f11797bd3'}).toString();frame.src=url;
+    url.search=new URLSearchParams({inspect:'1',office:'legacy',ch:S.id,pose:'idle',v:'31c7c1d3d2fe1b9b'}).toString();frame.src=url;
     const startTime=performance.now();
     while(performance.now()-startTime<90000){
       await sleep(200);
