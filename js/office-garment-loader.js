@@ -70,9 +70,22 @@ export function registerGarmentMotion(THREE, loader) {
         const positions = new Set(pending.length ? (json.meshes || []).flatMap(m => m.primitives.flatMap(p => (p.targets || []).map(t => t.POSITION))) : []);
         for (const index of positions) {
           const a = json.accessors[index];
-          if (!a || (a.min && a.max) || !a.sparse || a.bufferView !== undefined || a.componentType !== 5126 || a.type !== 'VEC3') continue;
+          if (!a || (a.min && a.max) || a.componentType !== 5126 || a.type !== 'VEC3') continue;
+          if (a.bufferView !== undefined) {
+            // Small retained button morphs are dense and already needed by the
+            // renderer. Reuse its cached accessor, including interleaved data.
+            bounds.push(parser.getDependency('accessor', index).then(attribute => {
+              const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
+              for (let i = 0; i < attribute.count; i++) {
+                const v = [attribute.getX(i), attribute.getY(i), attribute.getZ(i)];
+                for (let k = 0; k < 3; k++) {min[k] = Math.min(min[k], v[k]);max[k] = Math.max(max[k], v[k]);}
+              }
+              if ([...min, ...max].every(Number.isFinite)) {a.min ??= min;a.max ??= max;}
+            }));
+            continue;
+          }
           bounds.push(sparse(index).then(({values}) => {
-            const implicitZero = a.sparse.count < a.count;
+            const implicitZero = !a.sparse || a.sparse.count < a.count;
             const min = Array(3).fill(implicitZero ? 0 : Infinity), max = Array(3).fill(implicitZero ? 0 : -Infinity);
             for (let i = 0; i < values.length; i++) {const k = i % 3;min[k] = Math.min(min[k], values[i]);max[k] = Math.max(max[k], values[i]);}
             if ([...min, ...max].every(Number.isFinite)) {a.min ??= min;a.max ??= max;}
