@@ -63,7 +63,22 @@ export function registerGarmentMotion(THREE, loader) {
           if (node.weights) node.weights = keep.map(i => node.weights[i]);
           pending.push(data);
         }
-        return Promise.all(pending.flatMap(d => [d.shapes, d.tracks]));
+        // Retained GPU morphs (including jacket buttons) still need bounds.
+        // Read sparse values directly so correcting missing glTF metadata does
+        // not expand the removed garment poses into dense vertex arrays.
+        const bounds = [];
+        const positions = new Set(pending.length ? (json.meshes || []).flatMap(m => m.primitives.flatMap(p => (p.targets || []).map(t => t.POSITION))) : []);
+        for (const index of positions) {
+          const a = json.accessors[index];
+          if (!a || (a.min && a.max) || !a.sparse || a.bufferView !== undefined || a.componentType !== 5126 || a.type !== 'VEC3') continue;
+          bounds.push(sparse(index).then(({values}) => {
+            const implicitZero = a.sparse.count < a.count;
+            const min = Array(3).fill(implicitZero ? 0 : Infinity), max = Array(3).fill(implicitZero ? 0 : -Infinity);
+            for (let i = 0; i < values.length; i++) {const k = i % 3;min[k] = Math.min(min[k], values[i]);max[k] = Math.max(max[k], values[i]);}
+            if ([...min, ...max].every(Number.isFinite)) {a.min ??= min;a.max ??= max;}
+          }));
+        }
+        return Promise.all([...pending.flatMap(d => [d.shapes, d.tracks]), ...bounds]);
       },
       async afterRoot(result) {
         for (const d of pending) {
