@@ -76,7 +76,7 @@ function createArmRestShape(T,model){
 }
 
 // The exact 19 jacket/trousers pair intersects while its authored seated
-// keys blend. Ease only the existing jacket front over the moving waist;
+// keys blend. Ease the existing jacket front and back over the moving waist;
 // preserve the body, trousers, bone/weight data and every other character.
 function createJacketWaistClearance(T,model){
  if(model.name!=='acnh_19-resident-root')return {update(){},report:[]};
@@ -90,7 +90,8 @@ function createJacketWaistClearance(T,model){
  for(let i=0;i<position.count;i++){
   const x=original[i*3],y=original[i*3+1],z=original[i*3+2];
   const mask=(1-T.MathUtils.smoothstep(y,.365,.46))*(1-T.MathUtils.smoothstep(Math.abs(x),.09,.14))*T.MathUtils.smoothstep(z,.005,.035);
-  if(mask>0)edits.push({i,z,mask,clearance:.022+.012*Math.exp(-(((Math.abs(x)-.043)/.025)**2))*(1-T.MathUtils.smoothstep(y,.322,.365)),hem:(1-T.MathUtils.smoothstep(y,.355,.385))*(1-T.MathUtils.smoothstep(Math.abs(x),.025,.065))});
+  const back=(1-T.MathUtils.smoothstep(y,.37,.455))*(1-T.MathUtils.smoothstep(Math.abs(x),.09,.14))*(1-T.MathUtils.smoothstep(z,-.035,-.005));
+  if(mask>0||back>0)edits.push({i,z,mask,back,clearance:.022+.012*Math.exp(-(((Math.abs(x)-.043)/.025)**2))*(1-T.MathUtils.smoothstep(y,.322,.365)),hem:(1-T.MathUtils.smoothstep(y,.355,.385))*(1-T.MathUtils.smoothstep(Math.abs(x),.025,.065))});
  }
  // Attach the existing 17-vertex buttons to cached triangles on the actual
  // jacket. This retains their tiny surface relief while following every blend.
@@ -116,7 +117,7 @@ function createJacketWaistClearance(T,model){
  function update(enabled){
   const w=enabled?T.MathUtils.clamp(mesh.morphTargetInfluences[k]||0,0,1):0;
   const position=mesh.geometry.attributes.position;
-  if(last===null||Math.abs(w-last)>=1e-9){last=w;for(const e of edits)position.array[e.i*3+2]=e.z+e.mask*(e.clearance*4*w*(1-w)+.004*w*e.hem);position.needsUpdate=true;}
+  if(last===null||Math.abs(w-last)>=1e-9){last=w;for(const e of edits)position.array[e.i*3+2]=e.z+e.mask*(e.clearance*4*w*(1-w)+.004*w*e.hem)-.025*e.back*4*w*(1-w);position.needsUpdate=true;}
   if(!enabled||w<1e-9){for(const e of buttonEdits){e.mesh.geometry.attributes.position.array.set(e.original);e.mesh.geometry.attributes.position.needsUpdate=true;}return;}
   model.updateMatrixWorld(true);mesh.skeleton.update();
   for(const e of buttonEdits){
@@ -134,7 +135,7 @@ function createJacketWaistClearance(T,model){
    p.needsUpdate=true;
   }
  }
- return {update,report:[{mesh:mesh.name,vertices:edits.length,scope:'Exact 19 jacket front only; original standing shape, body and trousers preserved.'}]};
+ return {update,report:[{mesh:mesh.name,vertices:edits.length,scope:'Exact 19 jacket waist only; original standing shape, body and trousers preserved.'}]};
 }
 
 
