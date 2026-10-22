@@ -36,12 +36,36 @@ export function createRunPosture(T,{model,bones,mixer,animations}) {
  function rotate(b,delta){if(Math.abs(delta)<1e-9)return;remember(b);b.parent.getWorldQuaternion(pq);b.getWorldQuaternion(worldQ);turn.setFromAxisAngle(right,delta);worldQ.premultiply(turn);b.quaternion.copy(pq.invert().multiply(worldQ)).normalize();b.updateMatrixWorld(true);}
  function aim(b,from,to,weight){if(from.lengthSq()<1e-12||to.lengthSq()<1e-12)return;remember(b);b.parent.getWorldQuaternion(pq);b.getWorldQuaternion(worldQ);turn.setFromUnitVectors(from.normalize(),to.normalize());q.copy(pq).invert().multiply(worldQ.premultiply(turn)).normalize();b.quaternion.slerp(q,weight).normalize();b.updateMatrixWorld(true);}
  function pitch(b,ref){b.getWorldQuaternion(q);v.copy(ref).applyQuaternion(q);return Math.atan2(v.dot(forward),v.y);}
+ // Character 19's long jacket is wider than the authored walking wrist path.
+ // Keep the original reciprocal swing and fixed segment lengths, with a small
+ // elbow clearance and enough room for the actual rounded palm, not just its
+ // wrist pivot. This is specific to this jacket; other actors stay unchanged.
+ const clearanceClips=model.name==='acnh_19-resident-root'?animations.filter(c=>/^(?:idle_breath$|(walk|jog)(?:$|_start$|_stop_[LR]$|_to_(?:walk|jog)_[LR]$))/.test(c.name)):[];
+ const localS=new T.Vector3(),localE=new T.Vector3(),localW=new T.Vector3();
+ function handClearance(){
+  let weight=0;for(const c of clearanceClips){const a=mixer.existingAction(c);if(a?.enabled&&a.isScheduled())weight+=a.getEffectiveWeight();}
+  weight=T.MathUtils.clamp(weight,0,1);if(weight<1e-5)return;
+  model.updateMatrixWorld(true);model.getWorldQuaternion(modelQ);modelInv.copy(modelQ).invert();
+  for(const a of arms){
+   a.upper.getWorldPosition(s);a.fore.getWorldPosition(e);upper.subVectors(e,s).applyQuaternion(modelInv);
+   const length=upper.length(),out=Math.asin(T.MathUtils.clamp(Math.abs(upper.x)/length,0,1));
+   // The authored idle has wider shoulders: fade out continuously before its
+   // endpoint rather than changing idle, seated or interaction poses.
+   const blend=weight*(1-T.MathUtils.smoothstep(out,18*rad,22*rad));if(blend<1e-6)continue;
+   localS.copy(s);model.worldToLocal(localS);const sign=Math.sign(localS.x)||a.sign;
+   if(out<12*rad){const yz=Math.hypot(upper.y,upper.z);target.copy(upper);target.x=sign*length*Math.sin(12*rad);target.y*=length*Math.cos(12*rad)/yz;target.z*=length*Math.cos(12*rad)/yz;aim(a.upper,upper.applyQuaternion(modelQ),target.applyQuaternion(modelQ),blend);}
+   a.fore.getWorldPosition(e);a.hand.getWorldPosition(w);localE.copy(e);localW.copy(w);model.worldToLocal(localE);model.worldToLocal(localW);
+   lower.subVectors(localW,localE);const foreLength=lower.length(),needed=.136-sign*localE.x;
+   if(sign*localW.x<.136&&needed>0){const x=Math.min(needed,foreLength*.55),yz=Math.hypot(lower.y,lower.z);if(yz>1e-8){target.copy(lower);target.x=sign*x;const scale=Math.sqrt(foreLength*foreLength-x*x)/yz;target.y*=scale;target.z*=scale;aim(a.fore,lower.applyQuaternion(modelQ),target.applyQuaternion(modelQ),blend);}}
+  }
+ }
+ function finish(){handClearance();for(const x of edits)if(x.used)x.post.copy(x.b.quaternion);return info;}
  const info={active:false,weight:0,armWeight:0,pelvisPitch:0,chestPitch:0,correction:0,arms:arms.map(a=>({side:a.side,sourceMin:a.min,sourceMax:a.max,signal:0,upperPitch:0,elbowBend:0}))};
  return {
   restore(){for(const x of edits){if(x.used&&Math.max(Math.abs(x.b.quaternion.x-x.post.x),Math.abs(x.b.quaternion.y-x.post.y),Math.abs(x.b.quaternion.z-x.post.z),Math.abs(x.b.quaternion.w-x.post.w))<1e-7)x.b.quaternion.copy(x.pre);x.used=false;}},
   update(){
    let weight=0;for(const c of clips){const a=mixer.existingAction(c);if(a?.enabled&&a.isScheduled())weight+=a.getEffectiveWeight();}
-   weight=T.MathUtils.clamp(weight,0,1);info.active=weight>1e-4;info.weight=weight;info.armWeight=0;info.correction=0;if(!info.active)return info;
+   weight=T.MathUtils.clamp(weight,0,1);info.active=weight>1e-4;info.weight=weight;info.armWeight=0;info.correction=0;if(!info.active)return finish();
    model.updateMatrixWorld(true);chestFrame();forward.set(0,0,1).applyQuaternion(modelQ);forward.y=0;forward.normalize();right.set(forward.z,0,-forward.x);
    let bend=0;
    for(const a of arms){
@@ -66,7 +90,7 @@ export function createRunPosture(T,{model,bones,mixer,animations}) {
     target.set(0,-Math.cos(swing+elbow),Math.sin(swing+elbow)).applyQuaternion(modelQ);aim(a.fore,lower,target,armWeight);
     const d=info.arms[i];d.signal=a.signal;d.upperPitch=swing;d.elbowBend=elbow;
    }
-   for(const x of edits)if(x.used)x.post.copy(x.b.quaternion);return info;
+   return finish();
   },
   get state(){return {...info,arms:info.arms.map(a=>({...a}))};}
  };
