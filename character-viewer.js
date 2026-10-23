@@ -103,7 +103,7 @@
     // Both existing projects live on the same GitHub Pages origin. Use the formal
     // game's read-only inspector so selected seats and runtime posture stay exact.
     const url=new URL('../work-sim-v2/office.html',location.href);
-    url.search=new URLSearchParams({inspect:'1',office:'legacy',ch:S.id,pose:'idle',v:'e4e352ee529dac77'}).toString();frame.src=url;
+    url.search=new URLSearchParams({inspect:'1',office:'legacy',ch:S.id,pose:'idle',v:'effa91d0fe291425'}).toString();frame.src=url;
     const startTime=performance.now();
     while(performance.now()-startTime<90000){
       await sleep(200);

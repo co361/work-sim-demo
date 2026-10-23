@@ -36,15 +36,25 @@ export function createRunPosture(T,{model,bones,mixer,animations}) {
  function rotate(b,delta){if(Math.abs(delta)<1e-9)return;remember(b);b.parent.getWorldQuaternion(pq);b.getWorldQuaternion(worldQ);turn.setFromAxisAngle(right,delta);worldQ.premultiply(turn);b.quaternion.copy(pq.invert().multiply(worldQ)).normalize();b.updateMatrixWorld(true);}
  function aim(b,from,to,weight){if(from.lengthSq()<1e-12||to.lengthSq()<1e-12)return;remember(b);b.parent.getWorldQuaternion(pq);b.getWorldQuaternion(worldQ);turn.setFromUnitVectors(from.normalize(),to.normalize());q.copy(pq).invert().multiply(worldQ.premultiply(turn)).normalize();b.quaternion.slerp(q,weight).normalize();b.updateMatrixWorld(true);}
  function pitch(b,ref){b.getWorldQuaternion(q);v.copy(ref).applyQuaternion(q);return Math.atan2(v.dot(forward),v.y);}
- // Character 19's long jacket is wider than the authored walking wrist path.
- // Keep the original reciprocal swing and fixed segment lengths, with a small
- // elbow clearance and enough room for the actual rounded palm, not just its
- // wrist pivot. This is specific to this jacket; other actors stay unchanged.
- const clearanceClips=model.name==='acnh_19-resident-root'?animations.filter(c=>/^(?:idle_breath$|(walk|jog)(?:$|_start$|_stop_[LR]$|_to_(?:walk|jog)_[LR]$))/.test(c.name)):[];
+ // The reviewed jacket and skirts are wider than the authored wrist path.
+ // Keep reciprocal swing and fixed limb lengths, with only the elbow/wrist
+ // clearance required by the rounded palm. These local-space minima were
+ // checked against the actual skinned surfaces; unlisted actors stay unchanged.
+ const skirtClearance=/^acnh_(17|21|22|30|32|33|34|35|38|40|42|44|46|52|54|56|58|60|62|64|68|70)-resident-root$/.test(model.name);
+ const extraClearance=/^acnh_(18|20|23|24|26|29|36|37|41|45|47|48|53|55|57|65|66)-resident-root$/.test(model.name);
+ const extraSkirt=/^acnh_(20|66)-resident-root$/.test(model.name);
+ // #41's authored walk already clears its shirt. Preserve it exactly; fade
+ // in clearance through breathing/run blends without a second linear fade.
+ const preserveWalk=model.name==='acnh_41-resident-root';
+ const minimumArmOut=(extraClearance?8:12)*rad;
+ const clearanceClips=(model.name==='acnh_19-resident-root'||skirtClearance||extraClearance)?animations.filter(c=>/^(?:idle_breath$|(walk|jog)(?:$|_start$|_stop_[LR]$|_to_(?:walk|jog)_[LR]$))/.test(c.name)):[];
  const localS=new T.Vector3(),localE=new T.Vector3(),localW=new T.Vector3();
  function handClearance(){
-  let weight=0;for(const c of clearanceClips){const a=mixer.existingAction(c);if(a?.enabled&&a.isScheduled())weight+=a.getEffectiveWeight();}
-  weight=T.MathUtils.clamp(weight,0,1);if(weight<1e-5)return;
+  let weight=0,breathingWeight=0;for(const c of clearanceClips){const a=mixer.existingAction(c);if(a?.enabled&&a.isScheduled()){const w=a.getEffectiveWeight();weight+=w;if(c.name==='idle_breath')breathingWeight+=w;}}
+  weight=T.MathUtils.clamp(weight,0,1);if(preserveWalk)weight*=T.MathUtils.smoothstep(info.armWeight+breathingWeight,0,.5);if(weight<1e-5)return;
+  // Running and breathing palms sit above or ahead of the widest skirt.
+  // Reuse keyed blend weights; no wall-clock phase or per-frame mesh query.
+  const wristClearance=skirtClearance?T.MathUtils.lerp(.142,.129,T.MathUtils.clamp(info.armWeight+breathingWeight,0,1)):extraClearance?(extraSkirt?T.MathUtils.lerp(.142,.129,T.MathUtils.clamp(info.armWeight+breathingWeight,0,1)):T.MathUtils.lerp(T.MathUtils.lerp(preserveWalk?.136:.132,.136,info.armWeight),.130,T.MathUtils.clamp(breathingWeight,0,1))):.136;
   model.updateMatrixWorld(true);model.getWorldQuaternion(modelQ);modelInv.copy(modelQ).invert();
   for(const a of arms){
    a.upper.getWorldPosition(s);a.fore.getWorldPosition(e);upper.subVectors(e,s).applyQuaternion(modelInv);
@@ -53,10 +63,10 @@ export function createRunPosture(T,{model,bones,mixer,animations}) {
    // endpoint rather than changing idle, seated or interaction poses.
    const blend=weight*(1-T.MathUtils.smoothstep(out,18*rad,22*rad));if(blend<1e-6)continue;
    localS.copy(s);model.worldToLocal(localS);const sign=Math.sign(localS.x)||a.sign;
-   if(out<12*rad){const yz=Math.hypot(upper.y,upper.z);target.copy(upper);target.x=sign*length*Math.sin(12*rad);target.y*=length*Math.cos(12*rad)/yz;target.z*=length*Math.cos(12*rad)/yz;aim(a.upper,upper.applyQuaternion(modelQ),target.applyQuaternion(modelQ),blend);}
+   if(out<minimumArmOut){const yz=Math.hypot(upper.y,upper.z);target.copy(upper);target.x=sign*length*Math.sin(minimumArmOut);target.y*=length*Math.cos(minimumArmOut)/yz;target.z*=length*Math.cos(minimumArmOut)/yz;aim(a.upper,upper.applyQuaternion(modelQ),target.applyQuaternion(modelQ),blend);}
    a.fore.getWorldPosition(e);a.hand.getWorldPosition(w);localE.copy(e);localW.copy(w);model.worldToLocal(localE);model.worldToLocal(localW);
-   lower.subVectors(localW,localE);const foreLength=lower.length(),needed=.136-sign*localE.x;
-   if(sign*localW.x<.136&&needed>0){const x=Math.min(needed,foreLength*.55),yz=Math.hypot(lower.y,lower.z);if(yz>1e-8){target.copy(lower);target.x=sign*x;const scale=Math.sqrt(foreLength*foreLength-x*x)/yz;target.y*=scale;target.z*=scale;aim(a.fore,lower.applyQuaternion(modelQ),target.applyQuaternion(modelQ),blend);}}
+   lower.subVectors(localW,localE);const foreLength=lower.length(),needed=wristClearance-sign*localE.x;
+   if(sign*localW.x<wristClearance&&needed>0){const x=Math.min(needed,foreLength*.55),yz=Math.hypot(lower.y,lower.z);if(yz>1e-8){target.copy(lower);target.x=sign*x;const scale=Math.sqrt(foreLength*foreLength-x*x)/yz;target.y*=scale;target.z*=scale;aim(a.fore,lower.applyQuaternion(modelQ),target.applyQuaternion(modelQ),blend);}}
   }
  }
  function finish(){handClearance();for(const x of edits)if(x.used)x.post.copy(x.b.quaternion);return info;}

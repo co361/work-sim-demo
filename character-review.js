@@ -3,7 +3,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { createRunPosture } from './js/office-run-posture.js?v=20261003run1';
+import { createRunPosture } from './js/office-run-posture.js?v=46a83f8f9b1a550b';
 import { createTalkFace } from './js/office-talkface.js';
 
 // A focused review tool in the existing HTML/Three.js application. No game state is changed.

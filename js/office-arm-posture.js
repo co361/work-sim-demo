@@ -146,10 +146,57 @@ function createSoftShoulderCorrection(T,model){
  return {update(enabled,typing=0){for(const mesh of meshes){const d=mesh.morphTargetDictionary,w=mesh.morphTargetInfluences,s=enabled?T.MathUtils.clamp(w[d.seated_proportion_reset]||0,0,1):0,t=T.MathUtils.clamp(typing,0,1),values=enabled?[1-s,s*(1-t),s*t]:[0,0,0];['softShoulderStand','softShoulderSit','softShoulderType'].forEach((name,i)=>w[d[name]]=values[i]);}}};
 }
 
+// These two jackets cross the seated trousers during the existing seat
+// blend. Preserve standing shapes, ease the lower back around the hips,
+// and retain a small front clearance at the seated endpoint.
+function createSeatedHemClearance(T,model){
+ const configs={
+  'acnh_45-resident-root':{name:'Wardrobe45_|_tailored_open_blazer_and_joined_sleeves',back:.036,late:.012},
+  'acnh_65-resident-root':{name:'Wardrobe_|_Vest_continuous_shell',back:.036,late:.041,backFade:[.36,.43]}
+ },config=configs[model.name];
+ if(!config)return {reset(){},update(){}};
+ let mesh;model.traverse(m=>{if(m.isSkinnedMesh&&m.name===config.name)mesh=m});
+ const k=mesh?.morphTargetDictionary?.seated_proportion_reset;
+ if(k===undefined)return {reset(){},update(){}};
+ // createArmRestShape already gives this actor its own geometry.
+ const p=mesh.geometry.attributes.position,edits=[];
+ for(let i=0;i<p.count;i++){
+  const x=p.getX(i),y=p.getY(i),z=p.getZ(i),low=(1-T.MathUtils.smoothstep(y,.37,.455))*(1-T.MathUtils.smoothstep(Math.abs(x),.09,.14));
+  const back=(config.backFade?(1-T.MathUtils.smoothstep(y,...config.backFade))*(1-T.MathUtils.smoothstep(Math.abs(x),.09,.14)):low)*(1-T.MathUtils.smoothstep(z,-.035,-.005));
+  const front=(1-T.MathUtils.smoothstep(y,.345,.385))*(1-T.MathUtils.smoothstep(Math.abs(x),.09,.14))*T.MathUtils.smoothstep(z,.005,.035);
+  if(back>0||front>0)edits.push({i,y,z,back,front});
+ }
+ let last=null,lastPosition=null,lastVersion=-1,applied=false;
+ function reset(){
+  const p=mesh.geometry.attributes.position;
+  if(applied&&p===lastPosition&&p.version===lastVersion){
+   for(const e of edits){p.array[e.i*3+1]=e.preY;p.array[e.i*3+2]=e.preZ;}
+   p.needsUpdate=true;
+  }
+  applied=false;last=null;lastPosition=null;
+ }
+ return {reset,update(enabled){
+  const w=enabled?T.MathUtils.clamp(mesh.morphTargetInfluences[k]||0,0,1):0,p=mesh.geometry.attributes.position;
+  const unchanged=p===lastPosition&&p.version===lastVersion;
+  if(unchanged&&w===last)return;
+  // A garment update rewrites its base positions. If it has not run, remove
+  // only our previous offset before applying the new one. This keeps blended
+  // gait correctives intact and avoids uploading unchanged seated geometry.
+  if(unchanged&&applied){for(const e of edits){p.array[e.i*3+1]=e.preY;p.array[e.i*3+2]=e.preZ;}p.needsUpdate=true;}
+  applied=w>1e-9;
+  if(applied){
+   const rear=(config.back+config.late*T.MathUtils.smoothstep(w,.4,.8))*4*w*(1-w);
+   for(const e of edits){e.preY=p.array[e.i*3+1];e.preZ=p.array[e.i*3+2];p.array[e.i*3+1]=e.preY;p.array[e.i*3+2]=e.preZ-rear*e.back+.007*e.front*w;}
+   p.needsUpdate=true;
+  }
+  last=w;lastPosition=p;lastVersion=p.version;
+ }};
+}
+
 /* Seated arm IK: rotate the authored bones; never change a bone's length or scale. */
 export function createArmPosture(T,{model,bones,mixer,animations,getSeat}){
  const male53=model.name==='acnh_53-resident-root';
- const cuffs=male53?{setEnabled(){},report:[{bakedWeights:true,character:'acnh_53'}]}:createArmSkinning(T,model),restShape=createArmRestShape(T,model),waist=createJacketWaistClearance(T,model),softShoulder=createSoftShoulderCorrection(T,model);
+ const cuffs=male53?{setEnabled(){},report:[{bakedWeights:true,character:'acnh_53'}]}:createArmSkinning(T,model),restShape=createArmRestShape(T,model),waist=createJacketWaistClearance(T,model),softShoulder=createSoftShoulderCorrection(T,model),hem=createSeatedHemClearance(T,model);
  const clips=animations.filter(c=>/^(sit$|sit_down$|stand_up$|type2$|work_)/.test(c.name));
  const arms=['L','R'].map(side=>({side,upper:bones['UpperArm_'+side],fore:bones['Forearm_'+side],hand:bones['Hand_'+side]})).filter(a=>a.upper&&a.fore&&a.hand);
  // Read the authored endpoints on an independent hierarchy. The transition
@@ -172,8 +219,8 @@ export function createArmPosture(T,{model,bones,mixer,animations,getSeat}){
  function remember(b){if(!undo.has(b))undo.set(b,{pre:b.quaternion.clone(),preP:b.position.clone(),post:null,postP:null});}
  function aim(b,from,to){if(from.lengthSq()<1e-12||to.lengthSq()<1e-12)return;remember(b);const delta=new T.Quaternion().setFromUnitVectors(from.normalize(),to.normalize()),parent=b.parent.getWorldQuaternion(new T.Quaternion()),world=b.getWorldQuaternion(new T.Quaternion());b.quaternion.copy(parent.invert().multiply(world.premultiply(delta))).normalize();b.updateMatrixWorld(true);}
  function restore(){for(const [b,u]of undo){if(u.post&&Math.max(Math.abs(b.quaternion.x-u.post.x),Math.abs(b.quaternion.y-u.post.y),Math.abs(b.quaternion.z-u.post.z),Math.abs(b.quaternion.w-u.post.w))<1e-7)b.quaternion.copy(u.pre);if(u.postP&&b.position.distanceToSquared(u.postP)<1e-14)b.position.copy(u.preP);}undo.clear();}
- return {restore,seatAdvance:seat=>(info.enabled && seat && seat.pc!==false) ? .025 : 0,setEnabled(v){restore();info.enabled=!!v;restShape.setEnabled(info.enabled);cuffs.setEnabled(info.enabled);waist.update(info.enabled);softShoulder.update(info.enabled);},get state(){return structuredClone(info)},update(){
-  waist.update(info.enabled);info.arms=[];const seat=getSeat?.();if(seat)computerSeat=seat.pc!==false;let weight=0,reach=0,transitionWeight=0,seatedPhase=0;
+ return {restore,seatAdvance:seat=>(info.enabled && seat && seat.pc!==false) ? .025 : 0,setEnabled(v){restore();hem.reset();info.enabled=!!v;restShape.setEnabled(info.enabled);cuffs.setEnabled(info.enabled);waist.update(info.enabled);softShoulder.update(info.enabled);hem.update(info.enabled);},get state(){return structuredClone(info)},update(){
+  waist.update(info.enabled);hem.update(info.enabled);info.arms=[];const seat=getSeat?.();if(seat)computerSeat=seat.pc!==false;let weight=0,reach=0,transitionWeight=0,seatedPhase=0;
   for(const c of clips){const a=mixer.existingAction(c);if(a?.enabled&&a.isScheduled()){const w=a.getEffectiveWeight();weight+=w;if(/^(type2$|work_)/.test(c.name))reach+=w;if(/^(sit_down|stand_up)$/.test(c.name)){const p=T.MathUtils.clamp(a.time/c.duration,0,1),seat=c.name==='sit_down'?T.MathUtils.smoothstep(p,.25,1):1-T.MathUtils.smoothstep(p,0,.55);transitionWeight+=w;seatedPhase+=w*seat;}}}
   if(transitionWeight>0)seatedPhase/=transitionWeight;
   if(!computerSeat)transitionWeight=0;
